@@ -7,27 +7,32 @@ function initGallery() {
         {
             image: 'images/examples/game_maker_show.jpg',
             title: 'Game Creation',
-            description: 'Create and play games directly on your mobile device'
+            description: 'Create and play games directly on your mobile device',
+            link: 'user-guide.html#section-3-1'
         },
         {
             image: 'images/examples/web_dev.jpg',
             title: 'Web Development',
-            description: 'Design websites and export as standalone applications'
+            description: 'Design websites and export as standalone applications',
+            link: 'user-guide.html#section-2-2'
         },
         {
             image: 'images/examples/app_packaging.jpg',
             title: 'App Packaging',
-            description: 'Package your creations as shareable applications'
+            description: 'Package your creations as shareable applications',
+            link: 'user-guide.html#section-2-2'
         },
         {
             image: 'images/examples/video_processing.jpg',
             title: 'Video Processing',
-            description: 'Create and edit videos with AI assistance'
+            description: 'Create and edit videos with AI assistance',
+            link: 'user-guide.html#section-3'
         },
         {
             image: 'images/examples/3d_game.jpg',
             title: '3D Game Development',
-            description: 'Create 3D games with simple descriptions'
+            description: 'Create 3D games with simple descriptions',
+            link: 'user-guide.html#section-3-1'
         }
     ];
 
