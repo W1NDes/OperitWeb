@@ -20,6 +20,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Initialize theme
         initTheme();
+
+        // Wrap tables for horizontal scrolling on mobile
+        document.querySelectorAll('.manual-main-content table').forEach(table => {
+            const wrapper = document.createElement('div');
+            wrapper.style.overflowX = 'auto';
+            wrapper.style.webkitOverflowScrolling = 'touch';
+            wrapper.style.marginBottom = '1rem';
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        });
         
     } catch (error) {
         console.error('Error loading manual:', error);
