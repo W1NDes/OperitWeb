@@ -1,0 +1,98 @@
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .manual-sidebar {
+        display: none; /* Hide sidebar on smaller screens */
+    }
+}
+
+@media (max-width: 992px) {
+    .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .main-content-wrapper,
+    .hero,
+    .core-features,
+    .quick-start,
+    .contributors {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .card {
+        min-width: 100%;
+    }
+    
+    .gallery-card {
+        width: 250px;
+        height: 370px;
+    }
+    
+    .gallery-card-inner h3 {
+        font-size: 1.2rem;
+        padding: 0.8rem 1rem 0.4rem;
+    }
+    
+    .gallery-card-inner p {
+        font-size: 0.85rem;
+        padding: 0 1rem 1rem;
+        line-height: 1.4;
+    }
+    
+    .card-gallery {
+        height: 450px;
+    }
+    
+    .card-gallery-container {
+        padding: 2rem 1rem;
+    }
+    
+    .gallery-nav {
+        margin-top: 1rem;
+    }
+    
+    .feature-card.scatter-effect-1,
+    .feature-card.scatter-effect-2,
+    .feature-card.scatter-effect-3,
+    .feature-card.scatter-effect-4,
+    .feature-card.scatter-effect-5,
+    .feature-card.scatter-effect-6 {
+        transform: translateY(15px) scale(0.98);
+        opacity: 0.95;
+    }
+    
+    .manual-sidebar {
+        display: none; /* Hide sidebar on smaller screens */
+    }
+    
+    .main-content-wrapper {
+        flex-direction: column;
+    }
+    
+    .draw-cards-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .draw-card {
+        width: 250px;
+        height: 350px;
+    }
+}
+
+@media (max-width: 576px) {
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+} 

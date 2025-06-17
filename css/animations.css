@@ -1,0 +1,54 @@
+/* Animations */
+@keyframes cardActivate {
+    0% {
+        transform: translate(-50%, -50%) translateZ(-200px) rotateY(180deg);
+        opacity: 0;
+    }
+    40% {
+        transform: translate(-50%, -50%) translateZ(150px) rotateY(10deg) scale(1.1);
+    }
+    70% {
+        transform: translate(-50%, -50%) translateZ(120px) rotateY(-5deg) scale(1.05);
+    }
+    100% {
+        transform: translate(-50%, -50%) translateZ(100px) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes cardAppear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulsate {
+    0% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes rainbow-shine {
+    0% {
+        box-shadow: 0 0 5px #ff0000, 0 0 10px #ff7f00, 0 0 15px #ffff00;
+    }
+    25% {
+        box-shadow: 0 0 5px #00ff00, 0 0 10px #00ffff, 0 0 15px #0000ff;
+    }
+    50% {
+        box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff0000, 0 0 15px #ff7f00;
+    }
+    75% {
+        box-shadow: 0 0 5px #ffff00, 0 0 10px #00ff00, 0 0 15px #00ffff;
+    }
+    100% {
+        box-shadow: 0 0 5px #0000ff, 0 0 10px #ff00ff, 0 0 15px #ff0000;
+    }
+} 

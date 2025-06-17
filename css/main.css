@@ -1,5 +1,4 @@
-/* This file is maintained for backward compatibility
-   All styles have been split into modular files and are imported here */
+/* Main CSS File - Imports all modular CSS files */
 
 @import 'variables.css';
 @import 'base.css';
