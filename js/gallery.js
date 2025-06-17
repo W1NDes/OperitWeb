@@ -62,30 +62,29 @@ function initGallery() {
     // Touch and drag support
     let isDragging = false;
     let startX = 0;
-    let startY = 0;
     
     galleryContainer.addEventListener('mousedown', startDrag);
-    galleryContainer.addEventListener('touchstart', startDrag, { passive: true });
     
     function startDrag(e) {
+        // Prevent starting drag on non-touch devices if it's not a mouse click
+        if (e.type.startsWith('touch')) {
+            return;
+        }
         isDragging = true;
-        startX = e.clientX || e.touches[0].clientX;
-        startY = e.clientY || e.touches[0].clientY;
+        startX = e.clientX;
         galleryContainer.classList.add('dragging');
     }
     
     document.addEventListener('mousemove', drag);
-    document.addEventListener('touchmove', drag, { passive: true });
     
     function drag(e) {
         if (!isDragging) return;
         e.preventDefault();
-        const x = e.clientX || e.touches[0].clientX;
-        const y = e.clientY || e.touches[0].clientY;
+        const x = e.clientX;
         const deltaX = x - startX;
         
-        // If horizontal drag is significant and more than vertical drag
-        if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(y - startY)) {
+        // If horizontal drag is significant
+        if (Math.abs(deltaX) > 50) {
             if (deltaX > 0) {
                 rotateGallery('prev');
             } else {
@@ -97,7 +96,6 @@ function initGallery() {
     }
     
     document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchend', endDrag);
     
     function endDrag() {
         isDragging = false;
@@ -134,9 +132,9 @@ function initGallery() {
     // Pause rotation on hover
     galleryContainer.addEventListener('mouseenter', stopAutoRotation);
     galleryContainer.addEventListener('mouseleave', startAutoRotation);
-    galleryContainer.addEventListener('touchstart', stopAutoRotation);
-    galleryContainer.addEventListener('touchend', restartAutoRotation);
 }
+
+let lastDrawnCards = []; // Variable to store the last set of drawn cards
 
 function drawRandomCards() {
     const drawResultContainer = document.querySelector('.draw-result-container');
@@ -153,15 +151,58 @@ function drawRandomCards() {
     
     // Card data - customize based on your needs
     const allCards = [
-        { image: 'images/examples/game_maker_show.jpg', title: 'Game Creation', description: 'Create engaging games with AI', rarity: 'ssr' },
-        { image: 'images/examples/web_dev.jpg', title: 'Web Development', description: 'Build websites on your phone', rarity: 'sr' },
-        { image: 'images/examples/app_packaging.jpg', title: 'App Packaging', description: 'Package your creations', rarity: 'r' },
-        { image: 'images/examples/video_processing.jpg', title: 'Video Processing', description: 'Edit videos with AI assistance', rarity: 'sr' },
-        { image: 'images/examples/3d_game.jpg', title: '3D Game Creation', description: 'Create 3D worlds and games', rarity: 'ssr' }
+        { id: 1, image: 'images/examples/game_maker_show.jpg', title: 'Game Creation', description: 'Create engaging games with AI', rarity: 'ssr' },
+        { id: 2, image: 'images/examples/web_dev.jpg', title: 'Web Development', description: 'Build websites on your phone', rarity: 'sr' },
+        { id: 3, image: 'images/examples/app_packaging.jpg', title: 'App Packaging', description: 'Package your creations', rarity: 'r' },
+        { id: 4, image: 'images/examples/video_processing.jpg', title: 'Video Processing', description: 'Edit videos with AI assistance', rarity: 'sr' },
+        { id: 5, image: 'images/examples/3d_game.jpg', title: '3D Game Creation', description: 'Create 3D worlds and games', rarity: 'ssr' }
     ];
     
-    // Shuffle and get 3 random cards
-    const drawnCards = [...allCards].sort(() => 0.5 - Math.random()).slice(0, 3);
+    const ssrCards = allCards.filter(card => card.rarity === 'ssr');
+    const otherCards = allCards.filter(card => card.rarity !== 'ssr');
+
+    let drawnCards;
+    let isSameAsLast;
+
+    do {
+        drawnCards = [];
+        const availableCards = [...allCards];
+
+        // First, determine if an SSR card should be drawn
+        // 40% chance for at least one SSR (since 2 SSRs out of 5 cards)
+        const hasSSR = Math.random() < 0.4;
+
+        if (hasSSR && ssrCards.length > 0) {
+            // Pick one SSR card
+            const ssrIndex = Math.floor(Math.random() * ssrCards.length);
+            const ssrCard = ssrCards[ssrIndex];
+            drawnCards.push(ssrCard);
+
+            // Remove the drawn SSR card from the available pool
+            const availableIndex = availableCards.findIndex(c => c.id === ssrCard.id);
+            if (availableIndex > -1) {
+                availableCards.splice(availableIndex, 1);
+            }
+        }
+
+        // Fill the rest of the hand with unique cards from the remaining pool
+        while (drawnCards.length < 3 && availableCards.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableCards.length);
+            const selectedCard = availableCards.splice(randomIndex, 1)[0];
+            drawnCards.push(selectedCard);
+        }
+
+        // Shuffle the final hand to randomize card positions
+        drawnCards.sort(() => Math.random() - 0.5);
+
+        // Check if the new set is identical to the last one
+        const drawnIds = drawnCards.map(c => c.id).sort().join(',');
+        const lastIds = lastDrawnCards.map(c => c.id).sort().join(',');
+        isSameAsLast = drawnIds === lastIds;
+
+    } while (isSameAsLast);
+
+    lastDrawnCards = drawnCards; // Update the last drawn set
     
     // Create and append cards with delay
     drawnCards.forEach((card, index) => {
@@ -207,6 +248,24 @@ function drawRandomCards() {
 function createGalleryCard(item) {
     const card = document.createElement('div');
     card.className = 'gallery-card';
+
+    if (item.link) {
+        card.dataset.link = item.link;
+        card.classList.add('has-link');
+        card.addEventListener('click', (e) => {
+            // If the card is in the draw result modal, open link in a new tab.
+            if (e.currentTarget.closest('.draw-result-container')) {
+                e.stopPropagation();
+                window.open(item.link, '_blank');
+                return;
+            }
+
+            // For the main gallery, navigate if the card is visible.
+            if (card.classList.contains('active') || card.classList.contains('prev') || card.classList.contains('next')) {
+                window.location.href = item.link;
+            }
+        });
+    }
     
     const innerHtml = `
         <div class="gallery-card-inner">

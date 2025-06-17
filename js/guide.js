@@ -1,4 +1,32 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Hamburger Menu Toggle
+    const hamburger = document.querySelector('.hamburger-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked inside
+        navLinks.addEventListener('click', () => {
+            if (navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+
+        // Close menu when clicking outside of it
+        document.addEventListener('click', (e) => {
+            if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+    }
+
     // 获取内容容器
     const contentDiv = document.getElementById('content');
     if (!contentDiv) return;
@@ -8,6 +36,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const guideSidebar = document.querySelector('.guide-sidebar');
     const tocContent = document.querySelector('.toc-content');
     const guideContainer = document.querySelector('.guide-container');
+    
+    // 移动端目录功能
+    const mobileTocButton = document.querySelector('.mobile-toc-button');
+    const mobileTocMenu = document.querySelector('.mobile-toc-menu');
+    const mobileTocClose = document.querySelector('.mobile-toc-close');
+    const overlay = document.querySelector('.overlay');
+    const mobileTocLinks = document.querySelectorAll('.mobile-toc-list a');
+    
+    // 初始化移动端目录功能
+    if (mobileTocButton && mobileTocMenu && mobileTocClose && overlay) {
+        // 打开目录
+        mobileTocButton.addEventListener('click', function() {
+            mobileTocMenu.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        });
+        
+        // 关闭目录
+        mobileTocClose.addEventListener('click', function() {
+            mobileTocMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = ''; // 恢复背景滚动
+        });
+        
+        // 点击遮罩层关闭目录
+        overlay.addEventListener('click', function() {
+            mobileTocMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = ''; // 恢复背景滚动
+        });
+        
+        // 点击目录链接后关闭目录
+        mobileTocLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileTocMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = ''; // 恢复背景滚动
+            });
+        });
+    }
     
     if (tocToggleBtn && guideSidebar && guideContainer) {
         // 检查localStorage中是否有保存的状态

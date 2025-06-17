@@ -2,6 +2,8 @@
 
 网站项目文档 - Operit AI官方网站
 
+*[English documentation below](#english-documentation)*
+
 ## 项目概述
 
 Operit Web是Operit AI的官方网站项目，提供产品信息、功能展示和用户手册。该网站采用模块化的CSS和JavaScript结构，易于维护和扩展。
@@ -82,6 +84,30 @@ CSS文件采用模块化结构，根据功能和关注点分为多个文件：
 themeToggleCheckbox.addEventListener('change', (e) => {
     applyTheme(e.target.checked ? 'dark' : 'light');
 });
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    themeToggleCheckbox.checked = theme === 'dark';
+}
+```
+
+CSS变量定义在variables.css中：
+
+```css
+:root {
+    --primary-color: #2563eb;
+    --background-color: #ffffff;
+    --text-color: #333333;
+    /* 其他变量... */
+}
+
+[data-theme="dark"] {
+    --primary-color: #60a5fa;
+    --background-color: #1f2937;
+    --text-color: #e5e7eb;
+    /* 其他变量... */
+}
 ```
 
 ## 国际化支持
@@ -99,7 +125,31 @@ function setLanguage(lang) {
         }
     });
 }
+
+// 使用HTML中的data-i18n属性
+<h1 data-i18n="heroTitle">默认文本</h1>
 ```
+
+## 交互组件
+
+### 卡片画廊
+
+卡片画廊是一个3D轮播组件，支持：
+
+- 左右导航按钮切换
+- 鼠标拖动切换
+- 自动轮播
+- 悬停时暂停自动轮播
+
+关键CSS类：`.gallery-card.active`, `.gallery-card.prev`, `.gallery-card.next`
+
+### 抽卡功能
+
+抽卡功能模拟卡牌抽取体验，具有：
+
+- 随机卡牌抽取
+- 稀有度标记（SSR, SR, R）
+- 动画效果
 
 ## 如何修改和扩展
 
@@ -137,4 +187,193 @@ function setLanguage(lang) {
 
 - 支持所有现代浏览器
 - 通过媒体查询支持从桌面到移动设备的各种屏幕尺寸
-- 使用CSS变量提供主题支持，在不支持CSS变量的旧浏览器中会回退到默认样式 
+- 使用CSS变量提供主题支持，在不支持CSS变量的旧浏览器中会回退到默认样式
+
+---
+
+# English Documentation
+
+## Project Overview
+
+Operit Web is the official website project for Operit AI, providing product information, feature showcases, and user manuals. The website adopts a modular CSS and JavaScript structure for easy maintenance and extension.
+
+## File Structure
+
+```
+OperitWeb/
+  - css/               # CSS style folder
+    - main.css         # Main CSS file, imports all modular CSS
+    - style.css        # Backward compatibility style file
+    - variables.css    # CSS variables and theme definitions
+    - base.css         # Global base styles
+    - layout.css       # Layout component styles
+    - components.css   # Reusable UI component styles
+    - gallery.css      # Card gallery styles
+    - features.css     # Feature section styles
+    - manual.css       # User manual page styles
+    - animations.css   # Animation keyframe definitions
+    - responsive.css   # Responsive design media queries
+    - guide.css        # User guide specific styles
+  - images/            # Image resource folder
+    - examples/        # Example images
+    - logo.png         # Website logo
+  - js/                # JavaScript folder
+    - main.js          # Main script and global functionality
+    - gallery.js       # Card gallery and card drawing functionality
+    - guide.js         # User guide page script
+  - manuals/           # User manual resources
+    - assets/          # Manual-related image resources
+  - index.html         # Website homepage
+  - user-guide.html    # User manual page
+  - README.md          # Project documentation
+```
+
+## CSS Architecture
+
+The CSS files adopt a modular structure, divided into multiple files based on functionality and concerns:
+
+1. **variables.css** - Defines CSS variables and theme configurations (light/dark themes)
+2. **base.css** - Basic resets and global styles
+3. **layout.css** - Page layout related styles (header, footer, main content area)
+4. **components.css** - Reusable UI components (buttons, theme toggle switch, etc.)
+5. **gallery.css** - Card gallery and card drawing result styles
+6. **features.css** - Feature showcase section styles
+7. **manual.css** - User manual page specific styles
+8. **animations.css** - All animation keyframe definitions
+9. **responsive.css** - Media queries for responsive layouts
+10. **guide.css** - User guide page specific styles
+
+**main.css** imports all modular CSS files and is the main style file referenced in HTML pages.
+**style.css** is kept for backward compatibility and also imports all modular CSS.
+
+## JavaScript Files
+
+1. **main.js** - Handles core functionality:
+   - Multi-language support
+   - Theme switching
+   - Scroll effects
+   - Other global interactions
+
+2. **gallery.js** - Handles card gallery functionality:
+   - Card carousel
+   - Drag interactions
+   - Card drawing functionality and animations
+
+3. **guide.js** - Handles user manual page functionality:
+   - Table of contents navigation
+   - Content loading
+   - Page interactions
+
+## Theme Support
+
+The website supports light and dark themes, implemented using CSS variables. Theme switching is controlled through JavaScript and saves user preferences to localStorage.
+
+```javascript
+// Theme switching example code
+themeToggleCheckbox.addEventListener('change', (e) => {
+    applyTheme(e.target.checked ? 'dark' : 'light');
+});
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    themeToggleCheckbox.checked = theme === 'dark';
+}
+```
+
+CSS variables are defined in variables.css:
+
+```css
+:root {
+    --primary-color: #2563eb;
+    --background-color: #ffffff;
+    --text-color: #333333;
+    /* Other variables... */
+}
+
+[data-theme="dark"] {
+    --primary-color: #60a5fa;
+    --background-color: #1f2937;
+    --text-color: #e5e7eb;
+    /* Other variables... */
+}
+```
+
+## Internationalization Support
+
+The website supports Chinese and English languages, implemented through translation objects in JavaScript:
+
+```javascript
+// Language setting example code
+function setLanguage(lang) {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            el.innerHTML = translations[lang][key];
+        }
+    });
+}
+
+// Using data-i18n attribute in HTML
+<h1 data-i18n="heroTitle">Default text</h1>
+```
+
+## Interactive Components
+
+### Card Gallery
+
+The card gallery is a 3D carousel component that supports:
+
+- Left/right navigation button switching
+- Mouse drag switching
+- Automatic rotation
+- Pause on hover
+
+Key CSS classes: `.gallery-card.active`, `.gallery-card.prev`, `.gallery-card.next`
+
+### Card Drawing Feature
+
+The card drawing feature simulates a card drawing experience with:
+
+- Random card selection
+- Rarity markings (SSR, SR, R)
+- Animation effects
+
+## How to Modify and Extend
+
+### Adding New Pages
+
+1. Create a new HTML file
+2. Include the main.css stylesheet
+3. Use the same header and footer structure as existing pages
+4. Include relevant JavaScript files as needed
+
+### Adding New Style Modules
+
+1. Create a new CSS file in the css folder
+2. Add the new file to the import list in main.css and style.css
+3. Use the new styles in HTML
+
+### Modifying Theme Variables
+
+Modify CSS variables in the `:root` and `[data-theme="dark"]` selectors in variables.css.
+
+## Local Development
+
+This project is a pure static website with no build steps required. It can be run by:
+
+1. Using any HTTP server (like Live Server) to serve it
+2. Opening the HTML files directly in a browser
+
+## Performance Optimization
+
+- All CSS files are combined through the import mechanism, reducing HTTP requests
+- Modular structure enables better cache control
+- Responsive images and CSS optimize the mobile experience
+
+## Compatibility
+
+- Supports all modern browsers
+- Supports various screen sizes from desktop to mobile devices through media queries
+- Uses CSS variables for theme support, with fallback to default styles in older browsers that don't support CSS variables 

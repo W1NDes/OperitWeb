@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Particles.js
+    if (document.getElementById('particles-js')) {
+        particlesJS.load('particles-js', 'particlesjs-config.json', function() {
+            console.log('callback - particles.js config loaded');
+        });
+    }
+
     // 平滑滚动效果
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -43,6 +50,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 获取所有功能卡片
     const featureCards = document.querySelectorAll('.feature-card');
+
+    // Hamburger Menu Toggle
+    const hamburger = document.querySelector('.hamburger-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked inside
+        navLinks.addEventListener('click', () => {
+            if (navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+
+        // Close menu when clicking outside of it
+        document.addEventListener('click', (e) => {
+            if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {

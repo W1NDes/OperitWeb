@@ -50,6 +50,53 @@ nav {
     color: var(--primary-color);
 }
 
+.nav-divider,
+.nav-toc-container {
+    display: none;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.hamburger-menu:focus {
+    outline: none;
+}
+
+.hamburger-menu span {
+    width: 2.25rem;
+    height: 0.25rem;
+    background: var(--text-color);
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+}
+
+/* Hamburger animation to X */
+.hamburger-menu.active span:nth-child(1) {
+    transform: rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg);
+}
+
 /* Main content wrapper for side-by-side sections */
 .main-content-wrapper {
     display: flex;
@@ -104,31 +151,44 @@ footer {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    position: relative;
     color: white;
     padding: 4rem 2rem;
     text-align: center;
-    background-color: #f8f9fc;
-    background-image: none;
-    color: #333;
+    background-image: url('../images/hero-background.png');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(4, 23, 55, 0.3);
 }
 
 .hero-content {
     max-width: 800px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
 }
 
 .hero h1 {
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
     font-weight: bold;
-    color: #333;
+    color: #ffffff;
 }
 
 .hero p {
     font-size: 1.2rem;
     margin-bottom: 2rem;
-    color: #666;
+    color: #e0e0e0;
 }
 
 .hero-buttons {
@@ -140,7 +200,14 @@ footer {
 
 [data-theme="dark"] .hero {
     background: none;
-    background-color: var(--background-color);
+    background-color: transparent;
+    background-image: url('../images/hero-background.png');
+    background-size: cover;
+    background-position: center;
+}
+
+[data-theme="dark"] #particles-js {
+    background-color: rgba(2, 12, 28, 0.5);
 }
 
 [data-theme="dark"] .hero h1, 

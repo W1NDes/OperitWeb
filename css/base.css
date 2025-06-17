@@ -15,4 +15,7 @@ body {
     color: var(--text-color);
     background-color: var(--background-color);
     transition: background-color var(--transition-speed), color var(--transition-speed);
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    touch-action: pan-y; /* Only allow vertical scrolling on touch devices */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 } 

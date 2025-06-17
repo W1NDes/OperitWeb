@@ -6,6 +6,7 @@
     <title>Operit AI</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="icon" href="images/logo.png" type="image/png">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -27,11 +28,17 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            <button class="hamburger-menu" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </nav>
     </header>
 
     <main>
         <section class="hero">
+            <div id="particles-js"></div>
             <div class="hero-content">
                 <h1 data-i18n="newHeroTitle">移动端首个功能完备的AI智能助手</h1>
                 <p data-i18n="newHeroSubtitle">完全独立运行，拥有强大的工具调用能力</p>
@@ -197,7 +204,7 @@
         <p>&copy; 2024 Operit AI. All rights reserved.</p>
     </footer>
 
-    <script src="js/main.js"></script>
     <script src="js/gallery.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html> 
