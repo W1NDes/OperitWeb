@@ -266,63 +266,51 @@ document.addEventListener('DOMContentLoaded', () => {
 // Example gallery items
 const galleryItems = [
     {
-        title: "2D游戏创作",
-        description: "通过简单的对话，让AI为您构思并实现一个经典的2D弹幕射击游戏。",
-        image: "manuals/assets/game_maker_show.jpg",
-        link: "user-guide.html#section-3-1"
-    },
-    {
-        title: "3D游戏创作",
-        description: "无需任何拓展包，AI仅通过内置工具，就可以为您呈现一个动态的3D游戏场景。",
+        title: "用HTML代码写一个3D游戏",
+        subtitle: "AI仅通过内置工具，就可以为您呈现一个动态的3D游戏场景。",
         image: "manuals/assets/expamle/759d86a7d74351675b32acb6464585d.jpg",
         link: "user-guide.html#section-3-1"
     },
     {
-        title: "视频处理",
-        description: "内置强大的FFmpeg工具，让AI帮您完成视频格式转换、截取、合并等任务。",
-        image: "manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg",
-        link: "user-guide.html#section-3-1"
-    },
-    {
         title: "软件打包与部署",
-        description: "从编写代码到最终发布，AI可以将软件打包成APK或EXE，实现端到端的开发。",
+        subtitle: "从编写代码到最终发布，AI可以将软件打包成APK或EXE。",
         image: "manuals/assets/game_maker_packer.jpg",
         link: "user-guide.html#section-2-2"
     },
     {
-        title: "超级管理员工具",
-        description: "提供终端命令和Shell操作的高级功能，让AI拥有更深度的系统控制能力。",
-        image: "manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg",
-        link: "user-guide.html#section-3-2"
+        title: "制作一个可以联网的MCP",
+        subtitle: "让AI拥有联网、读写文件的能力，并将其封装成可分享的MCP。",
+        image: "manuals/assets/package_or_MCP/1.jpg",
+        link: "user-guide.html#section-2-2"
+    },
+    {
+        title: "2D游戏创作",
+        subtitle: "通过简单的对话，让AI为您构思并实现一个经典的2D弹幕射击游戏。",
+        image: "manuals/assets/game_maker_show.jpg",
+        link: "user-guide.html#section-3-1"
+    },
+    {
+        title: "视频处理",
+        subtitle: "内置强大的FFmpeg工具，让AI帮您完成视频格式转换、截取等任务。",
+        image: "manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg",
+        link: "user-guide.html#section-3-1"
+    },
+    {
+        title: "Web开发",
+        subtitle: "在手机上设计网页并导出为独立应用。",
+        image: "manuals/assets/web_developer.jpg",
+        link: "user-guide.html#section-2-2"
     },
     {
         title: "日常生活助手",
-        description: "查询天气、设置闹钟、发送短信... 让AI成为你的贴心生活助手。",
+        subtitle: "查询天气、设置闹钟、发送短信... 让AI成为你的贴心生活助手。",
         image: "manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg",
         link: "user-guide.html#section-3-2"
     },
     {
         title: "多平台搜索",
-        description: "支持从必应、百度、搜狗、夸克等多个平台获取信息，整合全网资讯。",
+        subtitle: "支持从必应、百度、搜狗、夸克等多个平台获取信息。",
         image: "manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg",
-        link: "user-guide.html#section-3-2"
-    },
-    {
-        title: "图片输出",
-        description: "AI可以将处理结果或创意以图片形式输出，分享更直观。",
-        image: "manuals/assets/expamle/5fff4b49db78ec01e189658de8ea997.jpg",
-        link: "user-guide.html#section-3-2"
-    },
-    {
-        title: "Web开发",
-        description: "在手机上设计网页并导出为独立应用。",
-        image: "manuals/assets/web_developer.jpg",
-        link: "user-guide.html#section-2-2"
-    },
-    {
-        title: "地图功能",
-        description: "利用百度地图拓展包，实现地理位置查询、路线规划等功能。",
-        image: "manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg",
         link: "user-guide.html#section-3-2"
     }
 ];
@@ -526,7 +514,7 @@ function initGallery() {
             cardTitle.textContent = item.title;
             
             const desc = document.createElement('p');
-            desc.textContent = item.description;
+            desc.textContent = item.subtitle;
             
             inner.appendChild(img);
             inner.appendChild(cardTitle);
@@ -594,16 +582,20 @@ function createGalleryCard(item) {
     const img = document.createElement('img');
     img.src = item.image;
     img.alt = item.title;
+
+    const textContainer = document.createElement('div');
+    textContainer.className = 'gallery-card-text';
     
-    const title = document.createElement('h3');
+    const title = document.createElement('h4');
     title.textContent = item.title;
     
-    const desc = document.createElement('p');
-    desc.textContent = item.description;
+    const subtitle = document.createElement('p');
+    subtitle.textContent = item.subtitle;
     
     inner.appendChild(img);
-    inner.appendChild(title);
-    inner.appendChild(desc);
+    textContainer.appendChild(title);
+    textContainer.appendChild(subtitle);
+    inner.appendChild(textContainer);
     card.appendChild(inner);
     
     return card;
