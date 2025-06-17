@@ -1,83 +1,117 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Operit AI - 用户手册</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/guide.css">
-    <link rel="icon" href="images/logo.png" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <header>
-        <nav>
-            <div class="logo">
-                <img src="images/logo.png" alt="Operit AI Logo">
-                <span class="logo-text">Operit AI</span>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="images/logo.png" alt="Operit AI Logo">
+                        <span>Operit AI</span>
+                    </a>
+                </div>
+                <div class="theme-toggle">
+                    <input type="checkbox" id="theme-toggle-checkbox" class="theme-toggle-checkbox">
+                    <label for="theme-toggle-checkbox" class="theme-toggle-label"></label>
+                </div>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html" data-i18n="home">首页</a></li>
-                <li><a href="user-guide.html" data-i18n="userGuide">用户手册</a></li>
-                <li><a href="index.html#features" data-i18n="features">功能</a></li>
-                <li><a href="https://ghfast.top/https://github.com/AAswordman/Operit/releases/download/v1.1.5/app-release.apk" target="_blank" data-i18n="download">下载</a></li>
-            </ul>
-            <div class="theme-switcher">
-                <label class="theme-switch">
-                    <input type="checkbox" id="theme-toggle-checkbox">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </nav>
+        </div>
     </header>
 
-    <div class="guide-page-layout">
-        <aside class="guide-sidebar">
-            <div class="sidebar-content">
-                <h3>目录</h3>
-                <ul id="guide-toc-list">
-                    <li><a href="#section-1">✨ 简介</a></li>
-                    <li><a href="#section-2">🗺️ 基本流程讲解</a>
-                        <ul>
-                            <li><a href="#section-2-1">初次使用/试用</a></li>
-                            <li><a href="#section-2-2">如何打包AI写好的WEB应用</a></li>
-                            <li><a href="#section-2-3">如何配置自己的API/其他模型</a></li>
-                            <li><a href="#section-2-4">Shizuku授权流程</a></li>
-                            <li><a href="#section-2-5">包管理与MCP使用说明</a></li>
+    <main>
+        <div class="container">
+            <div class="guide-container">
+                <div class="guide-sidebar">
+                    <div class="toc-container">
+                        <div class="toc-header">
+                            <h3>目录</h3>
+                            <div class="toc-controls">
+                                <button id="toc-toggle" class="toc-toggle" title="隐藏/显示目录">
+                                    <span class="toggle-icon">☰</span>
+                                </button>
+                            </div>
+                        </div>
+                        <ul id="guide-toc-list" class="toc-content">
+                            <li><a href="#section-1">✨ 简介</a></li>
+                            <li>
+                                <a href="#section-2">🗺️ 基本流程讲解</a>
+                                <ul>
+                                    <li><a href="#section-2-1">初次使用/试用</a></li>
+                                    <li><a href="#section-2-2">如何打包AI写好的WEB应用</a></li>
+                                    <li><a href="#section-2-3">如何配置自己的API/其他模型</a></li>
+                                    <li><a href="#section-2-4">Shizuku授权流程</a></li>
+                                    <li><a href="#section-2-5">包管理与MCP使用说明</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#section-3">🚀 拓展用法实操</a>
+                                <ul>
+                                    <li><a href="#section-3-1">🧰 开箱即用</a></li>
+                                    <li><a href="#section-3-2">📦 拓展包</a></li>
+                                    <li><a href="#section-3-3">🛠️ 核心工具</a></li>
+                                    <li><a href="#section-3-4">🛒 MCP市场</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#section-4">❔ 常见问题解答</a></li>
+                            <li><a href="#section-5">🎉 加入我们</a></li>
+                            <li><a href="#section-6">💡 许愿池</a></li>
+                            <li><a href="#section-7">📜 朝花夕拾</a></li>
                         </ul>
-                    </li>
-                    <li><a href="#section-3">🚀 拓展用法实操</a>
-                        <ul>
-                            <li><a href="#section-3-1">🧰 开箱即用</a></li>
-                            <li><a href="#section-3-2">📦 拓展包</a></li>
-                            <li><a href="#section-3-3">🛠️ 核心工具</a></li>
-                            <li><a href="#section-3-4">🛒 MCP市场</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#section-4">❔ 常见问题解答</a></li>
-                    <li><a href="#section-5">🎉 加入我们</a></li>
-                    <li><a href="#section-6">💡 许愿池</a></li>
-                    <li><a href="#section-7">📜 朝花夕拾 (旧版本问题解答)</a></li>
-                </ul>
+                    </div>
+                            </div>
+                <div class="guide-content" id="content">
+                    <!-- 内容将通过JavaScript动态加载 -->
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>加载用户手册内容中...</p>
+                        </div>
+                </div>
             </div>
-        </aside>
-
-        <main class="guide-main-content">
-            <div class="guide-container" id="guide-content">
-                <h1>Operit AI 用户指南</h1>
-
-                <div id="content"></div>
-            </div>
-        </main>
-    </div>
-
-    <button id="back-to-top" title="Back to top">↑</button>
+        </div>
+        <button id="back-to-top" title="回到顶部">↑</button>
+        
+        <!-- 移动端导航 -->
+        <div class="mobile-nav">
+            <a href="index.html" class="mobile-nav-item">
+                <span class="mobile-nav-icon">🏠</span>
+                <span class="mobile-nav-text">首页</span>
+            </a>
+            <a href="user-guide.html" class="mobile-nav-item active">
+                <span class="mobile-nav-icon">📖</span>
+                <span class="mobile-nav-text">用户手册</span>
+            </a>
+            <a href="manual.html" class="mobile-nav-item">
+                <span class="mobile-nav-icon">🔧</span>
+                <span class="mobile-nav-text">功能文档</span>
+            </a>
+            <a href="https://github.com/AAswordman/Operit" target="_blank" class="mobile-nav-item">
+                <span class="mobile-nav-icon">👨‍💻</span>
+                <span class="mobile-nav-text">GitHub</span>
+            </a>
+        </div>
+    </main>
 
     <footer>
-        <p>&copy; 2024 Operit AI. All rights reserved.</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="copyright">
+                    <p>&copy; 2023-2025 Operit AI. All rights reserved.</p>
+                </div>
+                <div class="contact">
+                    <p>联系我们: <a href="https://github.com/AAswordman/Operit" target="_blank">GitHub</a></p>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <script src="js/main.js"></script>
     <script src="js/guide.js"></script>
 </body>
 </html> 

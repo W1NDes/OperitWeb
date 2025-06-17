@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 特性卡片动画效果
-    const featureCards = document.querySelectorAll('.feature-card');
-    featureCards.forEach((card, index) => {
+    document.querySelectorAll('.feature-card').forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
     });
 
@@ -41,6 +40,15 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Download clicked');
         });
     });
+
+    // 获取所有功能卡片
+    const featureCards = document.querySelectorAll('.feature-card');
+    const galleryCards = document.querySelectorAll('.gallery-card');
+    
+    // 删除卡片打散效果
+    
+    // 删除原有的卡片动画效果代码
+    // 保留画廊的动画，但删除其他卡片的动画
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -258,29 +266,64 @@ document.addEventListener('DOMContentLoaded', () => {
 // Example gallery items
 const galleryItems = [
     {
-        title: "2D Bullet Game",
-        description: "Create a classic 2D bullet shooting game with HTML and JavaScript",
-        image: "images/examples/game_maker_show.jpg"
+        title: "AI聊天与创作",
+        description: "强大的AI模型随时为你服务",
+        image: "manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg",
+        link: "user-guide.html#section-3-1"
     },
     {
-        title: "3D Game Development",
-        description: "Build immersive 3D games using HTML and JavaScript",
-        image: "images/examples/3d_game.jpg"
+        title: "丰富的拓展工具",
+        description: "根据需求定制你的AI助手",
+        image: "manuals/assets/expamle/6f81901ae47f5a3584167148017d132.jpg",
+        link: "user-guide.html#section-3-2"
     },
     {
-        title: "Video Processing",
-        description: "Process and edit videos with built-in FFmpeg tools",
-        image: "images/examples/video_processing.jpg"
+        title: "多模型支持",
+        description: "各种先进AI模型一键配置",
+        image: "manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg",
+        link: "user-guide.html#section-2-3"
     },
     {
-        title: "App Packaging",
-        description: "Package your web apps into Android APK or Windows EXE",
-        image: "images/examples/app_packaging.jpg"
+        title: "智能地图导航",
+        description: "AI辅助的地理位置服务",
+        image: "manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg",
+        link: "user-guide.html#section-3-3"
     },
     {
-        title: "Web Development",
-        description: "Create beautiful and responsive web applications",
-        image: "images/examples/web_dev.jpg"
+        title: "一体化网页开发",
+        description: "从设计到部署的完整流程",
+        image: "manuals/assets/webdev/519137715fc99270d97fd42086119b5.jpg",
+        link: "user-guide.html#section-3-1"
+    },
+    {
+        title: "应用打包工具",
+        description: "将Web应用转为原生应用",
+        image: "manuals/assets/webdev/6b0f3650dd4c5709069d2e4201d3cb9.jpg",
+        link: "user-guide.html#section-2-2"
+    },
+    {
+        title: "游戏开发创作",
+        description: "创意转化为可玩游戏",
+        image: "manuals/assets/game_maker_show.jpg",
+        link: "user-guide.html#section-3-1"
+    },
+    {
+        title: "悬浮窗与附件",
+        description: "在任何场景中使用AI",
+        image: "manuals/assets/floating_and_attach.jpg",
+        link: "user-guide.html#section-3-1"
+    },
+    {
+        title: "智能搜索",
+        description: "获取精准的网络信息",
+        image: "manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg",
+        link: "user-guide.html#section-3-3"
+    },
+    {
+        title: "多功能创作",
+        description: "文本、图像与代码生成",
+        image: "manuals/assets/expamle/065e5ca8a8036c51a7905d206bbb56c.jpg",
+        link: "user-guide.html#section-3-1"
     }
 ];
 
@@ -310,45 +353,222 @@ function initTheme() {
 // Gallery initialization and management
 function initGallery() {
     const galleryContainer = document.querySelector('.card-gallery');
+    const gallerySection = document.querySelector('.card-gallery-container');
     if (!galleryContainer) return;
 
     // Clear any existing content
     galleryContainer.innerHTML = '';
+    
+    // 随机洗牌画廊项目
+    const shuffledItems = [...galleryItems].sort(() => 0.5 - Math.random());
 
-    // Add gallery cards
-    galleryItems.forEach((item, index) => {
+    // 只添加所有卡片但初始时大多数隐藏
+    shuffledItems.forEach((item, index) => {
         const card = createGalleryCard(item);
         
-        // Set initial positions - first card active, others hidden
+        // 初始只显示三张卡片
         if (index === 0) {
             card.classList.add('active');
         } else if (index === 1) {
             card.classList.add('next');
-        } else if (index === galleryItems.length - 1) {
+        } else if (index === shuffledItems.length - 1) {
             card.classList.add('prev');
         }
         
         galleryContainer.appendChild(card);
     });
+    
+    // 添加图示提示用户可以拖拽
+    const dragHint = document.createElement('div');
+    dragHint.className = 'drag-hint';
+    dragHint.innerHTML = '<span>← 拖拽查看更多 →</span>';
+    galleryContainer.parentElement.appendChild(dragHint);
 
-    // Add navigation controls
-    const navControls = document.createElement('div');
-    navControls.className = 'gallery-nav';
+    // 添加拖动功能
+    galleryContainer.classList.add('draggable');
     
-    const prevButton = document.createElement('button');
-    prevButton.innerHTML = '&#10094;';
-    prevButton.addEventListener('click', () => rotateGallery(-1));
+    // 拖动变量
+    let isDragging = false;
+    let startX, moveX;
+    let dragThreshold = 50;
     
-    const nextButton = document.createElement('button');
-    nextButton.innerHTML = '&#10095;';
-    nextButton.addEventListener('click', () => rotateGallery(1));
+    // 鼠标事件
+    galleryContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX;
+        galleryContainer.classList.add('dragging');
+    });
     
-    navControls.appendChild(prevButton);
-    navControls.appendChild(nextButton);
-    galleryContainer.parentElement.appendChild(navControls);
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        moveX = e.pageX;
+        
+        const difference = moveX - startX;
+        
+        // 如果拖动超过阈值，旋转画廊
+        if (Math.abs(difference) > dragThreshold) {
+            if (difference > 0) {
+                // 向右拖动，显示上一个
+                rotateGallery(-1);
+            } else {
+                // 向左拖动，显示下一个
+                rotateGallery(1);
+            }
+            isDragging = false;
+            startX = moveX;
+        }
+    });
+    
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        galleryContainer.classList.remove('dragging');
+    });
+    
+    // 触摸事件
+    galleryContainer.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].pageX;
+    });
+    
+    galleryContainer.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        moveX = e.touches[0].pageX;
+        
+        const difference = moveX - startX;
+        
+        // 如果拖动超过阈值，旋转画廊
+        if (Math.abs(difference) > dragThreshold) {
+            if (difference > 0) {
+                // 向右拖动，显示上一个
+                rotateGallery(-1);
+            } else {
+                // 向左拖动，显示下一个
+                rotateGallery(1);
+            }
+            isDragging = false;
+            startX = moveX;
+        }
+    });
+    
+    galleryContainer.addEventListener('touchend', () => {
+        isDragging = false;
+    });
 
     // Initialize auto-rotation
-    setInterval(() => rotateGallery(1), 5000);
+    let autoRotation = setInterval(() => rotateGallery(1), 5000);
+    
+    // 当用户交互时停止自动旋转
+    galleryContainer.addEventListener('mousedown', () => {
+        clearInterval(autoRotation);
+    });
+    
+    galleryContainer.addEventListener('touchstart', () => {
+        clearInterval(autoRotation);
+    });
+    
+    // 当用户停止交互5秒后恢复自动旋转
+    function restartAutoRotation() {
+        clearInterval(autoRotation);
+        autoRotation = setInterval(() => rotateGallery(1), 5000);
+    }
+    
+    galleryContainer.addEventListener('mouseup', () => {
+        setTimeout(restartAutoRotation, 5000);
+    });
+    
+    galleryContainer.addEventListener('touchend', () => {
+        setTimeout(restartAutoRotation, 5000);
+    });
+    
+    // 添加随机抽卡功能
+    function drawRandomCards() {
+        // 清除自动旋转
+        clearInterval(autoRotation);
+        
+        // 创建抽卡结果容器
+        const drawResultContainer = document.createElement('div');
+        drawResultContainer.className = 'draw-result-container';
+        
+        // 创建关闭按钮
+        const closeButton = document.createElement('button');
+        closeButton.className = 'close-draw-button';
+        closeButton.innerHTML = '×';
+        drawResultContainer.appendChild(closeButton);
+        
+        // 创建标题
+        const title = document.createElement('h3');
+        title.className = 'draw-result-title';
+        title.textContent = '随机抽卡结果';
+        drawResultContainer.appendChild(title);
+        
+        // 创建卡片容器
+        const cardsContainer = document.createElement('div');
+        cardsContainer.className = 'draw-cards-container';
+        drawResultContainer.appendChild(cardsContainer);
+        
+        // 随机选择3张卡片
+        const shuffled = [...galleryItems].sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 3);
+        
+        // 添加卡片
+        selected.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'draw-card';
+            
+            const inner = document.createElement('div');
+            inner.className = 'gallery-card-inner';
+            
+            const img = document.createElement('img');
+            img.src = item.image;
+            img.alt = item.title;
+            
+            const cardTitle = document.createElement('h3');
+            cardTitle.textContent = item.title;
+            
+            const desc = document.createElement('p');
+            desc.textContent = item.description;
+            
+            inner.appendChild(img);
+            inner.appendChild(cardTitle);
+            inner.appendChild(desc);
+            card.appendChild(inner);
+            
+            // 添加链接功能
+            if (item.link) {
+                card.addEventListener('click', () => {
+                    window.location.href = item.link;
+                });
+                card.classList.add('has-link');
+            }
+            
+            // 添加动画延迟
+            card.style.animationDelay = `${index * 0.2}s`;
+            
+            cardsContainer.appendChild(card);
+        });
+        
+        // 添加到页面
+        document.body.appendChild(drawResultContainer);
+        
+        // 添加关闭事件
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(drawResultContainer);
+            restartAutoRotation();
+        });
+        
+        // 点击背景关闭
+        drawResultContainer.addEventListener('click', (e) => {
+            if (e.target === drawResultContainer) {
+                document.body.removeChild(drawResultContainer);
+                restartAutoRotation();
+            }
+        });
+        
+        // 添加显示动画
+        setTimeout(() => {
+            drawResultContainer.classList.add('show');
+        }, 10);
+    }
 }
 
 function createGalleryCard(item) {
@@ -357,6 +577,19 @@ function createGalleryCard(item) {
     
     const inner = document.createElement('div');
     inner.className = 'gallery-card-inner';
+    
+    // 如果有链接，添加一个包装链接
+    if (item.link) {
+        card.addEventListener('click', function() {
+            // 只有当卡片是活动的时才触发链接
+            if (card.classList.contains('active')) {
+                window.location.href = item.link;
+            }
+        });
+        
+        // 添加链接样式
+        card.classList.add('has-link');
+    }
     
     const img = document.createElement('img');
     img.src = item.image;
@@ -378,24 +611,64 @@ function createGalleryCard(item) {
 
 function rotateGallery(direction) {
     const cards = document.querySelectorAll('.gallery-card');
+    const cardsArray = Array.from(cards);
     let currentIndex = 0;
+    let nextIndex = 0;
+    let prevIndex = 0;
     
     cards.forEach((card, index) => {
         if (card.classList.contains('active')) {
             currentIndex = index;
+        } else if (card.classList.contains('next')) {
+            nextIndex = index;
+        } else if (card.classList.contains('prev')) {
+            prevIndex = index;
         }
     });
     
-    let newIndex = (currentIndex + direction + cards.length) % cards.length;
-    
-    cards.forEach((card, index) => {
+    // 所有卡片先清除当前位置类
+    cards.forEach(card => {
         card.classList.remove('active', 'next', 'prev');
-        if (index === newIndex) {
-            card.classList.add('active');
-        } else if (index === (newIndex + 1) % cards.length) {
-            card.classList.add('next');
-        } else if (index === (newIndex - 1 + cards.length) % cards.length) {
-            card.classList.add('prev');
-        }
     });
+    
+    // 根据拖动方向决定要旋转的方向
+    if (direction > 0) {
+        // 向左拖动，当前卡片变为prev，next卡片变为active
+        cardsArray[currentIndex].classList.add('prev');
+        cardsArray[nextIndex].classList.add('active');
+        
+        // 随机选择一张当前未显示的卡片作为新的next
+        let hiddenCards = cardsArray.filter(card => 
+            !card.classList.contains('active') && 
+            !card.classList.contains('prev') && 
+            !card.classList.contains('next')
+        );
+        
+        if (hiddenCards.length > 0) {
+            const randomIndex = Math.floor(Math.random() * hiddenCards.length);
+            hiddenCards[randomIndex].classList.add('next');
+        } else {
+            // 如果所有卡片都在显示，就用prevIndex对应的卡片
+            cardsArray[prevIndex].classList.add('next');
+        }
+    } else {
+        // 向右拖动，当前卡片变为next，prev卡片变为active
+        cardsArray[currentIndex].classList.add('next');
+        cardsArray[prevIndex].classList.add('active');
+        
+        // 随机选择一张当前未显示的卡片作为新的prev
+        let hiddenCards = cardsArray.filter(card => 
+            !card.classList.contains('active') && 
+            !card.classList.contains('prev') && 
+            !card.classList.contains('next')
+        );
+        
+        if (hiddenCards.length > 0) {
+            const randomIndex = Math.floor(Math.random() * hiddenCards.length);
+            hiddenCards[randomIndex].classList.add('prev');
+        } else {
+            // 如果所有卡片都在显示，就用nextIndex对应的卡片
+            cardsArray[nextIndex].classList.add('prev');
+        }
+    }
 }

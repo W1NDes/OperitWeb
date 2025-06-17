@@ -10,6 +10,7 @@
     --border-color: #dee2e6;
     --header-background: rgba(255, 255, 255, 0.8);
     --transition-speed: 0.3s;
+    --primary-color-rgb: 37, 99, 235;
 }
 
 [data-theme="dark"] {
@@ -319,15 +320,15 @@ input:checked + .slider:before {
 
 .card-gallery {
     position: relative;
-    height: 400px;
+    height: 500px;
     max-width: 1200px;
     margin: 0 auto;
-    perspective: 1000px;
+    perspective: 1500px;
 }
 
 .gallery-card {
     position: absolute;
-    width: 300px;
+    width: 280px;
     height: 400px;
     left: 50%;
     top: 50%;
@@ -336,24 +337,47 @@ input:checked + .slider:before {
     transform-style: preserve-3d;
     transform: translate(-50%, -50%) translateZ(-100px) rotateY(0deg);
     cursor: pointer;
+    visibility: hidden;
 }
 
 .gallery-card.active {
     opacity: 1;
-    transform: translate(-50%, -50%) translateZ(0) rotateY(0deg);
-    z-index: 3;
+    transform: translate(-50%, -50%) translateZ(100px) rotateY(0deg);
+    z-index: 5;
+    visibility: visible;
+    animation: cardActivate 0.6s ease-out;
 }
 
 .gallery-card.prev {
-    opacity: 0.6;
-    transform: translate(-150%, -50%) translateZ(-100px) rotateY(30deg);
-    z-index: 2;
+    opacity: 0.8;
+    transform: translate(-120%, -50%) translateZ(-50px) rotateY(25deg);
+    z-index: 3;
+    visibility: visible;
 }
 
 .gallery-card.next {
-    opacity: 0.6;
-    transform: translate(50%, -50%) translateZ(-100px) rotateY(-30deg);
-    z-index: 2;
+    opacity: 0.8;
+    transform: translate(20%, -50%) translateZ(-50px) rotateY(-25deg);
+    z-index: 3;
+    visibility: visible;
+}
+
+/* 为活动卡片添加强烈的动画效果 */
+@keyframes cardActivate {
+    0% {
+        transform: translate(-50%, -50%) translateZ(-200px) rotateY(180deg);
+        opacity: 0;
+    }
+    40% {
+        transform: translate(-50%, -50%) translateZ(150px) rotateY(10deg) scale(1.1);
+    }
+    70% {
+        transform: translate(-50%, -50%) translateZ(120px) rotateY(-5deg) scale(1.05);
+    }
+    100% {
+        transform: translate(-50%, -50%) translateZ(100px) rotateY(0deg);
+        opacity: 1;
+    }
 }
 
 .gallery-card-inner {
@@ -364,25 +388,70 @@ input:checked + .slider:before {
     border-radius: 15px;
     box-shadow: var(--card-shadow);
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-card.active .gallery-card-inner:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .gallery-card-inner img {
     width: 100%;
-    height: 60%;
+    height: 100%;
     object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.gallery-card-inner:hover img {
+    transform: scale(1.05);
 }
 
 .gallery-card-inner h3 {
-    padding: 1rem;
+    padding: 0.5rem 0.8rem;
     margin: 0;
     color: var(--primary-color);
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
+    position: absolute;
+    bottom: 30%;
+    right: 0;
+    max-width: 70%;
+    border-radius: 8px 0 0 8px;
+    text-align: right;
 }
 
 .gallery-card-inner p {
-    padding: 0 1rem 1rem;
+    padding: 0.4rem 0.8rem;
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--text-color);
+    line-height: 1.3;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
+    position: absolute;
+    bottom: 20%;
+    right: 0;
+    max-width: 60%;
+    border-radius: 8px 0 0 8px;
+    text-align: right;
+}
+
+/* 暗色模式下调整背景 */
+[data-theme="dark"] .gallery-card-inner h3,
+[data-theme="dark"] .gallery-card-inner p {
+    background-color: rgba(30, 30, 30, 0.7);
+}
+
+/* 拖动效果样式 */
+.card-gallery.draggable {
+    cursor: grab;
+}
+
+.card-gallery.dragging {
+    cursor: grabbing;
 }
 
 .gallery-nav {
@@ -488,7 +557,26 @@ footer {
     
     .gallery-card {
         width: 250px;
-        height: 350px;
+        height: 370px;
+    }
+    
+    .gallery-card-inner h3 {
+        font-size: 1.2rem;
+        padding: 0.8rem 1rem 0.4rem;
+    }
+    
+    .gallery-card-inner p {
+        font-size: 0.85rem;
+        padding: 0 1rem 1rem;
+        line-height: 1.4;
+    }
+    
+    .card-gallery {
+        height: 450px;
+    }
+    
+    .gallery-nav {
+        margin-top: 1rem;
     }
 }
 
@@ -732,6 +820,9 @@ footer {
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    position: relative;
 }
 
 .feature-card {
@@ -740,7 +831,9 @@ footer {
     box-shadow: var(--card-shadow);
     padding: 2rem;
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.8s ease, opacity 0.8s ease, box-shadow 0.3s ease;
+    transform-origin: center center;
+    will-change: transform, opacity;
 }
 
 .feature-card:hover {
@@ -766,7 +859,53 @@ footer {
     line-height: 1.6;
 }
 
-/* Responsive feature grid */
+.feature-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+    width: 100%;
+}
+
+.feature-card-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.feature-card-link:focus {
+    outline: none;
+}
+
+.feature-card.scatter-effect-1 {
+    transform: translateX(-15px) translateY(10px) rotate(-2deg) scale(0.98);
+    opacity: 0.95;
+}
+
+.feature-card.scatter-effect-2 {
+    transform: translateX(12px) translateY(-8px) rotate(1.5deg) scale(0.97);
+    opacity: 0.95;
+}
+
+.feature-card.scatter-effect-3 {
+    transform: translateX(-10px) translateY(-12px) rotate(-1deg) scale(0.98);
+    opacity: 0.95;
+}
+
+.feature-card.scatter-effect-4 {
+    transform: translateX(15px) translateY(8px) rotate(2deg) scale(0.97);
+    opacity: 0.95;
+}
+
+.feature-card.scatter-effect-5 {
+    transform: translateX(-12px) translateY(15px) rotate(-1.5deg) scale(0.98);
+    opacity: 0.95;
+}
+
+.feature-card.scatter-effect-6 {
+    transform: translateX(10px) translateY(-15px) rotate(1deg) scale(0.97);
+    opacity: 0.95;
+}
+
 @media (max-width: 992px) {
     .feature-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -776,5 +915,312 @@ footer {
 @media (max-width: 576px) {
     .feature-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .feature-card.scatter-effect-1,
+    .feature-card.scatter-effect-2,
+    .feature-card.scatter-effect-3,
+    .feature-card.scatter-effect-4,
+    .feature-card.scatter-effect-5,
+    .feature-card.scatter-effect-6 {
+        transform: translateY(15px) scale(0.98);
+        opacity: 0.95;
+    }
+}
+
+/* 卡片恢复原样动画 */
+.feature-card.in-view {
+    transform: translateX(0) translateY(0) rotate(0) scale(1);
+    opacity: 1;
+}
+
+/* 幻灯片卡片打散效果 */
+.gallery-card.scatter-effect-1 {
+    transform: translate(-50%, -50%) translateX(-10px) translateY(5px) rotate(-1deg) scale(0.97);
+    opacity: 0.9;
+    transition: transform 0.8s ease-in-out, opacity 0.8s ease;
+}
+
+.gallery-card.scatter-effect-2 {
+    transform: translate(-50%, -50%) translateX(8px) translateY(-7px) rotate(1deg) scale(0.98);
+    opacity: 0.9;
+    transition: transform 0.8s ease-in-out, opacity 0.8s ease;
+}
+
+.gallery-card.scatter-effect-3 {
+    transform: translate(-50%, -50%) translateX(-5px) translateY(-8px) rotate(0.5deg) scale(0.97);
+    opacity: 0.9;
+    transition: transform 0.8s ease-in-out, opacity 0.8s ease;
+}
+
+.gallery-card.scatter-effect-4 {
+    transform: translate(-50%, -50%) translateX(10px) translateY(7px) rotate(-0.8deg) scale(0.98);
+    opacity: 0.9;
+    transition: transform 0.8s ease-in-out, opacity 0.8s ease;
+}
+
+.gallery-card.in-view {
+    transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+}
+
+/* 移动导航样式 */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--card-background);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px 0;
+    justify-content: space-around;
+    border-top: 1px solid var(--border-color);
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 8px 0;
+    transition: color 0.3s;
+}
+
+.mobile-nav-icon {
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+}
+
+.mobile-nav-item.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.mobile-nav-item:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    /* 显示移动导航 */
+    .mobile-nav {
+        display: flex;
+    }
+    
+    /* 为移动导航腾出空间 */
+    main {
+        padding-bottom: 70px;
+    }
+    
+    /* 隐藏桌面导航 */
+    .nav-links {
+        display: none;
+    }
+    
+    /* 调整底部返回顶部按钮位置 */
+    #back-to-top {
+        bottom: 70px;
+    }
+}
+
+.gallery-card.has-link.active {
+    cursor: pointer;
+}
+
+.gallery-card.has-link.active .gallery-card-inner {
+    position: relative;
+}
+
+.gallery-card.has-link.active .gallery-card-inner::after {
+    content: "点击查看详情";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(var(--primary-color-rgb, 37, 99, 235), 0.8);
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
+}
+
+.gallery-card.has-link.active:hover .gallery-card-inner::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 抽卡按钮样式 */
+.draw-button {
+    padding: 0.5rem 1.2rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.draw-button:hover {
+    background-color: #0056b3;
+}
+
+/* 抽卡结果容器 */
+.draw-result-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.draw-result-container.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.draw-result-title {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.close-draw-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.close-draw-button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.draw-cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+.draw-card {
+    width: 280px;
+    height: 400px;
+    perspective: 1000px;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: cardAppear 0.5s forwards;
+}
+
+@keyframes cardAppear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.draw-card .gallery-card-inner {
+    transform: rotateY(0deg);
+    box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
+}
+
+.draw-card:hover .gallery-card-inner {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 100, 255, 0.4);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .draw-cards-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .draw-card {
+        width: 250px;
+        height: 350px;
+    }
+}
+
+/* 拖拽提示样式 */
+.drag-hint {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    opacity: 0.7;
+    animation: pulsate 2s infinite;
+}
+
+.drag-hint span {
+    position: relative;
+    display: inline-block;
+    padding: 0 30px;
+}
+
+.drag-hint span::before,
+.drag-hint span::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 2px;
+    background: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.drag-hint span::before {
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.drag-hint span::after {
+    right: 0;
+    transform: translateY(-50%);
+}
+
+@keyframes pulsate {
+    0% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0.4;
     }
 } 

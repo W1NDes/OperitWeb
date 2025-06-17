@@ -696,4 +696,574 @@
     .guide-container h3 {
         font-size: 1.4rem;
     }
+}
+
+/* 用户手册样式 */
+.guide-container {
+    display: flex;
+    margin-top: 2rem;
+    gap: 2rem;
+    min-height: calc(100vh - 200px);
+}
+
+.guide-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+
+.toc-container {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#guide-toc-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+#guide-toc-list ul {
+    list-style: none;
+    padding-left: 1.5rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+#guide-toc-list a {
+    color: var(--text-primary);
+    text-decoration: none;
+    display: block;
+    padding: 0.3rem 0;
+    font-size: 0.95rem;
+    transition: color 0.2s, transform 0.2s;
+}
+
+#guide-toc-list a:hover, #guide-toc-list a.active {
+    color: var(--primary-color);
+    transform: translateX(3px);
+}
+
+.guide-content {
+    flex-grow: 1;
+    padding: 0 1rem 2rem;
+}
+
+.guide-content h1 {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.guide-content h2 {
+    font-size: 1.8rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    color: var(--primary-color);
+}
+
+.guide-content h3 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.guide-content h4 {
+    font-size: 1.3rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-primary);
+}
+
+.guide-content p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.guide-content a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.guide-content a:hover {
+    text-decoration: underline;
+}
+
+.guide-content ul, .guide-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.guide-content li {
+    margin-bottom: 0.5rem;
+}
+
+.guide-content blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1rem;
+    margin-left: 0;
+    color: var(--text-secondary);
+    background-color: var(--bg-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 0 4px 4px 0;
+}
+
+.guide-content code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--bg-code);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.guide-content pre {
+    background-color: var(--bg-code);
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+.guide-content pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+.guide-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    display: block;
+}
+
+.guide-content table th, .guide-content table td {
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+}
+
+.guide-content table th {
+    background-color: var(--bg-secondary);
+    font-weight: bold;
+    text-align: left;
+}
+
+.guide-content table tr:nth-child(even) {
+    background-color: var(--bg-secondary);
+}
+
+.guide-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 1rem 0;
+    display: block;
+}
+
+/* 回到顶部按钮 */
+#back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#back-to-top:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-3px);
+}
+
+/* 加载动画 */
+.loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 4px solid var(--primary-color);
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 移动导航样式 */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-primary);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px 0;
+    justify-content: space-around;
+    border-top: 1px solid var(--border-color);
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 8px 0;
+    transition: color 0.3s;
+}
+
+.mobile-nav-icon {
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+}
+
+.mobile-nav-item.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.mobile-nav-item:hover {
+    color: var(--primary-color);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .guide-container {
+        flex-direction: column;
+    }
+    
+    .guide-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        max-height: none;
+        margin-bottom: 2rem;
+    }
+    
+    #guide-toc-list {
+        columns: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    #guide-toc-list {
+        columns: 1;
+    }
+    
+    .guide-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .guide-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .guide-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .guide-content h4 {
+        font-size: 1.1rem;
+    }
+    
+    #back-to-top {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        bottom: 70px; /* 增加底部间距，避免与移动导航重叠 */
+        right: 20px;
+    }
+    
+    /* 显示移动导航 */
+    .mobile-nav {
+        display: flex;
+    }
+    
+    /* 为移动导航腾出空间 */
+    main {
+        padding-bottom: 70px;
+    }
+    
+    /* 导航栏在移动端简化样式 */
+    .header-content {
+        justify-content: space-between;
+        padding: 10px 0;
+    }
+    
+    /* 调整内容区域 */
+    .guide-container {
+        margin-top: 1rem;
+    }
+    
+    /* 手机端表格样式优化 */
+    .guide-content table {
+        font-size: 0.9rem;
+        width: 100%;
+        border: none;
+        box-shadow: none;
+        margin-bottom: 2rem;
+    }
+    
+    .guide-content table th, 
+    .guide-content table td {
+        padding: 10px;
+    }
+    
+    /* 基本流程讲解手机端样式 */
+    .guide-content table tr {
+        display: block;
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        background-color: var(--bg-secondary);
+    }
+    
+    .guide-content table th {
+        display: none;
+    }
+    
+    .guide-content table td {
+        display: block;
+        width: 100%;
+        text-align: left;
+        position: relative;
+        padding-left: 35%;
+        border-bottom: 1px solid var(--border-color);
+        min-height: 40px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+    
+    .guide-content table td:last-child {
+        border-bottom: none;
+    }
+    
+    .guide-content table td:before {
+        position: absolute;
+        left: 10px;
+        top: 12px;
+        width: 30%;
+        white-space: nowrap;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+    
+    /* 步骤标签 */
+    #step-1 td:nth-child(1):before,
+    #step-2 td:nth-child(1):before,
+    #step-3 td:nth-child(1):before,
+    #step-4 td:nth-child(1):before {
+        content: "步骤:";
+    }
+    
+    #step-1 td:nth-child(2):before,
+    #step-2 td:nth-child(2):before,
+    #step-3 td:nth-child(2):before,
+    #step-4 td:nth-child(2):before {
+        content: "说明:";
+    }
+    
+    #step-1 td:nth-child(3):before,
+    #step-2 td:nth-child(3):before,
+    #step-3 td:nth-child(3):before,
+    #step-4 td:nth-child(3):before {
+        content: "截图:";
+    }
+    
+    /* 手机端图片样式 */
+    .guide-content img {
+        max-width: 100%;
+        height: auto !important;
+        margin: 0 auto;
+        border-radius: 6px;
+        display: block;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    /* 表格内的链接图片优化 */
+    .guide-content td a img {
+        margin: 10px auto;
+        display: block;
+        transition: transform 0.2s;
+    }
+    
+    .guide-content td a img:hover {
+        transform: scale(1.02);
+    }
+    
+    /* 适配手机端的横向表格 */
+    .guide-content td[style*="text-align: center"] {
+        padding-left: 10px;
+        padding-right: 10px;
+        text-align: center !important;
+    }
+    
+    .guide-content td[style*="text-align: center"]:before {
+        display: none;
+    }
+}
+
+.toc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.mobile-only {
+    display: none;
+}
+
+#mobile-toc-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    transition: all 0.3s;
+}
+
+#mobile-toc-toggle:hover {
+    background-color: var(--bg-hover);
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: block;
+    }
+    
+    .guide-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        z-index: 1100;
+        background-color: var(--bg-primary);
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .guide-sidebar.mobile-open {
+        transform: translateY(0);
+    }
+    
+    .toc-container {
+        border-radius: 0 0 8px 8px;
+        padding: 1rem;
+        margin: 0;
+    }
+    
+    .guide-container {
+        display: block;
+    }
+    
+    .guide-content {
+        margin-top: 1rem;
+    }
+    
+    .toc-content {
+        display: none;
+    }
+    
+    .toc-content.mobile-open {
+        display: block;
+    }
+}
+
+.toc-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toc-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.toc-toggle:hover {
+    background-color: var(--bg-hover);
+}
+
+.guide-sidebar.collapsed {
+    width: 60px;
+    min-width: 60px;
+    overflow: hidden;
+}
+
+.guide-sidebar.collapsed .toc-content,
+.guide-sidebar.collapsed .toc-header h3 {
+    display: none;
+}
+
+.guide-sidebar.collapsed .toc-toggle .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.guide-sidebar {
+    transition: width 0.3s ease;
+}
+
+.guide-container {
+    transition: grid-template-columns 0.3s ease;
+}
+
+.guide-container.toc-collapsed {
+    grid-template-columns: 60px 1fr;
 } 
