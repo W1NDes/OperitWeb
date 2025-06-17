@@ -315,6 +315,24 @@ const galleryItems = [
     }
 ];
 
+// --- 卡池数据 ---
+const drawPoolItems = [
+    // R
+    { title: "初次使用/试用", subtitle: "了解如何开始使用Operit AI，从安装到基本操作。", image: "manuals/assets/user_step/step_for_frist_1.jpg", rarity: "R", link: "user-guide.html#section-2-1" },
+    { title: "打包WEB应用", subtitle: "学习如何将AI编写的网页应用打包成独立的APK文件。", image: "manuals/assets/app_packaging.jpg", rarity: "R", link: "user-guide.html#section-2-2" },
+    { title: "配置API/模型", subtitle: "自定义你的AI，配置使用不同的API或模型。", image: "manuals/assets/deepseek_API_step/1.png", rarity: "R", link: "user-guide.html#section-2-3" },
+    { title: "Shizuku授权", subtitle: "通过Shizuku解锁更多高级功能，提升AI的能力。", image: "manuals/assets/e18954ffd6a4bc8cc465f611fee7b71.jpg", rarity: "R", link: "user-guide.html#section-2-4" },
+    { title: "开箱即用功能", subtitle: "探索Operit AI内置的各种实用工具和功能。", image: "manuals/assets/floating_and_attach.jpg", rarity: "R", link: "user-guide.html#section-3-1" },
+    { title: "核心工具概览", subtitle: "深入了解Operit AI强大的核心工具集。", image: "manuals/assets/game_maker_chat.jpg", rarity: "R", link: "user-guide.html#section-3-3" },
+
+    // SR
+    { title: "包管理与MCP", subtitle: "学习如何使用包管理器和MCP来扩展AI的功能。", image: "manuals/assets/package_list.jpg", rarity: "SR", link: "user-guide.html#section-2-5" },
+    { title: "MCP市场", subtitle: "在MCP市场中发现、分享和下载各种社区创建的工具。", image: "manuals/assets/package_or_MCP/4.jpg", rarity: "SR", link: "user-guide.html#section-3-4" },
+
+    // SSR
+    { title: "拓展包示例", subtitle: "查看强大的拓展包示例，激发你的创造力。", image: "manuals/assets/webdev/c851e530a258bbbbf41f87dcb907b14.png", rarity: "SSR", link: "user-guide.html#section-3-2" }
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize theme
     initTheme();
@@ -353,18 +371,16 @@ function initGallery() {
     // 只添加所有卡片但初始时大多数隐藏
     shuffledItems.forEach((item, index) => {
         const card = createGalleryCard(item);
-        
-        // 初始只显示三张卡片
-        if (index === 0) {
-            card.classList.add('active');
-        } else if (index === 1) {
-            card.classList.add('next');
-        } else if (index === shuffledItems.length - 1) {
-            card.classList.add('prev');
-        }
-        
         galleryContainer.appendChild(card);
     });
+
+    // Ensure three cards are always visible initially
+    const cards = Array.from(galleryContainer.children);
+    if (cards.length > 2) {
+        cards[0].classList.add('active');
+        cards[1].classList.add('next');
+        cards[cards.length - 1].classList.add('prev');
+    }
     
     // 添加图示提示用户可以拖拽
     const dragHint = document.createElement('div');
@@ -448,115 +464,76 @@ function initGallery() {
     // 当用户交互时停止自动旋转
     galleryContainer.addEventListener('mousedown', () => {
         clearInterval(autoRotation);
+        restartAutoRotation();
     });
     
     galleryContainer.addEventListener('touchstart', () => {
         clearInterval(autoRotation);
+        restartAutoRotation();
     });
-    
-    // 当用户停止交互5秒后恢复自动旋转
+
     function restartAutoRotation() {
         clearInterval(autoRotation);
-        autoRotation = setInterval(() => rotateGallery(1), 5000);
+        autoRotation = setInterval(() => rotateGallery(1), 8000); // 重启并设置更长的间隔
     }
-    
-    galleryContainer.addEventListener('mouseup', () => {
-        setTimeout(restartAutoRotation, 5000);
-    });
-    
-    galleryContainer.addEventListener('touchend', () => {
-        setTimeout(restartAutoRotation, 5000);
-    });
-    
-    // 添加随机抽卡功能
-    function drawRandomCards() {
-        // 清除自动旋转
-        clearInterval(autoRotation);
-        
-        // 创建抽卡结果容器
-        const drawResultContainer = document.createElement('div');
-        drawResultContainer.className = 'draw-result-container';
-        
-        // 创建关闭按钮
-        const closeButton = document.createElement('button');
-        closeButton.className = 'close-draw-button';
-        closeButton.innerHTML = '×';
-        drawResultContainer.appendChild(closeButton);
-        
-        // 创建标题
-        const title = document.createElement('h3');
-        title.className = 'draw-result-title';
-        title.textContent = '随机抽卡结果';
-        drawResultContainer.appendChild(title);
-        
-        // 创建卡片容器
-        const cardsContainer = document.createElement('div');
-        cardsContainer.className = 'draw-cards-container';
-        drawResultContainer.appendChild(cardsContainer);
-        
-        // 随机选择3张卡片
-        const shuffled = [...galleryItems].sort(() => 0.5 - Math.random());
-        const selected = shuffled.slice(0, 3);
-        
-        // 添加卡片
-        selected.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'draw-card';
-            
-            const inner = document.createElement('div');
-            inner.className = 'gallery-card-inner';
-            
-            const img = document.createElement('img');
-            img.src = item.image;
-            img.alt = item.title;
-            
-            const cardTitle = document.createElement('h3');
-            cardTitle.textContent = item.title;
-            
-            const desc = document.createElement('p');
-            desc.textContent = item.subtitle;
-            
-            inner.appendChild(img);
-            inner.appendChild(cardTitle);
-            inner.appendChild(desc);
-            card.appendChild(inner);
-            
-            // 添加链接功能
-            if (item.link) {
-                card.addEventListener('click', () => {
-                    window.location.href = item.link;
-                });
-                card.classList.add('has-link');
-            }
-            
-            // 添加动画延迟
-            card.style.animationDelay = `${index * 0.2}s`;
-            
-            cardsContainer.appendChild(card);
+
+    // 添加抽卡按钮事件
+    const drawButton = document.querySelector('.draw-button');
+    if (drawButton) {
+        drawButton.addEventListener('click', () => {
+            drawRandomCards();
         });
-        
-        // 添加到页面
-        document.body.appendChild(drawResultContainer);
-        
-        // 添加关闭事件
-        closeButton.addEventListener('click', () => {
-            document.body.removeChild(drawResultContainer);
-            restartAutoRotation();
-        });
-        
-        // 点击背景关闭
-        drawResultContainer.addEventListener('click', (e) => {
-            if (e.target === drawResultContainer) {
-                document.body.removeChild(drawResultContainer);
-                restartAutoRotation();
-            }
-        });
-        
-        // 添加显示动画
-        setTimeout(() => {
-            drawResultContainer.classList.add('show');
-        }, 10);
     }
+}
+
+function drawRandomCards() {
+    const resultContainer = document.querySelector('.draw-result-container');
+    const cardsContainer = resultContainer.querySelector('.draw-cards-container');
+    const closeButton = resultContainer.querySelector('.close-draw-button');
+
+    if (!resultContainer || !cardsContainer) return;
+    
+    // 清空之前的结果
+    cardsContainer.innerHTML = '';
+
+    // 从卡池中随机抽取3张
+    const drawnItems = [...drawPoolItems].sort(() => 0.5 - Math.random()).slice(0, 3);
+    
+    drawnItems.forEach((item, index) => {
+        const card = createGalleryCard(item);
+        card.classList.add('draw-card');
+        card.style.animationDelay = `${index * 0.2}s`;
+        
+        // 添加稀有度标记
+        const rarityBadge = document.createElement('div');
+        rarityBadge.className = `rarity-badge rarity-${item.rarity.toLowerCase()}`;
+        rarityBadge.textContent = item.rarity;
+        
+        // 插入到 gallery-card-inner 的第一个子元素
+        const inner = card.querySelector('.gallery-card-inner');
+        if (inner) {
+            inner.insertBefore(rarityBadge, inner.firstChild);
+        }
+        
+        cardsContainer.appendChild(card);
+    });
+
+    resultContainer.classList.add('show');
+    
+    const handleClose = () => {
+        resultContainer.classList.remove('show');
+        resultContainer.removeEventListener('click', closeOnBackdrop);
+        closeButton.removeEventListener('click', handleClose);
+    };
+
+    const closeOnBackdrop = (e) => {
+        if (e.target === resultContainer) {
+            handleClose();
+        }
+    };
+    
+    closeButton.addEventListener('click', handleClose);
+    resultContainer.addEventListener('click', closeOnBackdrop);
 }
 
 function createGalleryCard(item) {
@@ -597,6 +574,24 @@ function createGalleryCard(item) {
     textContainer.appendChild(subtitle);
     inner.appendChild(textContainer);
     card.appendChild(inner);
+    
+    if (item.link) {
+        card.classList.add('has-link');
+        card.addEventListener('click', (e) => {
+            // 如果是抽卡结果中的卡片，则阻止默认跳转
+            if (e.currentTarget.closest('.draw-result-container')) {
+                e.stopPropagation();
+                e.preventDefault();
+                window.open(item.link, '_blank');
+                return;
+            }
+
+            // 对于画廊中的活动卡片，进行跳转
+            if (card.classList.contains('active')) {
+                window.location.href = item.link;
+            }
+        });
+    }
     
     return card;
 }

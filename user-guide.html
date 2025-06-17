@@ -10,22 +10,24 @@
 </head>
 <body>
     <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <a href="index.html">
-                        <img src="images/logo.png" alt="Operit AI Logo">
-                        <span>Operit AI</span>
-                    </a>
-                </div>
-                <div class="theme-switcher">
-                    <label class="theme-switch">
-                        <input type="checkbox" id="theme-toggle-checkbox">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+        <nav>
+            <div class="logo">
+                <img src="images/logo.png" alt="Operit AI Logo">
+                <span class="logo-text">Operit AI</span>
             </div>
-        </div>
+            <ul class="nav-links">
+                <li><a href="index.html" data-i18n="home">首页</a></li>
+                <li><a href="index.html#core-features" data-i18n="features">功能</a></li>
+                <li><a href="user-guide.html" class="active" data-i18n="userGuide">用户手册</a></li>
+                <li><a href="https://github.com/AAswordman/Operit" target="_blank" data-i18n="download">GitHub</a></li>
+            </ul>
+            <div class="theme-switcher">
+                <label class="theme-switch">
+                    <input type="checkbox" id="theme-toggle-checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </nav>
     </header>
 
     <main>
@@ -79,18 +81,6 @@
             </div>
         </div>
         <button id="back-to-top" title="回到顶部">↑</button>
-        
-        <!-- 移动端导航 -->
-        <div class="mobile-nav">
-            <a href="index.html" class="mobile-nav-item">
-                <span class="mobile-nav-icon">🏠</span>
-                <span class="mobile-nav-text">首页</span>
-            </a>
-            <a href="user-guide.html" class="mobile-nav-item active">
-                <span class="mobile-nav-icon">📖</span>
-                <span class="mobile-nav-text">用户手册</span>
-            </a>
-        </div>
     </main>
 
     <footer>

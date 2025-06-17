@@ -721,8 +721,7 @@ footer {
     }
     
     .nav-links {
-        flex-direction: column;
-        text-align: center;
+        display: none;
     }
 }
 
@@ -980,99 +979,6 @@ footer {
     opacity: 1;
 }
 
-/* 移动导航样式 */
-.mobile-nav {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    padding: 10px 0;
-    justify-content: space-around;
-    border-top: 1px solid var(--border-color);
-}
-
-.mobile-nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--text-color);
-    text-decoration: none;
-    font-size: 0.8rem;
-    padding: 8px 0;
-    transition: color 0.3s;
-}
-
-.mobile-nav-icon {
-    font-size: 1.4rem;
-    margin-bottom: 4px;
-}
-
-.mobile-nav-item.active {
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
-.mobile-nav-item:hover {
-    color: var(--primary-color);
-}
-
-@media (max-width: 768px) {
-    /* 显示移动导航 */
-    .mobile-nav {
-        display: flex;
-    }
-    
-    /* 为移动导航腾出空间 */
-    main {
-        padding-bottom: 70px;
-    }
-    
-    /* 隐藏桌面导航 */
-    .nav-links {
-        display: none;
-    }
-    
-    /* 调整底部返回顶部按钮位置 */
-    #back-to-top {
-        bottom: 70px;
-    }
-}
-
-.gallery-card.has-link.active {
-    cursor: pointer;
-}
-
-.gallery-card.has-link.active .gallery-card-inner {
-    position: relative;
-}
-
-.gallery-card.has-link.active .gallery-card-inner::after {
-    content: "点击查看详情";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(var(--primary-color-rgb, 37, 99, 235), 0.8);
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-    font-size: 0.9rem;
-    opacity: 0;
-    transform: translateY(100%);
-    transition: all 0.3s ease;
-}
-
-.gallery-card.has-link.active:hover .gallery-card-inner::after {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 /* 抽卡按钮样式 */
 .draw-button {
     padding: 0.5rem 1.2rem;
@@ -1178,6 +1084,52 @@ footer {
     box-shadow: 0 15px 30px rgba(0, 100, 255, 0.4);
 }
 
+/* 稀有度标记 */
+.rarity-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    z-index: 10;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(45deg, #888, #555);
+}
+
+.rarity-badge.rarity-r {
+    background: linear-gradient(45deg, #6a7c98, #4d658c);
+}
+
+.rarity-badge.rarity-sr {
+    background: linear-gradient(45deg, #c0a060, #a08040);
+}
+
+.rarity-badge.rarity-ssr {
+    background: linear-gradient(45deg, #f0c040, #e0a020);
+    animation: rainbow-shine 2s infinite linear;
+}
+
+@keyframes rainbow-shine {
+    0% {
+        box-shadow: 0 0 5px #ff0000, 0 0 10px #ff7f00, 0 0 15px #ffff00;
+    }
+    25% {
+        box-shadow: 0 0 5px #00ff00, 0 0 10px #00ffff, 0 0 15px #0000ff;
+    }
+    50% {
+        box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff0000, 0 0 15px #ff7f00;
+    }
+    75% {
+        box-shadow: 0 0 5px #ffff00, 0 0 10px #00ff00, 0 0 15px #00ffff;
+    }
+    100% {
+        box-shadow: 0 0 5px #0000ff, 0 0 10px #ff00ff, 0 0 15px #ff0000;
+    }
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
     .draw-cards-container {
@@ -1239,10 +1191,6 @@ footer {
     100% {
         opacity: 0.4;
     }
-}
-
-[data-theme="dark"] .mobile-nav {
-    background-color: rgba(30, 30, 30, 0.7);
 }
 
 [data-theme="dark"] .hero {
