@@ -18,4 +18,21 @@ body {
     overflow-x: hidden; /* Prevent horizontal scrolling */
     touch-action: pan-y; /* Only allow vertical scrolling on touch devices */
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1"><path d="M12 2l2.5 5 5 2.5 -5 2.5 -2.5 5 -2.5 -5 -5 -2.5 5 -2.5z"/></svg>') 12 12, auto;
+}
+
+.click-effect {
+    position: fixed;
+    border-radius: 50%;
+    background-color: rgba(0, 150, 255, 0.4);
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease-out;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.click-effect.active {
+    transform: translate(-50%, -50%) scale(1);
 } 

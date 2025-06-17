@@ -1,5 +1,5 @@
 #snow-container {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -12,7 +12,7 @@
 .snowflake {
     position: absolute;
     top: -10px;
-    background-color: white;
+    background-color: var(--snowflake-color);
     border-radius: 50%;
     pointer-events: none;
     will-change: transform;

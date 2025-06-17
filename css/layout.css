@@ -213,4 +213,79 @@ footer {
 [data-theme="dark"] .hero h1, 
 [data-theme="dark"] .hero p {
     color: var(--text-color);
+}
+
+/* Contributors Section */
+.contributors {
+    padding-bottom: 4rem;
+}
+
+.contributors-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.contributors-list {
+    flex: 1.5;
+    min-width: 320px;
+}
+
+.contributors-list img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.github-promo-card {
+    flex: 1;
+    min-width: 320px;
+    background: var(--card-background);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.promo-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.promo-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.github-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--text-color);
+}
+
+.github-promo-card p {
+    margin-bottom: 1.5rem;
+    color: var(--text-color-secondary);
+}
+
+.github-stats {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.github-button {
+    display: inline-block;
+    width: 100%;
 } 

@@ -29,10 +29,17 @@
 }
 
 .guide-sidebar {
-    flex: 0 0 250px;
+    flex: 0 0 280px;
     position: sticky;
-    top: 100px;
-    height: fit-content;
+    top: 80px; /* Adjust based on header height */
+    align-self: flex-start;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    background-color: var(--card-background);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: var(--card-shadow);
 }
 
 .guide-main {
@@ -701,55 +708,107 @@
 /* 用户手册样式 */
 .guide-container {
     display: flex;
-    margin-top: 2rem;
     gap: 2rem;
-    min-height: calc(100vh - 200px);
+    transition: all 0.4s ease-in-out;
 }
 
 .guide-sidebar {
-    width: 280px;
-    flex-shrink: 0;
+    flex: 0 0 280px;
     position: sticky;
-    top: 100px;
+    top: 80px; /* Adjust based on header height */
     align-self: flex-start;
-    max-height: calc(100vh - 120px);
+    height: calc(100vh - 100px);
     overflow-y: auto;
-    padding-right: 10px;
-    padding-bottom: 20px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    background-color: var(--card-background);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: var(--card-shadow);
+}
+
+.guide-sidebar.collapsed {
+    flex: 0 0 60px;
+    padding: 1rem 0;
+}
+
+.guide-sidebar.collapsed .toc-header h3,
+.guide-sidebar.collapsed #guide-toc-list {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
 }
 
 .toc-container {
-    background-color: var(--bg-secondary);
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 0;
+    box-shadow: none;
+    background-color: transparent;
 }
 
-#guide-toc-list {
-    list-style: none;
-    padding-left: 0;
-    margin-top: 0.5rem;
+.toc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.5rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
 }
 
-#guide-toc-list ul {
-    list-style: none;
-    padding-left: 1.5rem;
-    margin-top: 0.3rem;
-    margin-bottom: 0.5rem;
+.guide-sidebar.collapsed .toc-header {
+    border-bottom-color: transparent;
+    justify-content: center;
+}
+
+.toc-controls {
+    display: flex;
+}
+
+.toc-toggle {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.toc-toggle:hover {
+    background-color: var(--primary-color-light);
+    color: var(--primary-color);
+}
+
+.guide-sidebar.collapsed + .guide-content {
+    max-width: 100%;
+}
+
+.guide-content {
+    flex: 1;
+    min-width: 0; /* Important for flexbox shrinking */
+    transition: all 0.4s ease-in-out;
 }
 
 #guide-toc-list a {
-    color: var(--text-primary);
-    text-decoration: none;
     display: block;
-    padding: 0.3rem 0;
-    font-size: 0.95rem;
-    transition: color 0.2s, transform 0.2s;
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-#guide-toc-list a:hover, #guide-toc-list a.active {
+#guide-toc-list a:hover {
+    background-color: var(--accent-color-light);
     color: var(--primary-color);
-    transform: translateX(3px);
+}
+
+#guide-toc-list a.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
 }
 
 .guide-content {

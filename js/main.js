@@ -78,6 +78,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Logo click wink effect
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        logo.style.cursor = 'pointer';
+        logo.addEventListener('click', (e) => {
+            const rect = logo.getBoundingClientRect();
+            const wink = document.createElement('div');
+            wink.textContent = '😉';
+            wink.classList.add('wink-feedback');
+            document.body.appendChild(wink);
+            
+            wink.style.top = `${rect.top + rect.height / 2}px`;
+            wink.style.left = `${rect.left + rect.width / 2}px`;
+
+            setTimeout(() => {
+                wink.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                wink.style.opacity = 0;
+                wink.addEventListener('transitionend', () => wink.remove());
+            }, 600);
+        });
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -191,6 +216,21 @@ document.addEventListener('DOMContentLoaded', () => {
             floatingWindowDesc: "随时调用AI功能，便捷高效"
         }
     };
+
+    // Click effect
+    const clickEffect = document.createElement('div');
+    clickEffect.classList.add('click-effect');
+    document.body.appendChild(clickEffect);
+
+    document.addEventListener('mousedown', (e) => {
+        clickEffect.style.left = `${e.clientX}px`;
+        clickEffect.style.top = `${e.clientY}px`;
+        clickEffect.classList.add('active');
+    });
+
+    document.addEventListener('mouseup', () => {
+        clickEffect.classList.remove('active');
+    });
 
     function setLanguage(lang) {
         document.documentElement.lang = lang;

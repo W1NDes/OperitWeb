@@ -4,18 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(snowContainer);
 
     const isUserGuidePage = window.location.pathname.includes('user-guide.html');
+    const snowflakeCount = isUserGuidePage ? 60 : 40;
     
-    if (isUserGuidePage) {
-        createSnowflakes(snowContainer, 60);
-    } else {
-        const gallerySection = document.querySelector('.card-gallery-container');
-        if (gallerySection) {
-            snowContainer.style.top = `${gallerySection.offsetTop}px`;
-            snowContainer.style.height = `${document.body.scrollHeight - gallerySection.offsetTop}px`;
-            createSnowflakes(snowContainer, 40);
-        }
-    }
-
+    createSnowflakes(snowContainer, snowflakeCount);
     handleCursorAvoidance();
 });
 

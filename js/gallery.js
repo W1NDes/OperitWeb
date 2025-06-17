@@ -154,56 +154,62 @@ function drawRandomCards() {
     // Show the container
     drawResultContainer.classList.add('show');
     
-    // Card data - customize based on your needs
+    // Card data - 10 cards total for 10% SSR, 60% SR, 30% R probability
     const allCards = [
-        { id: 1, image: 'images/examples/game_maker_show.jpg', title: 'Game Creation', description: 'Create engaging games with AI', rarity: 'ssr' },
+        // SSR (10%)
+        { id: 5, image: 'images/examples/3d_game.jpg', title: '3D Game Creation', description: 'Create 3D worlds and games', rarity: 'ssr' },
+        // SR (60%)
+        { id: 1, image: 'images/examples/game_maker_show.jpg', title: 'Game Creation', description: 'Create engaging games with AI', rarity: 'sr' },
         { id: 2, image: 'images/examples/web_dev.jpg', title: 'Web Development', description: 'Build websites on your phone', rarity: 'sr' },
-        { id: 3, image: 'images/examples/app_packaging.jpg', title: 'App Packaging', description: 'Package your creations', rarity: 'r' },
         { id: 4, image: 'images/examples/video_processing.jpg', title: 'Video Processing', description: 'Edit videos with AI assistance', rarity: 'sr' },
-        { id: 5, image: 'images/examples/3d_game.jpg', title: '3D Game Creation', description: 'Create 3D worlds and games', rarity: 'ssr' }
+        { id: 6, image: 'manuals/assets/floating_and_attach.jpg', title: 'Floating Window', description: 'Access AI features anytime, conveniently and efficiently', rarity: 'sr' },
+        { id: 7, image: 'manuals/assets/package_list.jpg', title: 'Plugin System', description: 'Powerful plugin ecosystem for unlimited possibilities', rarity: 'sr' },
+        { id: 8, image: 'manuals/assets/set_alarm_and_date.jpg', title: 'Device Automation', description: 'Control your device with simple commands', rarity: 'sr' },
+        // R (30%)
+        { id: 3, image: 'images/examples/app_packaging.jpg', title: 'App Packaging', description: 'Package your creations', rarity: 'r' },
+        { id: 9, image: 'manuals/assets/game_maker_chat.jpg', title: 'AI Chat', description: 'Have a conversation with your creative AI partner', rarity: 'r' },
+        { id: 10, image: 'manuals/assets/user_step/step_for_frist_3.jpg', title: 'User Preference', description: 'Customize the AI to understand you better', rarity: 'r' }
     ];
     
-    const ssrCards = allCards.filter(card => card.rarity === 'ssr');
-    const otherCards = allCards.filter(card => card.rarity !== 'ssr');
-
     let drawnCards;
     let isSameAsLast;
 
     do {
         drawnCards = [];
-        const availableCards = [...allCards];
+        let availableCards = [...allCards];
 
-        // First, determine if an SSR card should be drawn
-        // 40% chance for at least one SSR (since 2 SSRs out of 5 cards)
-        const hasSSR = Math.random() < 0.4;
+        // Draw 3 unique cards respecting rarity weights
+        for (let i = 0; i < 3; i++) {
+            if (availableCards.length === 0) break;
 
-        if (hasSSR && ssrCards.length > 0) {
-            // Pick one SSR card
-            const ssrIndex = Math.floor(Math.random() * ssrCards.length);
-            const ssrCard = ssrCards[ssrIndex];
-            drawnCards.push(ssrCard);
+            // Create a weighted pool from the *currently available* cards
+            const weightedPool = [];
+            availableCards.forEach(card => {
+                let weight = 0;
+                if (card.rarity === 'ssr') weight = 1;      // 10%
+                else if (card.rarity === 'sr') weight = 6; // 60%
+                else if (card.rarity === 'r') weight = 3;  // 30%
+                for (let j = 0; j < weight; j++) {
+                    weightedPool.push(card);
+                }
+            });
+            
+            if (weightedPool.length === 0) break;
 
-            // Remove the drawn SSR card from the available pool
-            const availableIndex = availableCards.findIndex(c => c.id === ssrCard.id);
-            if (availableIndex > -1) {
-                availableCards.splice(availableIndex, 1);
-            }
-        }
-
-        // Fill the rest of the hand with unique cards from the remaining pool
-        while (drawnCards.length < 3 && availableCards.length > 0) {
-            const randomIndex = Math.floor(Math.random() * availableCards.length);
-            const selectedCard = availableCards.splice(randomIndex, 1)[0];
+            // Pick a random card from the weighted pool
+            const randomIndex = Math.floor(Math.random() * weightedPool.length);
+            const selectedCard = weightedPool[randomIndex];
+            
             drawnCards.push(selectedCard);
-        }
 
-        // Shuffle the final hand to randomize card positions
-        drawnCards.sort(() => Math.random() - 0.5);
+            // Remove it from availableCards so it can't be picked again in this hand
+            availableCards = availableCards.filter(c => c.id !== selectedCard.id);
+        }
 
         // Check if the new set is identical to the last one
         const drawnIds = drawnCards.map(c => c.id).sort().join(',');
         const lastIds = lastDrawnCards.map(c => c.id).sort().join(',');
-        isSameAsLast = drawnIds === lastIds;
+        isSameAsLast = drawnCards.length < 3 ? false : (drawnIds === lastIds);
 
     } while (isSameAsLast);
 

@@ -27,108 +27,56 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 获取内容容器
+    // Guide page specific logic
     const contentDiv = document.getElementById('content');
     if (!contentDiv) return;
-    
-    // 目录切换功能
+
+    // --- Sidebar Toggle ---
     const tocToggleBtn = document.getElementById('toc-toggle');
     const guideSidebar = document.querySelector('.guide-sidebar');
-    const tocContent = document.querySelector('.toc-content');
-    const guideContainer = document.querySelector('.guide-container');
-    
-    // 移动端目录功能
-    const mobileTocButton = document.querySelector('.mobile-toc-button');
-    const mobileTocMenu = document.querySelector('.mobile-toc-menu');
-    const mobileTocClose = document.querySelector('.mobile-toc-close');
-    const overlay = document.querySelector('.overlay');
-    const mobileTocLinks = document.querySelectorAll('.mobile-toc-list a');
-    
-    // 初始化移动端目录功能
-    if (mobileTocButton && mobileTocMenu && mobileTocClose && overlay) {
-        // 打开目录
-        mobileTocButton.addEventListener('click', function() {
-            mobileTocMenu.classList.add('active');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // 防止背景滚动
-        });
-        
-        // 关闭目录
-        mobileTocClose.addEventListener('click', function() {
-            mobileTocMenu.classList.remove('active');
-            overlay.classList.remove('active');
-            document.body.style.overflow = ''; // 恢复背景滚动
-        });
-        
-        // 点击遮罩层关闭目录
-        overlay.addEventListener('click', function() {
-            mobileTocMenu.classList.remove('active');
-            overlay.classList.remove('active');
-            document.body.style.overflow = ''; // 恢复背景滚动
-        });
-        
-        // 点击目录链接后关闭目录
-        mobileTocLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                mobileTocMenu.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = ''; // 恢复背景滚动
-            });
+    const toggleIcon = tocToggleBtn?.querySelector('.toggle-icon');
+
+    if (tocToggleBtn && guideSidebar && toggleIcon) {
+        const applySidebarState = (isCollapsed) => {
+            guideSidebar.classList.toggle('collapsed', isCollapsed);
+            toggleIcon.innerHTML = isCollapsed ? '&#x276F;' : '&#x276E;';
+            tocToggleBtn.setAttribute('title', isCollapsed ? 'Show' : 'Hide');
+        };
+
+        let isTocCollapsed = localStorage.getItem('tocCollapsed') === 'true';
+        applySidebarState(isTocCollapsed);
+
+        tocToggleBtn.addEventListener('click', () => {
+            isTocCollapsed = !isTocCollapsed;
+            localStorage.setItem('tocCollapsed', isTocCollapsed);
+            applySidebarState(isTocCollapsed);
         });
     }
-    
-    if (tocToggleBtn && guideSidebar && guideContainer) {
-        // 检查localStorage中是否有保存的状态
-        const tocCollapsed = localStorage.getItem('tocCollapsed') === 'true';
-        if (tocCollapsed) {
-            guideSidebar.classList.add('collapsed');
-            guideContainer.classList.add('toc-collapsed');
-        }
-        
-        // 处理移动端和桌面端的目录切换
-        tocToggleBtn.addEventListener('click', function() {
-            // 处理移动端
-            if (window.innerWidth <= 768) {
-                guideSidebar.classList.toggle('mobile-open');
-                tocContent.classList.toggle('mobile-open');
-                
-                // 切换图标
-                const toggleIcon = this.querySelector('.toggle-icon');
-                if (toggleIcon) {
-                    toggleIcon.textContent = guideSidebar.classList.contains('mobile-open') ? '✕' : '☰';
-                }
-            } 
-            // 处理桌面端
-            else {
-                guideSidebar.classList.toggle('collapsed');
-                guideContainer.classList.toggle('toc-collapsed');
-                
-                // 保存状态到localStorage
-                const isCollapsed = guideSidebar.classList.contains('collapsed');
-                localStorage.setItem('tocCollapsed', isCollapsed.toString());
+
+    // --- Active link highlighting on scroll ---
+    const tocLinks = document.querySelectorAll('#guide-toc-list a');
+    const sections = Array.from(tocLinks).map(link => {
+        const id = link.getAttribute('href').substring(1);
+        return document.getElementById(id);
+    }).filter(section => section !== null);
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                tocLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                });
             }
         });
-        
-        // 点击目录链接后关闭目录（移动端）
-        const tocLinks = tocContent.querySelectorAll('a');
-        tocLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                if (window.innerWidth <= 768) {
-                    guideSidebar.classList.remove('mobile-open');
-                    tocContent.classList.remove('mobile-open');
-                    
-                    // 重置图标
-                    const toggleIcon = tocToggleBtn.querySelector('.toggle-icon');
-                    if (toggleIcon) {
-                        toggleIcon.textContent = '☰';
-                    }
-                }
-            });
-        });
-    }
-            
-            // 用户手册的Markdown内容
-            const guideContent = `
+    }, { rootMargin: '-30% 0px -70% 0px' });
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+
+    // --- Content Loading ---
+    const guideContent = `
 # Operit AI 用户指南
 
 <p align="center">
@@ -409,11 +357,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </table>
 `;
 
-            // 将内容渲染到页面
-            contentDiv.innerHTML = marked.parse(guideContent);
+    contentDiv.innerHTML = marked.parse(guideContent);
             
-            // 添加拓展用法实操部分
-            const extensionContent = `
+    // 添加拓展用法实操部分
+    const extensionContent = `
 <h2 id="section-3">🚀 拓展用法实操</h2>
 
 <p><em>(本部分将通过实际案例，向您展示如何利用拓展包、计划模式等高级功能，完成更复杂的任务。)</em></p>
@@ -488,10 +435,10 @@ document.addEventListener('DOMContentLoaded', function() {
   </tbody>
 </table>
 `;
-            contentDiv.innerHTML += marked.parse(extensionContent);
+    contentDiv.innerHTML += marked.parse(extensionContent);
             
-            // 添加拓展包部分
-            const packagesContent = `
+    // 添加拓展包部分
+    const packagesContent = `
 <h3 id="section-3-2">📦 拓展包</h3>
 
 <p>演示版本<code>1.1.6</code>（图片可点击放大）</p>
@@ -592,10 +539,10 @@ document.addEventListener('DOMContentLoaded', function() {
   </tbody>
 </table>
 `;
-            contentDiv.innerHTML += marked.parse(packagesContent);
+    contentDiv.innerHTML += marked.parse(packagesContent);
             
-            // 添加核心工具部分
-            const toolsContent = `
+    // 添加核心工具部分
+    const toolsContent = `
 <h3 id="section-3-3">🛠️ 核心工具</h3>
 
 <table style="width: 100%;">
@@ -644,10 +591,10 @@ document.addEventListener('DOMContentLoaded', function() {
   </tbody>
 </table>
 `;
-            contentDiv.innerHTML += marked.parse(toolsContent);
+    contentDiv.innerHTML += marked.parse(toolsContent);
 
-            // 添加MCP市场部分
-            const mcpContent = `
+    // 添加MCP市场部分
+    const mcpContent = `
 <h3 id="section-3-4">🛒 MCP市场</h3>
 
 <p>考虑到手机环境的特殊性，要完整、稳定地配置所有MCP（Model context protocol）所需的环境是相当有挑战性的。因此，直接调用MCP可能会遇到较多困难。</p>
@@ -687,10 +634,10 @@ document.addEventListener('DOMContentLoaded', function() {
   </tbody>
 </table>
 `;
-            contentDiv.innerHTML += marked.parse(mcpContent);
+    contentDiv.innerHTML += marked.parse(mcpContent);
             
-            // 添加加入我们部分
-            const joinUsContent = `
+    // 添加加入我们部分
+    const joinUsContent = `
 <h2 id="section-5">🎉 加入我们</h2>
 
 <p>我们诚挚地邀请您加入我们的社区，与其他用户交流心得，分享您的创意，或向我们提出宝贵的建议。</p>
@@ -712,10 +659,10 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 `;
-            contentDiv.innerHTML += marked.parse(joinUsContent);
+    contentDiv.innerHTML += marked.parse(joinUsContent);
             
-            // 添加额外的内容（节4-7）
-            const additionalContent = `
+    // 添加额外的内容（节4-7）
+    const additionalContent = `
 <h2 id="section-4">❔ 常见问题解答</h2>
 
 <p>这里收录了<strong>最新版本 \`1.1.6\`</strong> 用户群和 issue 的全部问题。
@@ -787,30 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>后续将通过内置Termux解决这类问题</p>
 `;
 
-            contentDiv.innerHTML += marked.parse(additionalContent);
-
-            // 为TOC添加点击事件，支持平滑滚动
-            document.querySelectorAll('#guide-toc-list a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-            
-                    if (targetElement) {
-            window.scrollTo({
-                            top: targetElement.offsetTop - 100,
-                behavior: 'smooth'
-            });
-            
-                        // 更新活动状态
-                        document.querySelectorAll('#guide-toc-list a').forEach(a => {
-                            a.classList.remove('active');
-                        });
-            this.classList.add('active');
-                    }
-        });
-    });
-    // 直接在页面中加载内容
+    contentDiv.innerHTML += marked.parse(additionalContent);
 
     // 回到顶部按钮
     const backToTopButton = document.getElementById('back-to-top');
