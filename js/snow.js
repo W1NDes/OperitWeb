@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundParticles = document.getElementById('background-particles');
     let pJS_instance = null;
 
+    if (!backgroundParticles) {
+        console.error('Background particles container not found!');
+        // Create the element if it doesn't exist
+        const bgParticles = document.createElement('div');
+        bgParticles.id = 'background-particles';
+        document.body.insertBefore(bgParticles, document.body.firstChild);
+    }
+
     const getParticleConfig = () => {
         const theme = document.documentElement.getAttribute('data-theme') || 'light';
         
@@ -47,12 +55,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initParticles = () => {
         if (pJS_instance) {
-            pJS_instance.pJS.fn.vendors.destroypJS();
-            pJS_instance = null;
+            try {
+                pJS_instance.pJS.fn.vendors.destroypJS();
+                pJS_instance = null;
+            } catch (e) {
+                console.error('Error destroying previous particles instance:', e);
+            }
         }
+        
         if (backgroundParticles && typeof particlesJS !== 'undefined') {
-            particlesJS('background-particles', getParticleConfig());
-            pJS_instance = pJSDom[0];
+            try {
+                console.log('Initializing background particles...');
+                particlesJS(backgroundParticles.id, getParticleConfig());
+                
+                // Find and store the instance for later reference
+                if (typeof pJSDom !== 'undefined' && pJSDom.length > 0) {
+                    for (let i = 0; i < pJSDom.length; i++) {
+                        if (pJSDom[i].pJS.canvas.el.id === backgroundParticles.id) {
+                            pJS_instance = pJSDom[i];
+                            break;
+                        }
+                    }
+                }
+                console.log('Background particles initialized successfully');
+            } catch (e) {
+                console.error('Error initializing particles:', e);
+            }
+        } else {
+            console.warn('backgroundParticles element not found or particlesJS not loaded');
         }
     };
 
@@ -77,16 +107,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseY = -100;
 
     const updateEffectsState = () => {
-        if (!toggleButton || !snowContainer) return;
+        if (!toggleButton) return;
 
         if (snowEnabled) {
             toggleButton.classList.add('active');
-            snowContainer.classList.remove('hidden');
-            backgroundParticles?.classList.remove('hidden');
+            if (snowContainer) snowContainer.classList.remove('hidden');
+            if (backgroundParticles) {
+                backgroundParticles.classList.remove('hidden');
+                // Re-initialize particles when showing them
+                setTimeout(initParticles, 100);
+            }
         } else {
             toggleButton.classList.remove('active');
-            snowContainer.classList.add('hidden');
-            backgroundParticles?.classList.add('hidden');
+            if (snowContainer) snowContainer.classList.add('hidden');
+            if (backgroundParticles) backgroundParticles.classList.add('hidden');
         }
     };
 
@@ -192,17 +226,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial State
     updateEffectsState();
+    
+    // Initialize necessary effects based on the enabled state
     if (snowEnabled) {
         initSnow();
+        // Ensure particles are initialized if enabled
+        if (backgroundParticles) {
+            setTimeout(initParticles, 300);
+        }
     }
 
-    // Always initialize the hero particles, but don't toggle them.
+    // Initialize hero particles
     const particlesElement = document.getElementById('particles-js');
     if (particlesElement && typeof particlesJS !== 'undefined') {
         particlesJS.load('particles-js', 'particlesjs-config.json', function() {
-            console.log('callback - hero particles.js config loaded initially');
+            console.log('Hero particles.js config loaded successfully');
         });
     }
     
+    // Start animation loop
     animateSnow();
 }); 
