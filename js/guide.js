@@ -908,10 +908,6 @@ function getGuideMarkdown() {
 <div class="contact-card">
   <div class="contact-card-title">联系我们</div>
   <div class="contact-card-item">
-    <span class="contact-card-label">邮箱：</span>
-    <a href="mailto:aaswordman@gmail.com" class="contact-card-link">aaswordman@gmail.com</a>
-  </div>
-  <div class="contact-card-item">
     <span class="contact-card-label">创意提交：</span>
     <a href="https://github.com/AAswordman/Operit/issues" target="_blank" class="contact-card-link">GitHub Issues</a>
   </div>

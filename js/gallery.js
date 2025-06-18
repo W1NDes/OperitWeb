@@ -255,25 +255,12 @@ function drawRandomCards() {
 }
 
 function createGalleryCard(item) {
-    const card = document.createElement('div');
+    const card = document.createElement('a');
     card.className = 'gallery-card';
 
     if (item.link) {
-        card.dataset.link = item.link;
+        card.href = item.link;
         card.classList.add('has-link');
-        card.addEventListener('click', (e) => {
-            // If the card is in the draw result modal, open link in a new tab.
-            if (e.currentTarget.closest('.draw-result-container')) {
-                e.stopPropagation();
-                window.open(item.link, '_blank');
-                return;
-            }
-
-            // For the main gallery, navigate if the card is visible.
-            if (card.classList.contains('active') || card.classList.contains('prev') || card.classList.contains('next')) {
-                window.location.href = item.link;
-            }
-        });
     }
     
     const innerHtml = `

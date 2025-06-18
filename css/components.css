@@ -249,6 +249,19 @@ input:checked + .slider:before {
     transform: scale(1.1);
 }
 
+/* Drawn Card Hover Effect */
+.drawn-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.drawn-card-link:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
 /* Dark mode overrides */
 [data-theme="dark"] .secondary-button {
     background-color: var(--card-background);
