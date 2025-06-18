@@ -79,15 +79,12 @@
 }
 
 /* Sidebar Navigation (TOC) */
-.sidebar-nav {
-    flex-grow: 1;
+.sidebar-div {
     overflow-y: auto;
-    overflow-x: hidden;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
 
-#guide-toc-list,
 #guide-toc-list ul {
     list-style: none;
     padding: 0;
@@ -150,7 +147,7 @@
 }
 
 /* Custom Scrollbar for Sidebar */
-.sidebar-nav::-webkit-scrollbar {
+.sidebar-div::-webkit-scrollbar {
     display: none;
 }
 
@@ -196,11 +193,11 @@
     pointer-events: none;
 }
 
-.manual-sidebar.collapsed .sidebar-nav {
+.manual-sidebar.collapsed .sidebar-div {
     overflow-y: hidden;
 }
 
-/* .manual-sidebar.collapsed .sidebar-nav::-webkit-scrollbar {
+/* .manual-sidebar.collapsed .sidebar-div::-webkit-scrollbar {
     width: 0;
 } */
 
@@ -270,14 +267,14 @@
         padding-bottom: 0.5rem;
     }
 
-    .sidebar-nav {
+    .sidebar-div {
         /* Let flexbox determine the height and enable scrolling */
         min-height: 0;
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
     }
 
-    /* .sidebar-nav::-webkit-scrollbar {
+    /* .sidebar-div::-webkit-scrollbar {
         display: none;
     } */
 
