@@ -2,6 +2,19 @@
 .manual-wrapper {
     display: flex;
     background-color: var(--background-color);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Particles Background */
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
 }
 
 /* --- UNIFIED SIDEBAR STYLES --- */
@@ -17,7 +30,7 @@
     display: flex;
     flex-direction: column;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1001;
+    z-index: 999; /* One less than header z-index */
 }
 
 .sidebar-header {
@@ -146,12 +159,19 @@
     flex-grow: 1;
     padding-left: 280px;
     transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
 }
 
 .manual-content {
     max-width: 900px;
     margin: 0 auto;
     padding: 2rem;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 /* --- Sidebar States (Collapsed/Pinned) --- */

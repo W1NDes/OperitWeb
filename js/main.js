@@ -1,12 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Particles.js background
-    if (document.getElementById('particles-js')) {
-        particlesJS.load('particles-js', 'particlesjs-config.json', function() {
-            console.log('callback - particles.js config loaded');
-        });
-    }
-
+document.addEventListener('DOMContentLoaded', function() {
     // 平滑滚动效果
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -104,152 +96,119 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 600);
         });
     }
+});
 
+document.addEventListener('DOMContentLoaded', () => {
     const translations = {
         en: {
-            "home": "Home",
-            "features": "Features",
-            "userGuide": "User Guide",
-            "download": "GitHub",
-            "newHeroTitle": "The First Fully-Featured AI Assistant on Mobile",
-            "newHeroSubtitle": "Runs completely independently with powerful tool-calling capabilities",
-            "downloadLatest": "Download Latest",
-            "galleryTitle": "Example Gallery",
-            "galleryDesc": "Experience what Operit AI can do through these interactive examples",
-            "coreFeatures": "Core Features",
-            "aiAssistant": "AI Assistant",
-            "aiAssistantDesc": "A versatile assistant running independently on your Android device, deeply integrated with system permissions and tools.",
-            "richTools": "Rich Toolset",
-            "richToolsDesc": "Over 40 built-in tools, from file operations to network requests and UI automation.",
-            "pluginSystem": "Plugin System",
-            "pluginSystemDesc": "An powerful plugin ecosystem for limitless functional expansion.",
-            "gameCreation": "Game Creation",
-            "gameCreationDesc": "Create and play games directly on your phone, from concept to completion.",
-            "webDev": "Web Development",
-            "webDevDesc": "Design web pages on your phone and export them as standalone applications.",
-            "floatingWindow": "Floating Window",
-            "floatingWindowDesc": "Access AI functions anytime with convenience and efficiency.",
-            "quickStartTitle": "Quick Start",
-            "requirementsTitle": "System Requirements",
-            "req1": "Android 8.0+ (API 26+)",
-            "req2": "4GB+ RAM recommended",
-            "req3": "200MB+ Storage",
-            "installationTitle": "Installation Steps",
-            "step1": "Download the latest APK from the link above.",
-            "step2": "Install the app and follow the on-screen guide to grant permissions.",
-            "step3": "Enjoy your new AI assistant!",
-            "contributorsTitle": "☃️ Contributors"
+            home: "Home",
+            userGuide: "User Manual",
+            features: "Features",
+            download: "Download",
+            heroTitle: "The AI that turns your phone into a true smart assistant.",
+            heroSubtitle: "From here, you will witness the creativity of countless users. From here, you will showcase your creativity!",
+            newHeroTitle: "The First Fully-Featured AI Assistant for Mobile",
+            newHeroSubtitle: "Completely independent operation with powerful tool capabilities",
+            downloadLatest: "Download Latest Version",
+            getStarted: "Download Now",
+            featuresTitle: "Features",
+            feature1Title: "Intelligent Creation",
+            feature1Desc: "Let AI build applications, write code, create games, and more, directly on your device.",
+            feature2Title: "Extensible",
+            feature2Desc: "With support for extension packages and a market of community-driven tools (MCPs), the possibilities are endless.",
+            feature3Title: "Device Automation",
+            feature3Desc: "Operit AI can control your device, manage files, send messages, and interact with other apps.",
+            showcase1Title: "Game Creation",
+            showcase1Desc: "Describe your game idea, and the AI will design, implement, and package it for you.",
+            showcase2Title: "Web Development",
+            showcase2Desc: "Design web pages on your phone and export them as standalone applications.",
+            showcase3Title: "Floating Window & Attachments",
+            showcase3Desc: "Use the floating window for quick access and easily share files with the AI.",
+            galleryTitle: "Example Gallery",
+            galleryDesc: "Experience what Operit AI can do through these interactive examples",
+            quickStartTitle: "Quick Start",
+            requirementsTitle: "System Requirements",
+            req1: "Android 8.0+ (API 26+)",
+            req2: "4GB+ RAM recommended",
+            req3: "200MB+ Storage",
+            installationTitle: "Installation Steps",
+            step1: "Download the latest APK from the link above.",
+            step2: "Install the app and follow the on-screen guide to grant permissions.",
+            step3: "Enjoy your new AI assistant!",
+            downloadTitle: "Download",
+            downloadDesc: "For users in mainland China or regions with slow GitHub access.",
+            downloadApk: "Download APK (v1.1.5)",
+            contributorsTitle: "Contributors",
+            // Core Features section translations
+            coreFeatures: "Core Features",
+            aiAssistant: "AI Intelligent Assistant",
+            aiAssistantDesc: "Runs completely independently on your Android device, a comprehensive assistant deeply integrated with Android permissions and various tools",
+            richTools: "Rich Tool Set",
+            richToolsDesc: "Built-in with over 40 powerful tools, from file operations to network requests, UI automation, and more",
+            pluginSystem: "Plugin System",
+            pluginSystemDesc: "Powerful plugin ecosystem, enabling unlimited possibilities for extension",
+            gameCreation: "Game Creation",
+            gameCreationDesc: "Create and play games directly on your phone, from conception to implementation in one go",
+            webDev: "Web Development",
+            webDevDesc: "Design web pages on your phone and export them as standalone applications",
+            floatingWindow: "Floating Window Mode",
+            floatingWindowDesc: "Access AI features anytime, convenient and efficient"
         },
         zh: {
-            "home": "首页",
-            "features": "功能",
-            "userGuide": "用户手册",
-            "download": "GitHub",
-            "newHeroTitle": "移动端首个功能完备的AI智能助手",
-            "newHeroSubtitle": "完全独立运行，拥有强大的工具调用能力",
-            "downloadLatest": "下载最新版",
-            "galleryTitle": "示例画廊",
-            "galleryDesc": "通过这些互动示例，体验 Operit AI 的强大功能",
-            "coreFeatures": "核心特性",
-            "aiAssistant": "AI 智能助手",
-            "aiAssistantDesc": "完全独立运行于您的 Android 设备，是一个和安卓权限和各种工具深度融合的全能助手",
-            "richTools": "丰富工具集",
-            "richToolsDesc": "内置超过40种强大工具，从文件操作到网络请求、UI自动化，应有尽有",
-            "pluginSystem": "插件系统",
-            "pluginSystemDesc": "强大的插件生态，让功能扩展无限可能",
-            "gameCreation": "游戏制作",
-            "gameCreationDesc": "直接在手机上创建和玩游戏，从构思到实现一气呵成",
-            "webDev": "Web 开发",
-            "webDevDesc": "在手机上设计网页并导出为独立应用",
-            "floatingWindow": "悬浮窗模式",
-            "floatingWindowDesc": "随时调用AI功能，便捷高效",
-            "quickStartTitle": "快速开始",
-            "requirementsTitle": "系统需求",
-            "req1": "安卓 8.0+ (API 26+)",
-            "req2": "推荐 4GB+ 运行内存",
-            "req3": "200MB+ 存储空间",
-            "installationTitle": "安装步骤",
-            "step1": "从上方链接下载最新的APK文件。",
-            "step2": "安装应用并根据屏幕引导授予必要权限。",
-            "step3": "开始享受您的新AI助手！",
-            "contributorsTitle": "☃️ 贡献者"
+            home: "首页",
+            userGuide: "用户手册",
+            features: "功能",
+            download: "下载",
+            heroTitle: "将您的手机变成真正智能助手的AI。",
+            heroSubtitle: "从这里开始，你将看到无数用户的创造力。从这里开始，你将展示你的创造力！",
+            newHeroTitle: "移动端首个功能完备的AI智能助手",
+            newHeroSubtitle: "完全独立运行，拥有强大的工具调用能力",
+            downloadLatest: "下载最新版",
+            getStarted: "立即下载",
+            featuresTitle: "核心特性",
+            feature1Title: "智能创造",
+            feature1Desc: "让AI直接在您的设备上构建应用程序、编写代码、创建游戏等等。",
+            feature2Title: "可拓展",
+            feature2Desc: "通过对扩展包和社区驱动工具市场（MCP）的支持，可能性是无限的。",
+            feature3Title: "设备自动化",
+            feature3Desc: "Operit AI 可以控制您的设备、管理文件、发送消息以及与其他应用程序交互。",
+            showcase1Title: "游戏制作",
+            showcase1Desc: "只需描述您的游戏创意，AI就能帮您设计、实现并打包成可分享的游戏。",
+            showcase2Title: "Web开发",
+            showcase2Desc: "在手机上设计网页并导出为独立应用。",
+            showcase3Title: "悬浮窗与附件",
+            showcase3Desc: "使用悬浮窗便捷调用，附件功能轻松共享文件。",
+            galleryTitle: "示例画廊",
+            galleryDesc: "点击抽卡，查看Operit AI的功能示例。",
+            quickStartTitle: "快速开始",
+            requirementsTitle: "系统要求",
+            req1: "Android 8.0+ (API 26+)",
+            req2: "建议4GB以上内存",
+            req3: "存储空间200MB+",
+            installationTitle: "安装步骤",
+            step1: "从上方的链接下载最新的APK。",
+            step2: "安装应用并根据屏幕引导授予权限。",
+            step3: "开始享受您的AI助手！",
+            downloadTitle: "下载",
+            downloadDesc: "为中国大陆或GitHub访问速度较慢地区的用户提供。",
+            downloadApk: "下载 APK (v1.1.5)",
+            contributorsTitle: "贡献者",
+            // Core Features section translations
+            coreFeatures: "核心特性",
+            aiAssistant: "AI 智能助手",
+            aiAssistantDesc: "完全独立运行于您的 Android 设备，是一个和安卓权限和各种工具深度融合的全能助手",
+            richTools: "丰富工具集",
+            richToolsDesc: "内置超过40种强大工具，从文件操作到网络请求、UI自动化，应有尽有",
+            pluginSystem: "插件系统",
+            pluginSystemDesc: "强大的插件生态，让功能扩展无限可能",
+            gameCreation: "游戏制作",
+            gameCreationDesc: "直接在手机上创建和玩游戏，从构思到实现一气呵成",
+            webDev: "Web 开发",
+            webDevDesc: "在手机上设计网页并导出为独立应用",
+            floatingWindow: "悬浮窗模式",
+            floatingWindowDesc: "随时调用AI功能，便捷高效"
         }
     };
-
-    const setLanguage = (lang) => {
-        document.querySelectorAll('[data-i18n]').forEach(element => {
-            const key = element.getAttribute('data-i18n');
-            if (translations[lang] && translations[lang][key]) {
-                element.textContent = translations[lang][key];
-            }
-        });
-        document.documentElement.lang = lang;
-        localStorage.setItem('language', lang);
-        
-        // Update language switcher text
-        const currentLangSpan = document.getElementById('current-lang');
-        if (currentLangSpan) {
-            currentLangSpan.textContent = lang === 'zh' ? '中' : 'En';
-        }
-    };
-
-    // Mobile menu toggle
-    const hamburger = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
-
-    if(hamburger && navLinks) {
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('is-active');
-        });
-    }
-
-    // Language switcher
-    const langToggleBtn = document.getElementById('language-toggle-btn');
-    const langOptions = document.getElementById('language-options');
-    const langOptionLinks = document.querySelectorAll('.language-option');
-    
-    if (langToggleBtn && langOptions && langOptionLinks) {
-        langToggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            langOptions.style.display = langOptions.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!langToggleBtn.contains(e.target) && !langOptions.contains(e.target)) {
-                langOptions.style.display = 'none';
-            }
-        });
-
-        langOptionLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const selectedLang = link.getAttribute('data-lang');
-                setLanguage(selectedLang);
-                langOptions.style.display = 'none';
-            });
-        });
-    }
-
-    // Load saved language or default to Chinese
-    const savedLang = localStorage.getItem('language') || 'zh';
-    setLanguage(savedLang);
-
-    // Theme switcher
-    const themeToggle = document.getElementById('theme-toggle-checkbox');
-    const applyTheme = (theme) => {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        if(themeToggle) themeToggle.checked = theme === 'dark';
-    };
-
-    themeToggle?.addEventListener('change', (e) => {
-        applyTheme(e.target.checked ? 'dark' : 'light');
-    });
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    applyTheme(savedTheme);
 
     // Click effect
     const clickEffect = document.createElement('div');
@@ -265,6 +224,89 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mouseup', () => {
         clickEffect.classList.remove('active');
     });
+
+    // --- Language Switcher ---
+    const langToggleButton = document.getElementById('language-toggle-btn');
+    const langOptions = document.getElementById('language-options');
+    const currentLangSpan = document.getElementById('current-lang');
+
+    if (langToggleButton && langOptions && currentLangSpan) {
+        langToggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langOptions.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!langOptions.contains(e.target) && !langToggleButton.contains(e.target)) {
+                langOptions.classList.remove('show');
+            }
+        });
+
+        langOptions.addEventListener('click', (e) => {
+            if (e.target.classList.contains('language-option')) {
+                e.preventDefault();
+                const selectedLang = e.target.getAttribute('data-lang');
+                setLanguage(selectedLang);
+                langOptions.classList.remove('show');
+            }
+        });
+    }
+
+    function setLanguage(lang) {
+        document.documentElement.lang = lang;
+        localStorage.setItem('user-lang', lang); // Save preference
+        
+        if (currentLangSpan) {
+            currentLangSpan.textContent = lang === 'zh' ? '中' : 'En';
+        }
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
+                el.innerHTML = translations[lang][key];
+            }
+        });
+    }
+
+    // Set initial language
+    const savedLang = localStorage.getItem('user-lang');
+    const userLang = savedLang || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+    setLanguage(userLang);
+
+    // --- Theme Switcher ---
+    const themeToggle = document.getElementById('theme-toggle-checkbox');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        if (themeToggle) {
+            themeToggle.checked = theme === 'dark';
+        }
+        // Dispatch a custom event to notify other scripts of the theme change
+        window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: theme } }));
+    }
+
+    function detectAndApplyTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        } else {
+            applyTheme(systemPrefersDark.matches ? 'dark' : 'light');
+        }
+    }
+
+    themeToggle.addEventListener('change', (e) => {
+        applyTheme(e.target.checked ? 'dark' : 'light');
+    });
+
+    systemPrefersDark.addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+             applyTheme(e.matches ? 'dark' : 'light');
+        }
+    });
+
+    detectAndApplyTheme();
 
     // --- Cursor Click Effect ---
     document.addEventListener('click', (e) => {

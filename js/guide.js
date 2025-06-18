@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = `#${id}`;
-
+                
                 let icon = '';
                 let title = '';
 
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.appendChild(a);
 
                 if (level === 2) {
-                    tocList.appendChild(li);
+                tocList.appendChild(li);
                     lastH2Li = li;
                     lastH3Li = null;
                 } else if (level === 3) {

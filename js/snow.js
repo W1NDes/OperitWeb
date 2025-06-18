@@ -1,7 +1,67 @@
 document.addEventListener('DOMContentLoaded', () => {
     const snowContainer = document.getElementById('snow-container');
     const toggleButton = document.getElementById('snow-toggle-btn');
+    const backgroundParticles = document.getElementById('background-particles');
+    let pJS_instance = null;
+
+    const getParticleConfig = () => {
+        const theme = document.documentElement.getAttribute('data-theme') || 'light';
+        
+        let speed, size, hoverMode;
+
+        if (theme === 'dark') {
+            speed = 2;
+            size = 3;
+            hoverMode = 'grab';
+        } else { // light theme
+            speed = 5;
+            size = 5; // Larger particles for light mode
+            hoverMode = 'repulse'; // Repulse effect for light mode
+        }
+
+        return {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 2000 } },
+                "color": { "value": "#ffffff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 0.8, "opacity_min": 0.1, "sync": false } },
+                "size": { "value": size, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
+                "line_linked": { "enable": true, "distance": 120, "color": "#ffffff", "opacity": 0.3, "width": 1 },
+                "move": { "enable": true, "speed": speed, "direction": "top-right", "random": false, "straight": false, "out_mode": "out" }
+            },
+            "interactivity": {
+                "detect_on": "window",
+                "events": {
+                    "onhover": { "enable": true, "mode": hoverMode },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 140, "line_linked": { "opacity": 1 } },
+                    "repulse": { "distance": 100, "duration": 0.4 }
+                }
+            },
+            "retina_detect": true
+        };
+    };
+
+    const initParticles = () => {
+        if (pJS_instance) {
+            pJS_instance.pJS.fn.vendors.destroypJS();
+            pJS_instance = null;
+        }
+        if (backgroundParticles && typeof particlesJS !== 'undefined') {
+            particlesJS('background-particles', getParticleConfig());
+            pJS_instance = pJSDom[0];
+        }
+    };
+
+    // Initialize particles once
+    initParticles();
     
+    // Listen for theme changes to update particle speed
+    window.addEventListener('themeChanged', initParticles);
+
     // Default to off on mobile, on on desktop, unless user has a preference
     const isMobile = window.innerWidth <= 768;
     let snowEnabled = localStorage.getItem('snowEnabled');
@@ -16,14 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseX = -100;
     let mouseY = -100;
 
-    const updateToggleButton = () => {
+    const updateEffectsState = () => {
         if (!toggleButton || !snowContainer) return;
+
         if (snowEnabled) {
             toggleButton.classList.add('active');
             snowContainer.classList.remove('hidden');
+            backgroundParticles?.classList.remove('hidden');
         } else {
             toggleButton.classList.remove('active');
             snowContainer.classList.add('hidden');
+            backgroundParticles?.classList.add('hidden');
         }
     };
 
@@ -109,18 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleSnow = () => {
         snowEnabled = !snowEnabled;
         localStorage.setItem('snowEnabled', snowEnabled);
-        updateToggleButton();
+        updateEffectsState();
         if (snowEnabled && snowflakes.length === 0) {
             initSnow();
-        }
-
-        // Switch particles.js config on the main page
-        const particlesElement = document.getElementById('particles-js');
-        if (particlesElement && typeof particlesJS !== 'undefined') {
-            const configFile = snowEnabled ? 'particlesjs-config (3).json' : 'particlesjs-config.json';
-            particlesJS.load('particles-js', configFile, function() {
-                console.log('callback - particles.js config reloaded');
-            });
         }
     };
 
@@ -137,9 +191,18 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', initSnow);
 
     // Initial State
-    updateToggleButton();
+    updateEffectsState();
     if (snowEnabled) {
         initSnow();
     }
+
+    // Always initialize the hero particles, but don't toggle them.
+    const particlesElement = document.getElementById('particles-js');
+    if (particlesElement && typeof particlesJS !== 'undefined') {
+        particlesJS.load('particles-js', 'particlesjs-config.json', function() {
+            console.log('callback - hero particles.js config loaded initially');
+        });
+    }
+    
     animateSnow();
 }); 
