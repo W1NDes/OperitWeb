@@ -507,7 +507,6 @@ function getGuideMarkdown() {
        <th style="text-align: center; padding: 8px;">步骤一：进入包管理</th>
         <th style="text-align: center; padding: 8px;">步骤二：启用所需拓展包</th>
       </tr>
-     <p>内置包（除<code>coderunner</code>外）开箱即用。其余拓展包与MCP依赖Termux环境，使用前请确保Termux已在后台运行。</p>
     </thead>
     <tbody>
       <tr>
@@ -556,6 +555,232 @@ function getGuideMarkdown() {
   </tr>
 </table>
 
+<h2 id="section-3" style="display: flex; justify-content: space-between; align-items: center;"><span>🚀 拓展用法实操</span><a href="#toc" style="text-decoration: none; font-size: 0.8em;" title="返回目录">🔝</a></h2>
+
+*(本部分将通过实际案例，向您展示如何利用拓展包、计划模式等高级功能，完成更复杂的任务。)*
+
+<h3 id="section-3-1" style="display: flex; justify-content: space-between; align-items: center;"><span>🧰 开箱即用</span><a href="#section-3" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">↩️</a></h3>
+<em>这部分为<strong>内置包</strong></em>
+<br>
+当你让AI写软件，软件的性能取决于AI的能力。示例中的模型为<code>Deepseel-R1</code>模型
+
+<table style="width: 100%;">
+  <thead>
+    <tr>
+      <th style="width: 20%; text-align: left;">示例 (Example)</th>
+      <th style="width: 30%; text-align: left;">说明 (Description)</th>
+      <th style="width: 50%; text-align: left;">预览 (Preview)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><strong>写一个2D弹幕游戏</strong></td>
+      <td style="vertical-align: top;">
+        通过简单的对话，让AI为您构思并实现一个经典的2D弹幕射击游戏。Operit AI能够调用其基础代码能力，仅使用HTML和JavaScript，从零开始构建出完整的游戏逻辑与动态画面。
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/game_maker_chat.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/game_maker_chat.jpg" alt="2D弹幕游戏聊天" style="width: 30%; height: auto; margin-bottom: 5px;">
+        </a>
+        <a href="manuals/assets/game_maker_show.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/game_maker_show.jpg" alt="2D弹幕游戏展示" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><strong>用HTML代码写一个3D游戏</strong></td>
+      <td style="vertical-align: top;">
+        无需任何拓展包，Operit AI 仅通过内置的核心工具，就可以直接用HTML和JavaScript代码，为您呈现一个动态的3D游戏场景。
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/expamle/3ddebdde4958ac152eeca436e39c0f6.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/3ddebdde4958ac152eeca436e39c0f6.jpg" alt="3D游戏示例1" style="width: 30%; height: auto; margin-bottom: 5px;">
+        </a>
+        <a href="manuals/assets/expamle/759d86a7d74351675b32acb6464585d.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/759d86a7d74351675b32acb6464585d.jpg" alt="3D游戏示例2" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><strong>简单的视频处理</strong></td>
+      <td style="vertical-align: top;">
+        同样地，应用内置了强大的FFmpeg工具，无需额外安装，即可让AI帮您完成视频格式转换、截取、合并等多种处理任务。
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg" alt="简单的视频处理示例" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><strong>软件打包与部署</strong></td>
+      <td style="vertical-align: top;">
+        从编写代码到最终发布，Operit AI 可以进一步调用平台工具，将完成的软件打包成适用于安卓（APK）或Windows（EXE）的可执行文件，实现端到端的自动化开发流程。
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/web_developer.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/web_developer.jpg" alt="软件打包示例1" style="width: 30%; height: auto; margin-bottom: 5px;">
+        </a>
+        <a href="manuals/assets/game_maker_packer.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/game_maker_packer.jpg" alt="软件打包示例2" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="section-3-2" style="display: flex; justify-content: space-between; align-items: center;"><span>📦 拓展包</span><a href="#section-3" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">↩️</a></h3>
+
+
+<p><em>演示版本 <code>1.1.6</code></em><br>
+（图片可点击放大）</p>
+
+<table style="width: 100%;">
+  <thead>
+    <tr>
+      <th style="width: 20%; text-align: left;">拓展包 (Package)</th>
+      <th style="width: 30%; text-align: left;">功能说明 (Description)</th>
+      <th style="width: 50%; text-align: left;">预览 (Preview)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><code>writer</code></td>
+      <td style="vertical-align: top;">
+        高级文件编辑和读取功能，支持分段编辑、差异编辑、行号编辑以及高级文件读取操作
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/expamle/065e5ca8a8036c51a7905d206bbb56c.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/065e5ca8a8036c51a7905d206bbb56c.jpg" alt="writer示例" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>various_search</code></td>
+      <td style="vertical-align: top;">
+        多平台搜索功能，支持从必应、百度、搜狗、夸克等平台获取搜索结果
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg" alt="多平台搜索示例1" style="width: 30%; height: auto; margin-bottom: 5px;">
+        </a>
+        <a href="manuals/assets/expamle/f9b8aeba4878775d1252ad8d5d8620a.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/f9b8aeba4878775d1252ad8d5d8620a.jpg" alt="多平台搜索示例2" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>daily_life</code></td>
+      <td style="vertical-align: top;">
+        日常生活工具集合，包括日期时间查询、设备状态监测、天气搜索、提醒闹钟设置、短信电话通讯等
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg" alt="日常生活示例" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>super_admin</code></td>
+      <td style="vertical-align: top;">
+        超级管理员工具集，提供终端命令和Shell操作的高级功能
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg" alt="超级管理员示例1" style="width: 30%; height: auto; margin-bottom: 5px;">
+        </a>
+        <a href="manuals/assets/expamle/6f81901ae47f5a3584167148017d132.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/6f81901ae47f5a3584167148017d132.jpg" alt="超级管理员示例2" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>code_runner</code></td>
+      <td style="vertical-align: top;" colspan="2">多语言代码执行能力，支持JavaScript、Python、Ruby、Go和Rust脚本的运行<br><em>你可以在<code>工具箱>终端自动配置</code>中完成以上环境的配置</em></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>baidu_map</code></td>
+      <td style="vertical-align: top;">
+        百度地图相关功能
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg" alt="百度地图示例" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>qq_intelligent</code></td>
+      <td style="vertical-align: top;" colspan="2">QQ智能助手，通过UI自动化技术实现QQ应用交互</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>time</code></td>
+      <td style="vertical-align: top;" colspan="2">提供时间相关功能</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><code>various_output</code></td>
+      <td style="vertical-align: top;">
+        提供图片输出功能
+      </td>
+      <td style="vertical-align: top; text-align: center;">
+        <a href="manuals/assets/expamle/5fff4b49db78ec01e189658de8ea997.jpg" target="_blank" rel="noopener noreferrer">
+          <img src="manuals/assets/expamle/5fff4b49db78ec01e189658de8ea997.jpg" alt="图片输出示例" style="width: 30%; height: auto;">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h3 id="section-3-3" style="display: flex; justify-content: space-between; align-items: center;"><span>🛠️ 核心工具</span><a href="#section-3" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">↩️</a></h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>工具 (Tool)</th>
+      <th>功能说明 (Description)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>sleep</code></td><td>短暂暂停执行</td></tr>
+    <tr><td><code>device_info</code></td><td>获取设备详细信息</td></tr>
+    <tr><td><code>use_package</code></td><td>激活扩展包</td></tr>
+    <tr><td><code>query_problem_library</code></td><td>查询问题库</td></tr>
+    <tr><td><code>list_files</code></td><td>列出目录中的文件</td></tr>
+    <tr><td><code>read_file</code></td><td>读取文件内容</td></tr>
+    <tr><td><code>write_file</code></td><td>写入内容到文件</td></tr>
+    <tr><td><code>delete_file</code></td><td>删除文件或目录</td></tr>
+    <tr><td><code>file_exists</code></td><td>检查文件是否存在</td></tr>
+    <tr><td><code>move_file</code></td><td>移动或重命名文件</td></tr>
+    <tr><td><code>copy_file</code></td><td>复制文件或目录</td></tr>
+    <tr><td><code>make_directory</code></td><td>创建目录</td></tr>
+    <tr><td><code>find_files</code></td><td>搜索匹配文件</td></tr>
+    <tr><td><code>zip_files/unzip_files</code></td><td>压缩/解压文件</td></tr>
+    <tr><td><code>download_file</code></td><td>从网络下载文件</td></tr>
+    <tr><td><code>http_request</code></td><td>发送HTTP请求</td></tr>
+    <tr><td><code>multipart_request</code></td><td>上传文件</td></tr>
+    <tr><td><code>manage_cookies</code></td><td>管理cookies</td></tr>
+    <tr><td><code>visit_web</code></td><td>访问并提取网页内容</td></tr>
+    <tr><td><code>get_system_setting</code></td><td>获取系统设置</td></tr>
+    <tr><td><code>modify_system_setting</code></td><td>修改系统设置</td></tr>
+    <tr><td><code>install_app/uninstall_app</code></td><td>安装/卸载应用</td></tr>
+    <tr><td><code>start_app/stop_app</code></td><td>启动/停止应用</td></tr>
+    <tr><td><code>get_notifications</code></td><td>获取设备通知</td></tr>
+    <tr><td><code>get_device_location</code></td><td>获取设备位置</td></tr>
+    <tr><td><code>get_page_info</code></td><td>获取UI屏幕信息</td></tr>
+    <tr><td><code>tap</code></td><td>模拟点击坐标</td></tr>
+    <tr><td><code>click_element</code></td><td>点击UI元素</td></tr>
+    <tr><td><code>set_input_text</code></td><td>设置输入文本</td></tr>
+    <tr><td><code>press_key</code></td><td>模拟按键</td></tr>
+    <tr><td><code>swipe</code></td><td>模拟滑动手势</td></tr>
+    <tr><td><code>find_element</code></td><td>查找UI元素</td></tr>
+    <tr><td><code>ffmpeg_execute</code></td><td>执行FFmpeg命令</td></tr>
+    <tr><td><code>ffmpeg_info</code></td><td>获取FFmpeg信息</td></tr>
+    <tr><td><code>ffmpeg_convert</code></td><td>转换视频文件</td></tr>
+  </tbody>
+</table>
+
+<h3 id="section-3-4" style="display: flex; justify-content: space-between; align-items: center;"><span>🛒 MCP市场</span><a href="#section-3" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">↩️</a></h3>
 <h4 id="section-2-5-3">MCP配置流程</h4>
 <p>在Operit AI中配置和管理MCP（模型上下文协议）插件，可以极大地扩展AI的能力。以下是详细的配置步骤：</p>
 <table style="width: 100%; border-collapse: separate; border-spacing: 0 1em;">
@@ -579,10 +804,7 @@ function getGuideMarkdown() {
    </tbody>
 </table>
 
-<h4 id="section-3-4-1" style="display: flex; justify-content: space-between; align-items: center;">
-          <span>MCP工作机制</span>
-          <a href="#section-3-4" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">⤴️</a>
-        </h4>
+<h4 id="section-3-4-1" style="display: flex; justify-content: space-between; align-items: center;"><span>MCP工作机制</span><a href="#section-3-4" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">⤴️</a></h4>
 <table style="width: 100%; margin-top: 1em;">
   <tbody>
     <tr>
@@ -590,7 +812,7 @@ function getGuideMarkdown() {
         我们的MCP服务器通过Termux运行在本地，并和软件进行交互。MCP会在软件打开的时候进行尝试启动，启动命令由每个插件配置中的<code>arg</code>参数以及<code>env</code>的环境变量决定。
       </td>
       <td style="width: 60%; padding: 12px; vertical-align: top; text-align: center;">
-        <img src="manuals/assets/41ebc2ec5278bd28e8361e3eb72128d.jpg" alt="MCP配置示例" style="width: 100%; max-width: 400px; height: auto; border-radius: 4px;">
+        <img src="manuals/assets/41ebc2ec5278bd28e8361e3eb72128d.jpg" alt="MCP配置示例" style="width: 30%; height: auto; border-radius: 4px;">
       </td>
     </tr>
   </tbody>
@@ -686,13 +908,17 @@ function getGuideMarkdown() {
 <div class="contact-card">
   <div class="contact-card-title">联系我们</div>
   <div class="contact-card-item">
-    <span class="contact-card-label">GitHub：</span>
-    <a href="https://github.com/AAswordman/Operit" target="_blank" class="contact-card-link">AAswordman/Operit</a>
+    <span class="contact-card-label">邮箱：</span>
+    <a href="mailto:aaswordman@gmail.com" class="contact-card-link">aaswordman@gmail.com</a>
+  </div>
+  <div class="contact-card-item">
+    <span class="contact-card-label">创意提交：</span>
+    <a href="https://github.com/AAswordman/Operit/issues" target="_blank" class="contact-card-link">GitHub Issues</a>
   </div>
   <div class="contact-card-description">
-    <p>我们欢迎您通过GitHub：</p>
+    <p>我们欢迎您：</p>
     <ul>
-      <li>提交您使用Operit AI创造的作品</li>
+      <li>提交您使用Operit AI创造的优秀作品</li>
       <li>分享您的创新想法和使用场景</li>
       <li>报告您遇到的问题或提出改进建议</li>
       <li>投稿您的创意和脑洞，一起让Operit变得更强大</li>
