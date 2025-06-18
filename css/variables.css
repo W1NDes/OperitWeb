@@ -6,21 +6,31 @@
     --background-color: #f0f4f8; /* A slightly grayish-blue background */
     --text-color: #333333;
     --card-background: #ffffff;
-    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --card-hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     --border-color: #e5e7eb;
     --header-background: rgba(255, 255, 255, 0.8);
     --transition-speed: 0.3s;
     --primary-color-rgb: 37, 99, 235;
     --snowflake-color: #ffffff; /* Snowflake color for light mode */
+
+    /* Scrollbar */
+    --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
+    --scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.4);
 }
 
 [data-theme="dark"] {
     --primary-color: #60a5fa;
-    --background-color: #1f2937;
+    --background-color: #1a1a2e;
     --text-color: #e5e7eb;
     --card-background: #374151;
-    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    --card-hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     --border-color: #4b5563;
     --header-background: rgba(31, 41, 55, 0.8);
     --snowflake-color: #ffffff; /* Snowflake color for dark mode */
+
+    /* Scrollbar */
+    --scrollbar-thumb-color: rgba(255, 255, 255, 0.2);
+    --scrollbar-thumb-hover-color: rgba(255, 255, 255, 0.4);
 } 

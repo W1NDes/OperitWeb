@@ -232,8 +232,41 @@ document.addEventListener('DOMContentLoaded', () => {
         clickEffect.classList.remove('active');
     });
 
+    // --- Language Switcher ---
+    const langToggleButton = document.getElementById('language-toggle-btn');
+    const langOptions = document.getElementById('language-options');
+    const currentLangSpan = document.getElementById('current-lang');
+
+    if (langToggleButton && langOptions && currentLangSpan) {
+        langToggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langOptions.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!langOptions.contains(e.target) && !langToggleButton.contains(e.target)) {
+                langOptions.classList.remove('show');
+            }
+        });
+
+        langOptions.addEventListener('click', (e) => {
+            if (e.target.classList.contains('language-option')) {
+                e.preventDefault();
+                const selectedLang = e.target.getAttribute('data-lang');
+                setLanguage(selectedLang);
+                langOptions.classList.remove('show');
+            }
+        });
+    }
+
     function setLanguage(lang) {
         document.documentElement.lang = lang;
+        localStorage.setItem('user-lang', lang); // Save preference
+        
+        if (currentLangSpan) {
+            currentLangSpan.textContent = lang === 'zh' ? '中' : 'En';
+        }
+
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (translations[lang] && translations[lang][key]) {
@@ -242,7 +275,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const userLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+    // Set initial language
+    const savedLang = localStorage.getItem('user-lang');
+    const userLang = savedLang || (navigator.language.startsWith('zh') ? 'zh' : 'en');
     setLanguage(userLang);
 
     // --- Theme Switcher ---
@@ -275,4 +310,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     detectAndApplyTheme();
+
+    // --- Cursor Click Effect ---
+    document.addEventListener('click', (e) => {
+        const effectContainer = document.createElement('div');
+        effectContainer.className = 'click-effect';
+        effectContainer.style.left = `${e.clientX}px`;
+        effectContainer.style.top = `${e.clientY}px`;
+        document.body.appendChild(effectContainer);
+
+        // Create blue ring
+        const ring = document.createElement('div');
+        ring.className = 'dissolve-ring';
+        effectContainer.appendChild(ring);
+
+        // Create white sparks
+        for (let i = 0; i < 8; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'spark';
+            const angle = i * 45; // 360 / 8 = 45
+            const distance = 50;
+            const x = Math.cos(angle * (Math.PI / 180)) * distance;
+            const y = Math.sin(angle * (Math.PI / 180)) * distance;
+            spark.style.setProperty('--x', `${x}px`);
+            spark.style.setProperty('--y', `${y}px`);
+            effectContainer.appendChild(spark);
+        }
+
+        setTimeout(() => {
+            effectContainer.remove();
+        }, 700);
+    });
 });

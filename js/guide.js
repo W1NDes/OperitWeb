@@ -1,82 +1,203 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Hamburger Menu Toggle
-    const hamburger = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
-
-    if (hamburger && navLinks) {
-        hamburger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
-
-        // Close menu when a link is clicked inside
-        navLinks.addEventListener('click', () => {
-            if (navLinks.classList.contains('active')) {
-                navLinks.classList.remove('active');
-                hamburger.classList.remove('active');
-            }
-        });
-
-        // Close menu when clicking outside of it
-        document.addEventListener('click', (e) => {
-            if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
-                navLinks.classList.remove('active');
-                hamburger.classList.remove('active');
-            }
-        });
-    }
-
-    // Guide page specific logic
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('manual-sidebar');
+    const contentContainer = document.getElementById('manual-content-container');
+    const pinButton = document.getElementById('sidebar-toggle-pin');
+    const mobileToggleButton = document.getElementById('sidebar-toggle-mobile');
     const contentDiv = document.getElementById('content');
-    if (!contentDiv) return;
+    const tocList = document.getElementById('guide-toc-list');
+    const backToTopButton = document.getElementById('back-to-top');
 
-    // --- Sidebar Toggle ---
-    const tocToggleBtn = document.getElementById('toc-toggle');
-    const guideSidebar = document.querySelector('.guide-sidebar');
-    const toggleIcon = tocToggleBtn?.querySelector('.toggle-icon');
+    if (!sidebar || !contentContainer || !contentDiv) return;
 
-    if (tocToggleBtn && guideSidebar && toggleIcon) {
-        const applySidebarState = (isCollapsed) => {
-            guideSidebar.classList.toggle('collapsed', isCollapsed);
-            toggleIcon.innerHTML = isCollapsed ? '&#x276F;' : '&#x276E;';
-            tocToggleBtn.setAttribute('title', isCollapsed ? 'Show' : 'Hide');
-        };
+    // --- State Management ---
+    let isPinned = localStorage.getItem('sidebarPinned') === 'true';
+    let isMobileOpen = false;
 
-        let isTocCollapsed = localStorage.getItem('tocCollapsed') === 'true';
-        applySidebarState(isTocCollapsed);
+    const applySidebarState = () => {
+        // Pinned state
+        if (isPinned) {
+            sidebar.classList.add('pinned');
+            sidebar.classList.remove('collapsed');
+            contentContainer.classList.remove('sidebar-collapsed');
+            pinButton?.classList.add('pinned');
+        } else {
+            sidebar.classList.remove('pinned');
+            pinButton?.classList.remove('pinned');
+        }
 
-        tocToggleBtn.addEventListener('click', () => {
-            isTocCollapsed = !isTocCollapsed;
-            localStorage.setItem('tocCollapsed', isTocCollapsed);
-            applySidebarState(isTocCollapsed);
-        });
-    }
-
-    // --- Active link highlighting on scroll ---
-    const tocLinks = document.querySelectorAll('#guide-toc-list a');
-    const sections = Array.from(tocLinks).map(link => {
-        const id = link.getAttribute('href').substring(1);
-        return document.getElementById(id);
-    }).filter(section => section !== null);
-
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.id;
-                tocLinks.forEach(link => {
-                    link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
-                });
-            }
-        });
-    }, { rootMargin: '-30% 0px -70% 0px' });
-
-    sections.forEach(section => {
-        observer.observe(section);
+        // Collapsed state (only for unpinned sidebar)
+        if (!isPinned && window.innerWidth > 768) {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            contentContainer.classList.toggle('sidebar-collapsed', isCollapsed);
+        }
+    };
+    
+    // --- Event Listeners ---
+    pinButton?.addEventListener('click', () => {
+        isPinned = !isPinned;
+        localStorage.setItem('sidebarPinned', isPinned);
+        applySidebarState();
     });
 
-    // --- Content Loading ---
-    const guideContent = `
+    mobileToggleButton?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        isMobileOpen = !isMobileOpen;
+        sidebar.classList.toggle('open', isMobileOpen);
+    });
+
+    sidebar?.addEventListener('mouseenter', () => {
+        if (!isPinned && window.innerWidth > 768) {
+            sidebar.classList.remove('collapsed');
+            contentContainer.classList.remove('sidebar-collapsed');
+        }
+    });
+
+    sidebar?.addEventListener('mouseleave', () => {
+        if (!isPinned && window.innerWidth > 768) {
+            sidebar.classList.add('collapsed');
+            contentContainer.classList.add('sidebar-collapsed');
+        }
+    });
+
+    // Close mobile sidebar when clicking outside
+    document.addEventListener('click', (e) => {
+        if (isMobileOpen && !sidebar.contains(e.target) && !mobileToggleButton.contains(e.target)) {
+            isMobileOpen = false;
+            sidebar.classList.remove('open');
+        }
+    });
+    
+    // Initial state setup
+    if (window.innerWidth > 768) {
+       if (!isPinned) {
+           sidebar.classList.add('collapsed');
+       }
+    }
+    applySidebarState();
+
+
+    // --- Content Loading & TOC Generation ---
+    const loadContent = () => {
+        const guideContent = getGuideMarkdown();
+        contentDiv.innerHTML = marked.parse(guideContent);
+        generateTOC();
+    };
+
+    const generateTOC = () => {
+        if (!tocList) return;
+        const headings = contentDiv.querySelectorAll('h2, h3');
+        tocList.innerHTML = '';
+
+        headings.forEach(heading => {
+            const level = parseInt(heading.tagName.substring(1), 10);
+            const id = heading.id;
+            const title = heading.textContent;
+
+            if (id && title) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${id}`;
+                
+                const icon = level === 2 ? '🔹' : '🔸';
+                a.innerHTML = `<span class="toc-icon">${icon}</span><span class="toc-text">${title}</span>`;
+                
+                li.appendChild(a);
+                if(level === 3) {
+                    li.style.paddingLeft = `20px`;
+                }
+                tocList.appendChild(li);
+            }
+        });
+        
+        setupScrollSpy();
+    };
+    
+    // --- Scroll-based Active Link Highlighting ---
+    const setupScrollSpy = () => {
+        const links = tocList.querySelectorAll('a');
+        if (links.length === 0) return;
+
+        const sections = Array.from(links).map(link => document.getElementById(link.getAttribute('href').substring(1))).filter(Boolean);
+        if (sections.length === 0) return;
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                const id = entry.target.id;
+                if (entry.isIntersecting) {
+                    links.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                    });
+                }
+            });
+        }, {
+            rootMargin: '0px 0px -80% 0px',
+            threshold: 0
+        });
+
+        sections.forEach(section => observer.observe(section));
+
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const topOffset = -60;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset + topOffset;
+                
+                    window.scrollTo({
+                         top: offsetPosition,
+                         behavior: "smooth"
+                    });
+
+                    if(isMobileOpen) {
+                        isMobileOpen = false;
+                        sidebar.classList.remove('open');
+                    }
+                }
+            });
+        });
+    };
+
+    // Back to top button
+    window.addEventListener('scroll', () => {
+        if (backToTopButton) {
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        }
+    });
+
+    backToTopButton?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // --- Theme Switcher ---
+    const themeToggle = document.getElementById('theme-toggle-checkbox');
+    const applyTheme = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        if(themeToggle) themeToggle.checked = theme === 'dark';
+    };
+
+    themeToggle?.addEventListener('change', (e) => {
+        applyTheme(e.target.checked ? 'dark' : 'light');
+    });
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(savedTheme);
+
+
+    // --- Initial Load ---
+    loadContent();
+});
+
+function getGuideMarkdown() {
+    return `
 # Operit AI 用户指南
 
 <p align="center">
@@ -90,14 +211,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 欢迎使用 **Operit AI**！本指南旨在帮助您快速上手，并充分利用 Operit AI 的强大功能，将您的手机变成一个真正的智能助手。
 
->*此文档最新更新：2025/6/17*
+> *此文档最新更新：2025/6/17*
 
 <h2 id="section-2">🗺️ 基本流程讲解</h2>
 
 <h3 id="section-2-1">初次使用/试用</h3>
 
 初次使用 Operit AI 时，您需要进行简单的设置以授予应用必要权限，从而解锁全部功能。以下是详细步骤：
- >演示版本\`1.1.5\`，之后的版本将在右上角加入 '跳过'
+
+> 演示版本 <code>1.1.5</code>，之后的版本将在右上角加入 '跳过'
 
 <table style="width: 100%;">
   <thead>
@@ -115,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top;">
         <a href="manuals/assets/user_step/step_for_frist_1.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/user_step/step_for_frist_1.jpg" alt="用户协议及隐私政策" height="280">
+          <img src="manuals/assets/user_step/step_for_frist_1.jpg" alt="用户协议及隐私政策">
         </a>
       </td>
     </tr>
@@ -129,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top;">
         <a href="manuals/assets/user_step/step_for_frist_2.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/user_step/step_for_frist_2.jpg" alt="权限引导" height="280">
+          <img src="manuals/assets/user_step/step_for_frist_2.jpg" alt="权限引导">
         </a>
       </td>
     </tr>
@@ -142,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top;">
         <a href="manuals/assets/user_step/step_for_frist_3.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/user_step/step_for_frist_3.jpg" alt="偏好配置" height="280">
+          <img src="manuals/assets/user_step/step_for_frist_3.jpg" alt="偏好配置">
         </a>
       </td>
     </tr>
@@ -156,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top;">
         <a href="manuals/assets/user_step/step_for_frist_4.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/user_step/step_for_frist_4.jpg" alt="配置API后开始使用" height="280">
+          <img src="manuals/assets/user_step/step_for_frist_4.jpg" alt="配置API后开始使用">
         </a>
       </td>
     </tr>
@@ -175,12 +297,12 @@ document.addEventListener('DOMContentLoaded', function() {
     <tr>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
         <a href="manuals/assets/teach_step/1-1.png" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/teach_step/1-1.png" alt="进入打包" style="max-height: 280px; max-width: 100%; height: auto;">
+          <img src="manuals/assets/teach_step/1-1.png" alt="进入打包">
         </a>
       </td>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
         <a href="manuals/assets/teach_step/1-2.png" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/teach_step/1-2.png" alt="开始打包" style="max-height: 280px; max-width: 100%; height: auto;">
+          <img src="manuals/assets/teach_step/1-2.png" alt="开始打包">
         </a>
       </td>
     </tr>
@@ -191,12 +313,12 @@ document.addEventListener('DOMContentLoaded', function() {
     <tr>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
         <a href="manuals/assets/teach_step/1-3.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/teach_step/1-3.jpg" alt="设置信息" style="max-height: 280px; max-width: 100%; height: auto;">
+          <img src="manuals/assets/teach_step/1-3.jpg" alt="设置信息">
         </a>
       </td>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
         <a href="manuals/assets/teach_step/1-4.jpg" target="_blank" rel="noopener noreferrer">
-         <img src="manuals/assets/teach_step/1-4.jpg" alt="下载分享" style="max-height: 280px; max-width: 100%; height: auto;">
+         <img src="manuals/assets/teach_step/1-4.jpg" alt="下载分享">
         </a>
       </td>
     </tr>
@@ -219,9 +341,9 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
     </tr>
     <tr>
-      <td style="text-align: center; padding: 8px; vertical-align: top; width: 33%;"><a href="manuals/assets/deepseek_API_step/1.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/1.png" alt="DeepSeek 官网" style="max-height: 200px; height: auto; border: 1px solid #ddd; border-radius: 4px;"></a></td>
-      <td style="text-align: center; padding: 8px; vertical-align: top; width: 33%;"><a href="manuals/assets/deepseek_API_step/2.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/2.png" alt="登录页面" style="max-height: 200px; height: auto; border: 1px solid #ddd; border-radius: 4px;"></a></td>
-      <td style="text-align: center; padding: 8px; vertical-align: top; width: 33%;"><a href="manuals/assets/deepseek_API_step/3.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/3.png" alt="控制台" style="max-height: 200px; height: auto; border: 1px solid #ddd; border-radius: 4px;"></a></td>
+      <td style="text-align: center; padding: 8px; vertical-align: top; width: 33%;"><a href="manuals/assets/deepseek_API_step/1.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/1.png" alt="DeepSeek 官网"></a></td>
+      <td style="text-align: center; padding: 8px; vertical-align: top; width: 33%;"><a href="manuals/assets/deepseek_API_step/2.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/2.png" alt="登录页面"></a></td>
+      <td style="text-align: center; padding: 8px; vertical-align: top; width: 33%;"><a href="manuals/assets/deepseek_API_step/3.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/3.png" alt="控制台"></a></td>
     </tr>
     <tr>
       <td style="vertical-align: top; padding: 8px; width: 33%;">
@@ -239,13 +361,13 @@ document.addEventListener('DOMContentLoaded', function() {
     </tr>
     <tr>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
-        <a href="manuals/assets/deepseek_API_step/4.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/4.png" alt="API密钥页面" style="max-height: 200px; height: auto; border: 1px solid #ddd; border-radius: 4px;"></a>
+        <a href="manuals/assets/deepseek_API_step/4.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/4.png" alt="API密钥页面"></a>
       </td>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
-        <a href="manuals/assets/deepseek_API_step/5.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/5.png" alt="创建密钥" style="max-height: 200px; height: auto; border: 1px solid #ddd; border-radius: 4px;"></a>
+        <a href="manuals/assets/deepseek_API_step/5.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/5.png" alt="创建密钥"></a>
       </td>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
-        <a href="manuals/assets/deepseek_API_step/9.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/9.png" alt="在App中配置" style="max-height: 200px; height: auto; border: 1px solid #ddd; border-radius: 4px;"></a>
+        <a href="manuals/assets/deepseek_API_step/9.png" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/deepseek_API_step/9.png" alt="在App中配置"></a>
       </td>
     </tr>
   </tbody>
@@ -264,12 +386,12 @@ document.addEventListener('DOMContentLoaded', function() {
     <tr>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
         <a href="manuals/assets/model/1.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/model/1.jpg" alt="步骤一" style="height: 280px; width: auto; max-width: 100%;">
+          <img src="manuals/assets/model/1.jpg" alt="步骤一">
         </a>
       </td>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
         <a href="manuals/assets/model/2.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/model/2.jpg" alt="步骤二" style="height: 280px; width: auto; max-width: 100%;">
+          <img src="manuals/assets/model/2.jpg" alt="步骤二">
         </a>
       </td>
     </tr>
@@ -280,12 +402,12 @@ document.addEventListener('DOMContentLoaded', function() {
     <tr>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
         <a href="manuals/assets/model/3.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/model/3.jpg" alt="步骤三" style="height: 280px; width: auto; max-width: 100%;">
+          <img src="manuals/assets/model/3.jpg" alt="步骤三">
         </a>
       </td>
       <td style="text-align: center; padding: 8px; vertical-align: top;">
          <a href="manuals/assets/model/4.jpg" target="_blank" rel="noopener noreferrer">
-           <img src="manuals/assets/model/4.jpg" alt="步骤四" style="height: 280px; width: auto; max-width: 100%;">
+           <img src="manuals/assets/model/4.jpg" alt="步骤四">
          </a>
       </td>
     </tr>
@@ -312,10 +434,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <tbody>
       <tr>
        <td style="text-align: center; padding: 8px; vertical-align: top;">
-          <a href="manuals/assets/package_or_MCP/1.jpg" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/package_or_MCP/1.jpg" alt="启用包管理1" style="height: 280px; width: auto; max-width: 100%;"></a>
+          <a href="manuals/assets/package_or_MCP/1.jpg" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/package_or_MCP/1.jpg" alt="启用包管理1"></a>
        </td>
        <td style="text-align: center; padding: 8px; vertical-align: top;">
-          <a href="manuals/assets/package_or_MCP/2.jpg" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/package_or_MCP/2.jpg" alt="启用包管理2" style="height: 280px; width: auto; max-width: 100%;"></a>
+          <a href="manuals/assets/package_or_MCP/2.jpg" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/package_or_MCP/2.jpg" alt="启用包管理2"></a>
        </td>
      </tr>
    </tbody>
@@ -340,27 +462,22 @@ document.addEventListener('DOMContentLoaded', function() {
   <tr>
     <td style="padding: 5px;">
       <a href="manuals/assets/package_or_MCP/3.jpg" target="_blank" rel="noopener noreferrer">
-        <img src="manuals/assets/package_or_MCP/3.jpg" alt="配置环境1" style="width: 100%; max-width: 200px; height: auto;">
+        <img src="manuals/assets/package_or_MCP/3.jpg" alt="配置环境1">
       </a>
     </td>
     <td style="padding: 5px;">
       <a href="manuals/assets/package_or_MCP/4.jpg" target="_blank" rel="noopener noreferrer">
-        <img src="manuals/assets/package_or_MCP/4.jpg" alt="配置环境2" style="width: 100%; max-width: 200px; height: auto;">
+        <img src="manuals/assets/package_or_MCP/4.jpg" alt="配置环境2">
       </a>
     </td>
     <td style="padding: 5px;">
       <a href="manuals/assets/package_or_MCP/5.jpg" target="_blank" rel="noopener noreferrer">
-        <img src="manuals/assets/package_or_MCP/5.jpg" alt="配置环境3" style="width: 100%; max-width: 200px; height: auto;">
+        <img src="manuals/assets/package_or_MCP/5.jpg" alt="配置环境3">
       </a>
     </td>
   </tr>
 </table>
-`;
 
-    contentDiv.innerHTML = marked.parse(guideContent);
-            
-    // 添加拓展用法实操部分
-    const extensionContent = `
 <h2 id="section-3">🚀 拓展用法实操</h2>
 
 <p><em>(本部分将通过实际案例，向您展示如何利用拓展包、计划模式等高级功能，完成更复杂的任务。)</em></p>
@@ -386,10 +503,10 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/game_maker_chat.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/game_maker_chat.jpg" alt="2D弹幕游戏聊天" style="width: 100%; height: auto; margin-bottom: 5px;">
+          <img src="manuals/assets/game_maker_chat.jpg" alt="2D弹幕游戏聊天" style="margin-bottom: 5px;">
         </a>
         <a href="manuals/assets/game_maker_show.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/game_maker_show.jpg" alt="2D弹幕游戏展示" style="width: 100%; height: auto;">
+          <img src="manuals/assets/game_maker_show.jpg" alt="2D弹幕游戏展示">
         </a>
       </td>
     </tr>
@@ -400,10 +517,10 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/expamle/3ddebdde4958ac152eeca436e39c0f6.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/3ddebdde4958ac152eeca436e39c0f6.jpg" alt="3D游戏示例1" style="width: 100%; height: auto; margin-bottom: 5px;">
+          <img src="manuals/assets/expamle/3ddebdde4958ac152eeca436e39c0f6.jpg" alt="3D游戏示例1" style="margin-bottom: 5px;">
         </a>
         <a href="manuals/assets/expamle/759d86a7d74351675b32acb6464585d.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/759d86a7d74351675b32acb6464585d.jpg" alt="3D游戏示例2" style="width: 100%; height: auto;">
+          <img src="manuals/assets/expamle/759d86a7d74351675b32acb6464585d.jpg" alt="3D游戏示例2">
         </a>
       </td>
     </tr>
@@ -414,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg" alt="简单的视频处理示例" style="width: 100%; height: auto;">
+          <img src="manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg" alt="简单的视频处理示例">
         </a>
       </td>
     </tr>
@@ -425,20 +542,16 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/web_developer.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/web_developer.jpg" alt="软件打包示例1" style="width: 100%; height: auto; margin-bottom: 5px;">
+          <img src="manuals/assets/web_developer.jpg" alt="软件打包示例1" style="margin-bottom: 5px;">
         </a>
         <a href="manuals/assets/game_maker_packer.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/game_maker_packer.jpg" alt="软件打包示例2" style="width: 100%; height: auto;">
+          <img src="manuals/assets/game_maker_packer.jpg" alt="软件打包示例2">
         </a>
       </td>
     </tr>
   </tbody>
 </table>
-`;
-    contentDiv.innerHTML += marked.parse(extensionContent);
-            
-    // 添加拓展包部分
-    const packagesContent = `
+
 <h3 id="section-3-2">📦 拓展包</h3>
 
 <p>演示版本<code>1.1.6</code>（图片可点击放大）</p>
@@ -459,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/expamle/065e5ca8a8036c51a7905d206bbb56c.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/065e5ca8a8036c51a7905d206bbb56c.jpg" alt="writer示例" style="width: 100%; height: auto;">
+          <img src="manuals/assets/expamle/065e5ca8a8036c51a7905d206bbb56c.jpg" alt="writer示例">
         </a>
       </td>
     </tr>
@@ -470,10 +583,10 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg" alt="多平台搜索示例1" style="width: 100%; height: auto; margin-bottom: 5px;">
+          <img src="manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg" alt="多平台搜索示例1" style="margin-bottom: 5px;">
         </a>
         <a href="manuals/assets/expamle/f9b8aeba4878775d1252ad8d5d8620a.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/f9b8aeba4878775d1252ad8d5d8620a.jpg" alt="多平台搜索示例2" style="width: 100%; height: auto;">
+          <img src="manuals/assets/expamle/f9b8aeba4878775d1252ad8d5d8620a.jpg" alt="多平台搜索示例2">
         </a>
       </td>
     </tr>
@@ -484,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg" alt="日常生活示例" style="width: 100%; height: auto;">
+          <img src="manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg" alt="日常生活示例">
         </a>
       </td>
     </tr>
@@ -495,10 +608,10 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg" alt="超级管理员示例1" style="width: 100%; height: auto; margin-bottom: 5px;">
+          <img src="manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg" alt="超级管理员示例1" style="margin-bottom: 5px;">
         </a>
         <a href="manuals/assets/expamle/6f81901ae47f5a3584167148017d132.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/6f81901ae47f5a3584167148017d132.jpg" alt="超级管理员示例2" style="width: 100%; height: auto;">
+          <img src="manuals/assets/expamle/6f81901ae47f5a3584167148017d132.jpg" alt="超级管理员示例2">
         </a>
       </td>
     </tr>
@@ -513,7 +626,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg" alt="百度地图示例" style="width: 100%; height: auto;">
+          <img src="manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg" alt="百度地图示例">
         </a>
       </td>
     </tr>
@@ -532,17 +645,13 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: center;">
         <a href="manuals/assets/expamle/5fff4b49db78ec01e189658de8ea997.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/5fff4b49db78ec01e189658de8ea997.jpg" alt="图片输出示例" style="width: 100%; height: auto;">
+          <img src="manuals/assets/expamle/5fff4b49db78ec01e189658de8ea997.jpg" alt="图片输出示例">
         </a>
       </td>
     </tr>
   </tbody>
 </table>
-`;
-    contentDiv.innerHTML += marked.parse(packagesContent);
-            
-    // 添加核心工具部分
-    const toolsContent = `
+
 <h3 id="section-3-3">🛠️ 核心工具</h3>
 
 <table style="width: 100%;">
@@ -590,20 +699,18 @@ document.addEventListener('DOMContentLoaded', function() {
     <tr><td><code>ffmpeg_convert</code></td><td>转换视频文件</td></tr>
   </tbody>
 </table>
-`;
-    contentDiv.innerHTML += marked.parse(toolsContent);
 
-    // 添加MCP市场部分
-    const mcpContent = `
 <h3 id="section-3-4">🛒 MCP市场</h3>
 
-<p>考虑到手机环境的特殊性，要完整、稳定地配置所有MCP（Model context protocol）所需的环境是相当有挑战性的。因此，直接调用MCP可能会遇到较多困难。</p>
-<p>目前，应用内确认可用的MCP主要有 <code>12306</code>。</p>
-<p>为了提供更流畅、更可靠的体验，我们已经用更适配安卓系统的方式，将许多核心MCP的功能重制并整合到了内置工具和拓展包中。我们强烈建议您优先使用这些经过优化的功能。</p>
+> 考虑到手机环境的特殊性，要完整、稳定地配置所有MCP（Model context protocol）所需的环境是相当有挑战性的。因此，直接调用MCP可能会遇到较多困难。
+> 
+> 目前，应用内确认可用的MCP主要有 <code>12306</code>。
+> 
+> 为了提供更流畅、更可靠的体验，我们已经用更适配安卓系统的方式，将许多核心MCP的功能重制并整合到了内置工具和拓展包中。我们强烈建议您优先使用这些经过优化的功能。
 
-<p>下面是一些目前社区测试可用的MCP：(等待测试人员更新)</p>
+> 下面是一些目前社区测试可用的MCP：(等待测试人员更新)
 
-<p>（图片可点击放大）</p>
+（图片可点击放大）
 
 <table style="width: 100%;">
   <thead>
@@ -621,7 +728,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
       <td style="vertical-align: top; text-align: right;">
         <a href="manuals/assets/ee852df3c187771fba0aa92b36a57f8.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/ee852df3c187771fba0aa92b36a57f8.jpg" alt="Tavily搜索示例" height="280">
+          <img src="manuals/assets/ee852df3c187771fba0aa92b36a57f8.jpg" alt="Tavily搜索示例">
         </a>
       </td>
     </tr>
@@ -633,39 +740,96 @@ document.addEventListener('DOMContentLoaded', function() {
     </tr>
   </tbody>
 </table>
-`;
-    contentDiv.innerHTML += marked.parse(mcpContent);
-            
-    // 添加加入我们部分
-    const joinUsContent = `
-<h2 id="section-5">🎉 加入我们</h2>
 
-<p>我们诚挚地邀请您加入我们的社区，与其他用户交流心得，分享您的创意，或向我们提出宝贵的建议。</p>
+<table style="width: 100%; margin-top: 1em;">
+  <thead>
+    <tr>
+      <th colspan="2" style="text-align: left; padding: 12px;">
+        <h4 id="section-3-4-1" style="margin: 0;">
+          <span>MCP工作机制</span>
+          <a href="#section-3-4" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">⤴️</a>
+        </h4>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="width: 30%; padding: 12px; vertical-align: top;">
+        我们的MCP服务器通过Termux运行在本地，并和软件进行交互。MCP会在软件打开的时候进行尝试启动，启动命令由每个插件配置中的<code>arg</code>参数以及<code>env</code>的环境变量决定。
+      </td>
+      <td style="width: 60%; padding: 12px; vertical-align: top; text-align: center;">
+        <img src="manuals/assets/41ebc2ec5278bd28e8361e3eb72128d.jpg" alt="MCP配置示例" style="width: 100%; max-width: 400px; height: auto; border-radius: 4px;">
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-<div style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 12px; padding: 16px; margin-top: 1.5em; max-width: 400px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-  <div style="font-size: 1.1em; font-weight: 600; color: #495057; margin-bottom: 12px;">联系我们</div>
-  <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 10px;">
-    <span style="font-weight: bold;">GitHub：</span>
-    <a href="https://github.com/AAswordman/Operit" target="_blank" style="font-family: 'Courier New', Courier, monospace; color: #007bff; word-break: break-all;">AAswordman/Operit</a>
-  </div>
-  <div style="margin-top: 15px; font-size: 0.9em; color: #6c757d;">
-    <p>我们欢迎您通过GitHub：</p>
-    <ul style="padding-left: 20px; margin-top: 8px;">
-      <li>提交您使用Operit AI创造的作品</li>
-      <li>分享您的创新想法和使用场景</li>
-      <li>报告您遇到的问题或提出改进建议</li>
-      <li>投稿您的创意和脑洞，一起让Operit变得更强大</li>
-    </ul>
-  </div>
+<h4 id="section-3-4-2" style="display: flex; justify-content: space-between; align-items: center;"><span>MCP下载和部署机制</span><a href="#section-3-4" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">⤴️</a></h4>
+<p>由于环境特殊，并且MCP的生态本身就杂乱不堪，README文档质量参差不齐，所以我们加入了自动匹配包结构的机制。目前支持识别Node.js和Python两种语言编写的包。</p>
+<p>下载MCP时，应用会直接获取仓库的ZIP压缩包，下载到<code>Download/Operit/</code>目录下，并修改一个JSON文件加入ID。如有需要，您也可以在软件内导入自定义MCP或手动将文件放入该目录。</p>
+<h5>部署机制</h5>
+<p>我们将在部署时为两种项目结构自动生成执行命令。</p>
+<table style="width: 100%; margin-top: 1em;">
+  <thead>
+    <tr>
+      <th style="width: 50%; padding: 12px; text-align: left;">Python包</th>
+      <th style="width: 50%; padding: 12px; text-align: left;">Node.js包</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 12px; vertical-align: top;">
+        对于Python包，我们会先尝试使用<code>pip</code>安装依赖，然后自动生成一个启动命令的配置。您可以在部署时通过"自定义部署命令"来查看和修改。
+      </td>
+      <td style="padding: 12px; vertical-align: top;">
+        对于Node.js包，我们会先尝试进行换源，然后使用<code>npm</code>或<code>pnpm</code>下载依赖。如果项目是TypeScript编写的，我们会尝试编译项目；如果是JavaScript，则会尝试直接获取入口文件。最后，系统将生成一份配置代码，启动命令会指向入口文件或编译后的文件。
+      </td>
+    </tr>
+  </tbody>
+</table>
+> 以上的两种识别模式对于很多包而言都是通用的。当然，也总会有一些意外情况。
+> <b>注意：</b>部署和启动之前，包文件都会被复制到Termux内部进行操作。也就是说，只有下载的原始压缩包才会存放在外部的<code>Download</code>路径下。
+
+<h4 id="section-3-4-3" style="display: flex; justify-content: space-between; align-items: center;"><span>MCP常见问题</span><a href="#section-3-4" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">⤴️</a></h4>
+<table style="width: 100%; border-collapse: separate; border-spacing: 0 1em;">
+  <tbody>
+    <tr>
+      <td style="width: 30%; vertical-align: middle; padding-right: 15px;">有的插件需要key，但是这部分需要手动加入。如图，请根据readme，把key写在启动环境变量，否则会报错。</td>
+      <td style="width: 60%; vertical-align: middle;"><img src="manuals/assets/package_or_MCP/7b8ec8ba567c3c670d6a063121614fe.jpg" alt="配置key"></td>
+    </tr>
+    <tr>
+      <td style="width: 30%; vertical-align: middle; padding-right: 15px;">插件的部署情况可以手动进入termux进行查看，方式如下。在这里，build文件夹为部署中自动编译后的结果，里面有我们启动需要的文件路径。</td>
+      <td style="width: 60%; vertical-align: middle;"><img src="manuals/assets/package_or_MCP/401cda27abf79b9d0311816947b1bdd.jpg" alt="查看部署"></td>
+    </tr>
+    <tr>
+      <td style="width: 30%; vertical-align: middle; padding-right: 15px;">你可以尝试运行它，以此修正你的启动命令(图中由于缺少key，启动失败)</td>
+      <td style="width: 60%; vertical-align: middle;"><img src="manuals/assets/package_or_MCP/0946d845d9adad20bbd039a93d1196f.jpg" alt="修正启动命令"></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="notice-box">
+  <p><strong>注意:</strong> 有的包带了docker文件，但是我们是不支持docker的，请忽视它。</p>
 </div>
-`;
-    contentDiv.innerHTML += marked.parse(joinUsContent);
-            
-    // 添加额外的内容（节4-7）
-    const additionalContent = `
+
+<div class="notice-box">
+  <p><strong>注意:</strong> 我们的环境termux是linux，有一些win才能用的包要运行.exe，比如playwright，那当然是不支持的了。</p>
+</div>
+
+<h3 id="section-3-5">⏳ 计划模式</h3>
+<code>1.1.6</code>及以后版本不复存在
+
+适用于AI长时间工作，但跟没开计划模式的区别不大（甚至没开的效果更好）。将在后续版本删除，并用<code>任务模式</code>替换
+
+><code>任务模式</code>下，AI可能主动给您发消息
+
+>注：不正当的使用将加快token的消耗
+
+<div STYLE="page-break-after: always;"></div>
+
 <h2 id="section-4">❔ 常见问题解答</h2>
 
-<p>这里收录了<strong>最新版本 \`1.1.6\`</strong> 用户群和 issue 的全部问题。
+<p>这里收录了<strong>最新版本 <code>1.1.6</code></strong> 用户群和 issue 的全部问题。
 如果您使用的是旧版本，可以来<a href="#section-7">这里找找</a>。</p>
 
 <h3 id="section-4-1">MCP包问题排查</h3>
@@ -685,6 +849,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <p>您可以从<a href="https://github.com/AAswordman/Operit/releases">Release页面</a>下载最新APK。</p>
 
+<h2 id="section-5">🎉 加入我们</h2>
+
+<div class="contact-card">
+  <div class="contact-card-title">联系我们</div>
+  <div class="contact-card-item">
+    <span class="contact-card-label">GitHub：</span>
+    <a href="https://github.com/AAswordman/Operit" target="_blank" class="contact-card-link">AAswordman/Operit</a>
+  </div>
+  <div class="contact-card-description">
+    <p>我们欢迎您通过GitHub：</p>
+    <ul>
+      <li>提交您使用Operit AI创造的作品</li>
+      <li>分享您的创新想法和使用场景</li>
+      <li>报告您遇到的问题或提出改进建议</li>
+      <li>投稿您的创意和脑洞，一起让Operit变得更强大</li>
+    </ul>
+  </div>
+</div>
+
 <h2 id="section-6">💡 许愿池</h2>
 
 <p>以下是我们正在计划或正在开发中的功能：</p>
@@ -693,7 +876,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <li><strong>核心功能增强</strong>:
 <ul>
 <li>加入TTS（文字转语音）和语音识别模型，并进一步实现更自然的对话系统。</li>
-<li>实现全新的 \`任务模式\` 来替代现有的 \`计划模式\`，让AI可以主动、智能地执行和跟进长期任务。</li>
+<li>实现全新的 <code>任务模式</code> 来替代现有的 <code>计划模式</code>，让AI可以主动、智能地执行和跟进长期任务。</li>
 </ul>
 </li>
 <li><strong>用户体验优化</strong>:
@@ -733,42 +916,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <p>后续将通过内置Termux解决这类问题</p>
 `;
-
-    contentDiv.innerHTML += marked.parse(additionalContent);
-
-    // 回到顶部按钮
-    const backToTopButton = document.getElementById('back-to-top');
-    if (backToTopButton) {
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset > 300) {
-                backToTopButton.style.display = 'block';
-            } else {
-                backToTopButton.style.display = 'none';
-            }
-        });
-        
-        backToTopButton.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-        });
-    });
-    }
-
-    // 主题切换处理
-    const themeToggle = document.getElementById('theme-toggle-checkbox');
-    if (themeToggle) {
-        // 如果有主题切换功能，确保其正常工作
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            themeToggle.checked = savedTheme === 'dark';
-        }
-        
-        themeToggle.addEventListener('change', function(e) {
-            const theme = e.target.checked ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-        });
-    }
-}); 
+} 

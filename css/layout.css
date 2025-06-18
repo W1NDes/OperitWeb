@@ -135,11 +135,23 @@ nav {
 
 /* Footer */
 footer {
-    background-color: var(--card-background);
-    color: var(--text-color);
+    background-color: var(--background-color);
+    padding: 20px 0;
     text-align: center;
-    padding: 2rem;
-    margin-top: 4rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.9em;
+    margin-top: auto;
+}
+
+footer a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-speed);
+}
+
+footer a:hover {
+    color: var(--primary-color);
 }
 
 /* Section Layouts */

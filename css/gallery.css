@@ -281,27 +281,63 @@
 .draw-card {
     width: 280px;
     height: 400px;
+    margin: 1rem;
     perspective: 1000px;
-    margin-bottom: 20px;
-    opacity: 0;
-    transform: translateY(30px);
-    animation: cardAppear 0.5s forwards;
+    background-color: transparent;
+    border: none;
 }
 
 .draw-card .gallery-card-inner {
-    transform: rotateY(0deg);
-    box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 15px;
 }
 
-.draw-card:hover .gallery-card-inner {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 100, 255, 0.4);
+.draw-card.flipped .gallery-card-inner {
+    transform: rotateY(180deg);
+}
+
+.draw-card-front, .draw-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.draw-card-front {
+    /* This will contain the card content (image, text, etc.) */
+    background-color: var(--card-background);
+    transform: rotateY(180deg);
+}
+
+.draw-card-back {
+    /* This is the back of the card */
+    background: linear-gradient(135deg, var(--primary-color), #003f8a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.draw-card-back::before {
+    content: 'O';
+    font-family: 'Arial', sans-serif;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
 }
 
 /* 稀有度标记 */
 .rarity-badge {
     position: absolute;
-    top: 15px;
+    top: 10px;
     right: 15px;
     padding: 5px 10px;
     border-radius: 5px;

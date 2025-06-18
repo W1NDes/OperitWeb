@@ -21,36 +21,6 @@
                 <li><a href="index.html#core-features" data-i18n="features">功能</a></li>
                 <li><a href="user-guide.html" class="active" data-i18n="userGuide">用户手册</a></li>
                 <li><a href="https://github.com/AAswordman/Operit" target="_blank" data-i18n="download">GitHub</a></li>
-                <li class="nav-divider"></li>
-                <li class="nav-toc-container">
-                    <h4 class="nav-toc-title">目录</h4>
-                    <ul class="nav-toc-list">
-                        <li><a href="#section-1">✨ 简介</a></li>
-                        <li>
-                            <a href="#section-2">🗺️ 基本流程讲解</a>
-                            <ul>
-                                <li><a href="#section-2-1">初次使用/试用</a></li>
-                                <li><a href="#section-2-2">如何打包AI写好的WEB应用</a></li>
-                                <li><a href="#section-2-3">如何配置自己的API/其他模型</a></li>
-                                <li><a href="#section-2-4">Shizuku授权流程</a></li>
-                                <li><a href="#section-2-5">包管理与MCP使用说明</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#section-3">🚀 拓展用法实操</a>
-                            <ul>
-                                <li><a href="#section-3-1">🧰 开箱即用</a></li>
-                                <li><a href="#section-3-2">📦 拓展包</a></li>
-                                <li><a href="#section-3-3">🛠️ 核心工具</a></li>
-                                <li><a href="#section-3-4">🛒 MCP市场</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#section-4">❔ 常见问题解答</a></li>
-                        <li><a href="#section-5">🎉 加入我们</a></li>
-                        <li><a href="#section-6">💡 许愿池</a></li>
-                        <li><a href="#section-7">📜 朝花夕拾</a></li>
-                    </ul>
-                </li>
             </ul>
             <div class="theme-switcher">
                 <label class="theme-switch">
@@ -66,58 +36,32 @@
         </nav>
     </header>
 
-    <main>
-        <div class="container">
-            <div class="guide-container">
-                <div class="guide-sidebar">
-                    <div class="toc-container">
-                        <div class="toc-header">
-                            <h3>目录</h3>
-                            <div class="toc-controls">
-                                <button id="toc-toggle" class="toc-toggle" title="隐藏/显示目录">
-                                    <span class="toggle-icon">☰</span>
-                                </button>
-                            </div>
-                        </div>
-                        <ul id="guide-toc-list" class="toc-content">
-                            <li><a href="#section-1">✨ 简介</a></li>
-                            <li>
-                                <a href="#section-2">🗺️ 基本流程讲解</a>
-                                <ul>
-                                    <li><a href="#section-2-1">初次使用/试用</a></li>
-                                    <li><a href="#section-2-2">如何打包AI写好的WEB应用</a></li>
-                                    <li><a href="#section-2-3">如何配置自己的API/其他模型</a></li>
-                                    <li><a href="#section-2-4">Shizuku授权流程</a></li>
-                                    <li><a href="#section-2-5">包管理与MCP使用说明</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#section-3">🚀 拓展用法实操</a>
-                                <ul>
-                                    <li><a href="#section-3-1">🧰 开箱即用</a></li>
-                                    <li><a href="#section-3-2">📦 拓展包</a></li>
-                                    <li><a href="#section-3-3">🛠️ 核心工具</a></li>
-                                    <li><a href="#section-3-4">🛒 MCP市场</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#section-4">❔ 常见问题解答</a></li>
-                            <li><a href="#section-5">🎉 加入我们</a></li>
-                            <li><a href="#section-6">💡 许愿池</a></li>
-                            <li><a href="#section-7">📜 朝花夕拾</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="guide-content" id="content">
-                    <!-- 内容将通过JavaScript动态加载 -->
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>加载用户手册内容中...</p>
-                    </div>
+    <div class="manual-wrapper">
+        <aside class="manual-sidebar" id="manual-sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">用户手册</h3>
+                <button id="sidebar-toggle-pin" class="pin-button" title="Pin sidebar">📌</button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul id="guide-toc-list">
+                    <!-- TOC items will be dynamically generated by js/guide.js -->
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="manual-content-container" id="manual-content-container">
+            <button id="sidebar-toggle-mobile" class="sidebar-toggle-mobile">☰</button>
+            <div class="manual-content" id="content">
+                <!-- 内容将通过JavaScript动态加载 -->
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>加载用户手册内容中...</p>
                 </div>
             </div>
-        </div>
-        <button id="back-to-top" title="回到顶部">↑</button>
-    </main>
+        </main>
+    </div>
+
+    <button id="back-to-top" title="回到顶部">↑</button>
 
     <footer>
         <div class="container">
@@ -129,6 +73,12 @@
         </div>
     </footer>
 
+    <div id="snow-container"></div>
+    <button id="snow-toggle-btn" class="snow-toggle-button" aria-label="Toggle snow effect">
+        <span class="icon">❄️</span>
+    </button>
+
+    <script src="js/main.js" defer></script>
     <script src="js/guide.js"></script>
     <script src="js/snow.js"></script>
 </body>

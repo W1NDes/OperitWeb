@@ -1,3 +1,7 @@
+body {
+    overflow-x: hidden; /* Prevent horizontal scrollbar from snow */
+}
+
 #snow-container {
     position: fixed;
     top: 0;
@@ -5,26 +9,85 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
+    z-index: 1000;
     overflow: hidden;
-    z-index: 999;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#snow-container.hidden {
+    opacity: 0;
 }
 
 .snowflake {
     position: absolute;
     top: -10px;
-    background-color: var(--snowflake-color);
+    background: white;
     border-radius: 50%;
+    opacity: 0.8;
     pointer-events: none;
-    will-change: transform;
     animation: fall linear infinite;
-    transition: transform 0.2s ease-out; /* For cursor avoidance */
 }
 
 @keyframes fall {
-    from {
-        transform: translateY(0) translateX(0);
+    0% {
+        transform: translateY(0) rotate(0deg);
     }
-    to {
-        transform: translateY(105vh) translateX(20vw);
+    100% {
+        transform: translateY(100vh) rotate(360deg);
     }
+}
+
+/* Snow Toggle Button */
+.snow-toggle-button {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    width: 50px;
+    height: 100px;
+    background-color: transparent !important;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 0;
+    border-radius: 15px;
+    box-shadow: none;
+    transition: transform 0.1s ease-out;
+}
+
+.snow-toggle-button:active {
+    transform: scale(0.95);
+}
+
+.snow-toggle-button::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 20px;
+    background-color: var(--text-color);
+    transition: height 0.3s ease;
+}
+
+.snow-toggle-button.active::before {
+    height: 40px;
+}
+
+.snow-toggle-button .icon {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    color: var(--text-color);
+    transition: top 0.3s ease;
+}
+
+.snow-toggle-button.active .icon {
+    top: 55px;
 } 

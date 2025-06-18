@@ -217,13 +217,13 @@ function drawRandomCards() {
     
     // Create and append cards with delay
     drawnCards.forEach((card, index) => {
-        setTimeout(() => {
-            const cardElement = document.createElement('div');
-            cardElement.className = 'draw-card';
-            cardElement.style.animationDelay = `${index * 0.2}s`;
-            
-            cardElement.innerHTML = `
-                <div class="gallery-card-inner">
+        const cardElement = document.createElement('div');
+        cardElement.className = 'draw-card';
+        
+        cardElement.innerHTML = `
+            <div class="gallery-card-inner">
+                <div class="draw-card-back"></div>
+                <div class="draw-card-front">
                     <div class="rarity-badge rarity-${card.rarity}">${card.rarity.toUpperCase()}</div>
                     <img src="${card.image}" alt="${card.title}">
                     <div class="gallery-card-text">
@@ -231,10 +231,15 @@ function drawRandomCards() {
                         <p>${card.description}</p>
                     </div>
                 </div>
-            `;
-            
-            cardsContainer.appendChild(cardElement);
-        }, index * 300);
+            </div>
+        `;
+        
+        cardsContainer.appendChild(cardElement);
+
+        // Stagger the flip animation
+        setTimeout(() => {
+            cardElement.classList.add('flipped');
+        }, (index + 1) * 500); // Start flipping after a short delay
     });
     
     // Handle close button

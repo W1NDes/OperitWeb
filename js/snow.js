@@ -1,84 +1,136 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const snowContainer = document.createElement('div');
-    snowContainer.id = 'snow-container';
-    document.body.appendChild(snowContainer);
-
-    const isUserGuidePage = window.location.pathname.includes('user-guide.html');
-    const snowflakeCount = isUserGuidePage ? 60 : 40;
+    const snowContainer = document.getElementById('snow-container');
+    const toggleButton = document.getElementById('snow-toggle-btn');
     
-    createSnowflakes(snowContainer, snowflakeCount);
-    handleCursorAvoidance();
-});
+    // Default to off on mobile, on on desktop, unless user has a preference
+    const isMobile = window.innerWidth <= 768;
+    let snowEnabled = localStorage.getItem('snowEnabled');
+    if (snowEnabled === null) {
+        snowEnabled = !isMobile;
+    } else {
+        snowEnabled = snowEnabled === 'true';
+    }
 
-function createSnowflakes(container, count) {
-    for (let i = 0; i < count; i++) {
+    let snowflakes = [];
+    const NUM_SNOWFLAKES = 150;
+    let mouseX = -100;
+    let mouseY = -100;
+
+    const updateToggleButton = () => {
+        if (!toggleButton || !snowContainer) return;
+        if (snowEnabled) {
+            toggleButton.classList.add('active');
+            snowContainer.classList.remove('hidden');
+        } else {
+            toggleButton.classList.remove('active');
+            snowContainer.classList.add('hidden');
+        }
+    };
+
+    const createSnowflake = () => {
         const snowflake = document.createElement('div');
-        snowflake.classList.add('snowflake');
-
         const size = Math.random() * 4 + 1;
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        const fallSpeed = Math.random() * 2 + 1;
+
+        snowflake.className = 'snowflake';
         snowflake.style.width = `${size}px`;
         snowflake.style.height = `${size}px`;
-        snowflake.style.left = `${Math.random() * 100}vw`;
-        snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+        snowflake.style.left = `${x}px`;
+        snowflake.style.top = `${y}px`;
         
-        const animationDuration = Math.random() * 5 + 5; // 5s to 10s
-        snowflake.style.animationDuration = `${animationDuration}s`;
-        snowflake.style.animationDelay = `${Math.random() * 5}s`;
-
-        // Vary horizontal movement
-        const horizontalMovement = Math.random() * 40 - 20; // -20vw to +20vw
-        snowflake.style.animationName = `fall-${i}`;
+        snowflakes.push({
+            element: snowflake,
+            x: x,
+            y: y,
+            vx: Math.random() - 0.5,
+            vy: fallSpeed,
+            size: size
+        });
         
-        const styleSheet = document.styleSheets[0];
-        const keyframes = `
-        @keyframes fall-${i} {
-            from { transform: translateY(0) translateX(0); }
-            to { transform: translateY(105vh) translateX(${horizontalMovement}vw); }
-        }`;
-        styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+        snowContainer.appendChild(snowflake);
+    };
 
-        // Randomly pause some snowflakes
-        if (Math.random() > 0.7) {
-            snowflake.style.animationPlayState = 'paused';
+    const animateSnow = () => {
+        if (!snowEnabled) {
+            requestAnimationFrame(animateSnow);
+            return;
         }
 
-        container.appendChild(snowflake);
-    }
-}
+        for (let i = 0; i < snowflakes.length; i++) {
+            let flake = snowflakes[i];
 
-function handleCursorAvoidance() {
-    let cursorX = -100;
-    let cursorY = -100;
-    const avoidanceRadius = 80;
-
-    document.addEventListener('mousemove', (e) => {
-        cursorX = e.clientX;
-        cursorY = e.clientY;
-    });
-
-    function updateSnowflakes() {
-        const snowflakes = document.querySelectorAll('.snowflake');
-        snowflakes.forEach(flake => {
-            const rect = flake.getBoundingClientRect();
-            const flakeX = rect.left + rect.width / 2;
-            const flakeY = rect.top + rect.height / 2;
-
-            const dx = flakeX - cursorX;
-            const dy = flakeY - cursorY;
+            // Mouse avoidance
+            const dx = flake.x - mouseX;
+            const dy = flake.y - mouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < avoidanceRadius) {
+            
+            if (distance < 100) {
                 const angle = Math.atan2(dy, dx);
-                const force = (avoidanceRadius - distance) / avoidanceRadius;
-                const moveX = Math.cos(angle) * force * 50;
-                const moveY = Math.sin(angle) * force * 50;
-                flake.style.transform = `translateX(${moveX}px) translateY(${moveY}px)`;
-            } else {
-                flake.style.transform = 'translateX(0) translateY(0)';
+                const force = (100 - distance) / 100 * 2;
+                flake.vx += Math.cos(angle) * force * 0.5;
+                flake.vy += Math.sin(angle) * force * 0.5;
             }
-        });
-        requestAnimationFrame(updateSnowflakes);
+
+            // Gravity and friction
+            flake.vy += 0.02; 
+            flake.vx *= 0.98;
+            flake.vy *= 0.98;
+
+            flake.x += flake.vx;
+            flake.y += flake.vy;
+
+            // Reset flake if it goes off screen
+            if (flake.y > window.innerHeight + 10) {
+                flake.x = Math.random() * window.innerWidth;
+                flake.y = -10;
+                flake.vx = Math.random() - 0.5;
+                flake.vy = Math.random() * 2 + 1;
+            }
+            if (flake.x < -10) flake.x = window.innerWidth + 10;
+            if (flake.x > window.innerWidth + 10) flake.x = -10;
+
+            flake.element.style.transform = `translate3d(${flake.x}px, ${flake.y}px, 0)`;
+        }
+        
+        requestAnimationFrame(animateSnow);
+    };
+
+    const initSnow = () => {
+        if (!snowContainer) return;
+        snowflakes.forEach(flake => flake.element.remove());
+        snowflakes = [];
+        for (let i = 0; i < NUM_SNOWFLAKES; i++) {
+            createSnowflake();
+        }
+    };
+    
+    const toggleSnow = () => {
+        snowEnabled = !snowEnabled;
+        localStorage.setItem('snowEnabled', snowEnabled);
+        updateToggleButton();
+        if (snowEnabled && snowflakes.length === 0) {
+            initSnow();
+        }
+    };
+
+    // Event Listeners
+    if (toggleButton) {
+        toggleButton.addEventListener('click', toggleSnow);
     }
     
-    requestAnimationFrame(updateSnowflakes);
-} 
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    window.addEventListener('resize', initSnow);
+
+    // Initial State
+    updateToggleButton();
+    if (snowEnabled) {
+        initSnow();
+    }
+    animateSnow();
+}); 

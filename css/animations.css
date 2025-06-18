@@ -51,4 +51,54 @@
     100% {
         box-shadow: 0 0 5px #0000ff, 0 0 10px #ff00ff, 0 0 15px #ff0000;
     }
+}
+
+/* Cursor Click Effect */
+.click-effect {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.click-effect .spark {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    animation: spark-animation 0.7s ease-out forwards;
+}
+
+.click-effect .dissolve-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #00aaff;
+    animation: dissolve-animation 0.7s ease-out forwards;
+}
+
+@keyframes spark-animation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes dissolve-animation {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(5);
+        opacity: 0;
+    }
 } 

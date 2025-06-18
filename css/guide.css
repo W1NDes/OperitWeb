@@ -1,3 +1,278 @@
+/* General Layout */
+.manual-wrapper {
+    display: flex;
+    background-color: var(--background-color);
+}
+
+/* Sidebar Styles */
+.manual-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    background-color: var(--card-background);
+    border-right: 1px solid var(--border-color);
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1100; /* Ensure sidebar is on top */
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    height: 60px; /* Match header height */
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.pin-button {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.pin-button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.pin-button.pinned {
+    color: var(--primary-color);
+    transform: rotate(45deg);
+}
+
+
+/* Sidebar Navigation (TOC) */
+.sidebar-nav {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem 0;
+}
+
+#guide-toc-list,
+#guide-toc-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#guide-toc-list {
+    padding: 0 1.5rem;
+}
+
+#guide-toc-list a {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.25rem;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+#guide-toc-list > li > a {
+    font-weight: 500;
+}
+
+#guide-toc-list ul {
+    padding-left: 1rem;
+    margin-top: 0.25rem;
+}
+
+#guide-toc-list a:hover {
+    background-color: var(--hover-background);
+    color: var(--text-color);
+}
+
+#guide-toc-list a.active {
+    background-color: var(--primary-color-light);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.sidebar-nav ul li a .toc-text {
+    transition: opacity 0.2s ease;
+}
+
+/* Custom Scrollbar for Sidebar */
+.sidebar-nav::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-color);
+    border-radius: 4px;
+    border: 2px solid var(--card-background); /* Creates the "gap" effect */
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover-color);
+}
+
+.manual-sidebar.collapsed .sidebar-nav ul li a .toc-text,
+.manual-sidebar.collapsed .sidebar-nav ul li a .toc-icon {
+    opacity: 0;
+    pointer-events: none;
+    height: 100vh;
+    padding-top: 20px;
+}
+
+.manual-sidebar.collapsed {
+    overflow-y: hidden;
+}
+
+.sidebar-nav ul li a.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 80%;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+    transition: opacity 0.2s ease;
+}
+
+.manual-sidebar.collapsed .sidebar-nav ul li a.active::before {
+    opacity: 0;
+}
+
+
+/* Main Content Styles */
+.manual-content-container {
+    flex-grow: 1;
+    padding-left: 280px; /* Match sidebar width */
+    transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.manual-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Collapsed Sidebar State */
+.manual-sidebar.collapsed:not(.pinned) {
+    width: 80px;
+}
+
+.manual-sidebar.collapsed:not(.pinned) .sidebar-title {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.manual-sidebar.collapsed:not(.pinned) #guide-toc-list a span {
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+}
+
+/* Adjust main content padding when sidebar is collapsed */
+.manual-content-container.sidebar-collapsed {
+    padding-left: 80px;
+}
+
+
+/* Mobile Styles */
+.sidebar-toggle-mobile {
+    display: none; /* Hidden on desktop */
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1200; /* Above sidebar */
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .manual-wrapper {
+        flex-direction: column;
+    }
+
+    .manual-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 280px; /* Full width when open on mobile */
+    }
+
+    .manual-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .manual-content-container {
+        padding-left: 0;
+    }
+    
+    .manual-content-container.sidebar-collapsed {
+        padding-left: 0;
+    }
+
+    .sidebar-toggle-mobile {
+        display: block;
+    }
+    
+    .pin-button {
+        display: none; /* Hide pin on mobile */
+    }
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-secondary);
+}
+
+.spinner {
+    border: 4px solid rgba(0,0,0,0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: var(--primary-color);
+    margin: 0 auto 1rem;
+    animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Back to top button - ensure it's visible */
+#back-to-top {
+    z-index: 1000;
+}
+
 /* 用户指南专用样式 */
 
 /* 指南英雄区域 */
@@ -1225,4 +1500,140 @@
 
 .guide-container.toc-collapsed {
     grid-template-columns: 60px 1fr;
+}
+
+/* --- Content Specific Styles --- */
+.manual-content code {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #d63384;
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    border-radius: 6px;
+}
+
+:root[data-theme="dark"] .manual-content code {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #f0abfc;
+}
+
+.manual-content blockquote {
+    font-size: 1em;
+    color: #575c61;
+    border-left: 0.25rem solid #e5e7eb;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+    background-color: #f8f9fa;
+    border-radius: 0 6px 6px 0;
+}
+
+:root[data-theme="dark"] .manual-content blockquote {
+    color: #c9d1d9;
+    border-left-color: #4b5563;
+    background-color: #2c2c44;
+}
+
+/* Contact Card */
+.contact-card {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-top: 1.5em;
+    max-width: 450px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.contact-card-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.contact-card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.contact-card-label {
+    font-weight: 500;
+    color: #444;
+}
+
+.contact-card-link {
+    font-family: 'Courier New', Courier, monospace;
+    color: #007bff;
+    font-weight: bold;
+    word-break: break-all;
+}
+.contact-card-link:hover {
+    text-decoration: underline;
+}
+
+.contact-card-description {
+    margin-top: 20px;
+    font-size: 0.95em;
+    color: #555;
+    line-height: 1.6;
+}
+
+.contact-card-description ul {
+    padding-left: 20px;
+    margin-top: 8px;
+    list-style-type: disc;
+}
+
+/* Inverted Dark mode for Contact Card */
+:root[data-theme="dark"] .contact-card {
+    background-color: #dbeafe; /* Light blue background */
+    border-color: #bfdbfe;
+    box-shadow: 0 0 15px rgba(191, 219, 254, 0.2);
+}
+
+:root[data-theme="dark"] .contact-card-title,
+:root[data-theme="dark"] .contact-card-label,
+:root[data-theme="dark"] .contact-card-description {
+    color: #1e3a8a; /* Dark blue text */
+}
+
+:root[data-theme="dark"] .contact-card-link {
+    color: #1d4ed8; /* Even darker blue for link */
+}
+
+/* Notice Box */
+.notice-box {
+    background-color: #fffbe6;
+    border-left: 4px solid #ffc107;
+    padding: 12px 16px;
+    margin: 1em 0;
+    border-radius: 0 4px 4px 0;
+}
+.notice-box p {
+    margin: 0;
+    padding: 0;
+    color: #664d03;
+}
+.notice-box p strong {
+    color: #523e02;
+}
+
+/* Dark mode for Notice Box (Inverted) */
+:root[data-theme="dark"] .notice-box {
+    background-color: #fff8e1; /* Light yellow background */
+    border-left-color: #ffc107;
+}
+:root[data-theme="dark"] .notice-box p {
+    color: #5c4302; /* Dark brown text */
+}
+:root[data-theme="dark"] .notice-box p strong {
+    color: #3b2a01;
+}
+
+/* Link contrast in dark mode */
+:root[data-theme="dark"] .manual-content a {
+    color: #a5c9ff;
 } 

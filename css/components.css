@@ -145,6 +145,64 @@ input:checked + .slider:before {
     background-color: #fff;
 }
 
+/* Language Switcher */
+.language-switcher {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+.language-toggle-btn {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.language-toggle-btn:hover {
+    background-color: var(--hover-background);
+}
+
+.language-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    z-index: 1001;
+    overflow: hidden;
+    min-width: 120px;
+}
+
+.language-options.show {
+    display: block;
+}
+
+.language-option {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.language-option:hover {
+    background-color: var(--hover-background);
+}
+
 /* Card Styles */
 .card {
     background-color: var(--card-background);

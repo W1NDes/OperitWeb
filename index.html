@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,6 +28,16 @@
                     <input type="checkbox" id="theme-toggle-checkbox">
                     <span class="slider"></span>
                 </label>
+            </div>
+            <div class="language-switcher">
+                <button id="language-toggle-btn" class="language-toggle-btn" aria-label="Switch language">
+                    <span class="globe-icon">🌐</span>
+                    <span id="current-lang">中</span>
+                </button>
+                <div id="language-options" class="language-options">
+                    <a href="#" class="language-option" data-lang="zh">简体中文</a>
+                    <a href="#" class="language-option" data-lang="en">English</a>
+                </div>
             </div>
             <button class="hamburger-menu" aria-label="Toggle navigation">
                 <span></span>
@@ -228,6 +238,11 @@
             </div>
         </div>
     </footer>
+
+    <div id="snow-container"></div>
+    <button id="snow-toggle-btn" class="snow-toggle-button" aria-label="Toggle snow effect">
+        <span class="icon">❄️</span>
+    </button>
 
     <script src="js/gallery.js"></script>
     <script src="js/main.js"></script>
