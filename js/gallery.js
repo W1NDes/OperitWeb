@@ -148,101 +148,94 @@ function drawRandomCards() {
     
     if (!drawResultContainer || !cardsContainer) return;
     
-    // Clear previous cards
     cardsContainer.innerHTML = '';
-    
-    // Show the container
     drawResultContainer.classList.add('show');
     
-    // Card data - 10 cards total for 10% SSR, 60% SR, 30% R probability
     const allCards = [
         // SSR (10%)
-        { id: 5, image: 'images/examples/3d_game.jpg', title: '3D Game Creation', description: 'Create 3D worlds and games', rarity: 'ssr' },
+        { id: 5, image: 'images/examples/3d_game.jpg', title: '3D Game Creation', description: 'Create 3D worlds and games', rarity: 'ssr', link: 'user-guide.html#section-3-1' },
         // SR (60%)
-        { id: 1, image: 'images/examples/game_maker_show.jpg', title: 'Game Creation', description: 'Create engaging games with AI', rarity: 'sr' },
-        { id: 2, image: 'images/examples/web_dev.jpg', title: 'Web Development', description: 'Build websites on your phone', rarity: 'sr' },
-        { id: 4, image: 'images/examples/video_processing.jpg', title: 'Video Processing', description: 'Edit videos with AI assistance', rarity: 'sr' },
-        { id: 6, image: 'manuals/assets/floating_and_attach.jpg', title: 'Floating Window', description: 'Access AI features anytime, conveniently and efficiently', rarity: 'sr' },
-        { id: 7, image: 'manuals/assets/package_list.jpg', title: 'Plugin System', description: 'Powerful plugin ecosystem for unlimited possibilities', rarity: 'sr' },
-        { id: 8, image: 'manuals/assets/set_alarm_and_date.jpg', title: 'Device Automation', description: 'Control your device with simple commands', rarity: 'sr' },
+        { id: 1, image: 'images/examples/game_maker_show.jpg', title: 'Game Creation', description: 'Create engaging games with AI', rarity: 'sr', link: 'user-guide.html#section-3-1' },
+        { id: 2, image: 'images/examples/web_dev.jpg', title: 'Web Development', description: 'Build websites on your phone', rarity: 'sr', link: 'user-guide.html#section-2-2' },
+        { id: 4, image: 'images/examples/video_processing.jpg', title: 'Video Processing', description: 'Edit videos with AI assistance', rarity: 'sr', link: 'user-guide.html#section-3' },
+        { id: 6, image: 'manuals/assets/floating_and_attach.jpg', title: 'Floating Window & Attach', description: 'Access AI features anytime', rarity: 'sr', link: 'user-guide.html#section-3-3' },
+        { id: 7, image: 'manuals/assets/package_list.jpg', title: 'Package Management', description: 'Powerful plugin ecosystem', rarity: 'sr', link: 'user-guide.html#section-2-5' },
+        { id: 8, image: 'manuals/assets/set_alarm_and_date.jpg', title: 'Device Automation', description: 'Control your device with commands', rarity: 'sr', link: 'user-guide.html#section-3' },
         // R (30%)
-        { id: 3, image: 'images/examples/app_packaging.jpg', title: 'App Packaging', description: 'Package your creations', rarity: 'r' },
-        { id: 9, image: 'manuals/assets/game_maker_chat.jpg', title: 'AI Chat', description: 'Have a conversation with your creative AI partner', rarity: 'r' },
-        { id: 10, image: 'manuals/assets/user_step/step_for_frist_3.jpg', title: 'User Preference', description: 'Customize the AI to understand you better', rarity: 'r' }
+        { id: 3, image: 'images/examples/app_packaging.jpg', title: 'App Packaging', description: 'Package your creations', rarity: 'r', link: 'user-guide.html#section-2-2' },
+        { id: 9, image: 'manuals/assets/game_maker_chat.jpg', title: 'AI Chat', description: 'Converse with your AI partner', rarity: 'r', link: 'user-guide.html#section-1' },
+        { id: 10, image: 'manuals/assets/user_step/step_for_frist_3.jpg', title: 'User Preference', description: 'Customize the AI to understand you', rarity: 'r', link: 'user-guide.html#section-2-1' }
     ];
     
     let drawnCards;
     let isSameAsLast;
 
     do {
-        drawnCards = [];
         let availableCards = [...allCards];
+        drawnCards = [];
+        const rarityProbs = { ssr: 0.1, sr: 0.6, r: 0.3 };
 
-        // Draw 3 unique cards respecting rarity weights
         for (let i = 0; i < 3; i++) {
             if (availableCards.length === 0) break;
 
-            // Create a weighted pool from the *currently available* cards
-            const weightedPool = [];
-            availableCards.forEach(card => {
-                let weight = 0;
-                if (card.rarity === 'ssr') weight = 1;      // 10%
-                else if (card.rarity === 'sr') weight = 6; // 60%
-                else if (card.rarity === 'r') weight = 3;  // 30%
-                for (let j = 0; j < weight; j++) {
-                    weightedPool.push(card);
-                }
-            });
-            
-            if (weightedPool.length === 0) break;
+            let selectedCard = null;
+            // This loop ensures we find a card even if a rarity is exhausted.
+            while (selectedCard === null) {
+                const rand = Math.random();
+                let chosenRarity;
 
-            // Pick a random card from the weighted pool
-            const randomIndex = Math.floor(Math.random() * weightedPool.length);
-            const selectedCard = weightedPool[randomIndex];
+                if (rand < rarityProbs.ssr) {
+                    chosenRarity = 'ssr';
+                } else if (rand < rarityProbs.ssr + rarityProbs.sr) {
+                    chosenRarity = 'sr';
+                } else {
+                    chosenRarity = 'r';
+                }
+
+                const potentialCards = availableCards.filter(c => c.rarity === chosenRarity);
+                if (potentialCards.length > 0) {
+                    const cardIndex = Math.floor(Math.random() * potentialCards.length);
+                    selectedCard = potentialCards[cardIndex];
+                }
+            }
             
             drawnCards.push(selectedCard);
-
-            // Remove it from availableCards so it can't be picked again in this hand
             availableCards = availableCards.filter(c => c.id !== selectedCard.id);
         }
 
-        // Check if the new set is identical to the last one
         const drawnIds = drawnCards.map(c => c.id).sort().join(',');
         const lastIds = lastDrawnCards.map(c => c.id).sort().join(',');
         isSameAsLast = drawnCards.length < 3 ? false : (drawnIds === lastIds);
 
     } while (isSameAsLast);
 
-    lastDrawnCards = drawnCards; // Update the last drawn set
+    lastDrawnCards = drawnCards;
     
-    // Create and append cards with delay
     drawnCards.forEach((card, index) => {
+        const linkElement = document.createElement('a');
+        linkElement.href = card.link;
+        linkElement.className = 'drawn-card-link';
+
         const cardElement = document.createElement('div');
-        cardElement.className = 'draw-card';
+        // A new, simpler class for styling. No more complex flip structure.
+        cardElement.className = `drawn-card-item`;
         
         cardElement.innerHTML = `
-            <div class="gallery-card-inner">
-                <div class="draw-card-back"></div>
-                <div class="draw-card-front">
-                    <div class="rarity-badge rarity-${card.rarity}">${card.rarity.toUpperCase()}</div>
-                    <img src="${card.image}" alt="${card.title}">
-                    <div class="gallery-card-text">
-                        <h4>${card.title}</h4>
-                        <p>${card.description}</p>
-                    </div>
-                </div>
+            <div class="rarity-badge rarity-${card.rarity}">${card.rarity.toUpperCase()}</div>
+            <img src="${card.image}" alt="${card.title}" class="drawn-card-img">
+            <div class="drawn-card-text">
+                <h4>${card.title}</h4>
+                <p>${card.description}</p>
             </div>
         `;
         
-        cardsContainer.appendChild(cardElement);
-
-        // Stagger the flip animation
-        setTimeout(() => {
-            cardElement.classList.add('flipped');
-        }, (index + 1) * 500); // Start flipping after a short delay
+        // Apply a simple fade-in animation
+        cardElement.style.animation = `fadeInUp 0.5s ease-out ${index * 0.2}s both`;
+        
+        linkElement.appendChild(cardElement);
+        cardsContainer.appendChild(linkElement);
     });
     
-    // Handle close button
     const handleClose = () => {
         drawResultContainer.classList.remove('show');
     };

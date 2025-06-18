@@ -113,6 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (snowEnabled && snowflakes.length === 0) {
             initSnow();
         }
+
+        // Switch particles.js config on the main page
+        const particlesElement = document.getElementById('particles-js');
+        if (particlesElement && typeof particlesJS !== 'undefined') {
+            const configFile = snowEnabled ? 'particlesjs-config (3).json' : 'particlesjs-config.json';
+            particlesJS.load('particles-js', configFile, function() {
+                console.log('callback - particles.js config reloaded');
+            });
+        }
     };
 
     // Event Listeners

@@ -229,10 +229,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1100;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .draw-result-container.show {
@@ -244,120 +245,210 @@
     color: white;
     font-size: 1.8rem;
     margin-bottom: 2rem;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .close-draw-button {
     position: absolute;
     top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.2);
+    right: 30px;
+    background: transparent;
     border: none;
-    border-radius: 50%;
     color: white;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s ease;
+    text-shadow: 0 0 5px black;
+    transition: transform 0.2s;
 }
 
 .close-draw-button:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
 }
 
 .draw-cards-container {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-    max-width: 1200px;
-    padding: 0 20px;
+    align-items: center;
+    gap: 2rem;
+    perspective: 1500px;
 }
 
-.draw-card {
+/* New simplified card style */
+.drawn-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.2s ease-in-out;
+}
+
+.drawn-card-link:hover {
+    transform: translateY(-5px);
+}
+
+.drawn-card-item {
     width: 280px;
     height: 400px;
-    margin: 1rem;
-    perspective: 1000px;
-    background-color: transparent;
-    border: none;
-}
-
-.draw-card .gallery-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    border-radius: 15px;
-}
-
-.draw-card.flipped .gallery-card-inner {
-    transform: rotateY(180deg);
-}
-
-.draw-card-front, .draw-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-.draw-card-front {
-    /* This will contain the card content (image, text, etc.) */
     background-color: var(--card-background);
-    transform: rotateY(180deg);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease-out;
 }
 
-.draw-card-back {
-    /* This is the back of the card */
-    background: linear-gradient(135deg, var(--primary-color), #003f8a);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.drawn-card-link:hover .drawn-card-item {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+}
+
+.drawn-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.drawn-card-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.2rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    text-align: left;
+    transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.drawn-card-link:active .drawn-card-text {
+    background: rgba(30, 30, 35, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.drawn-card-text h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
     color: white;
-    font-size: 2rem;
-    font-weight: bold;
 }
 
-.draw-card-back::before {
-    content: 'O';
-    font-family: 'Arial', sans-serif;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+.drawn-card-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #e0e0e0;
 }
 
-/* 稀有度标记 */
 .rarity-badge {
     position: absolute;
     top: 10px;
-    right: 15px;
+    right: 10px;
     padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: bold;
     color: white;
+    border-radius: 5px;
     z-index: 10;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    background: linear-gradient(45deg, #888, #555);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .rarity-badge.rarity-r {
-    background: linear-gradient(45deg, #6a7c98, #4d658c);
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    box-shadow: 0 0 10px #9ca3af;
 }
 
 .rarity-badge.rarity-sr {
-    background: linear-gradient(45deg, #c0a060, #a08040);
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    box-shadow: 0 0 15px #a78bfa;
 }
 
 .rarity-badge.rarity-ssr {
-    background: linear-gradient(45deg, #f0c040, #e0a020);
-    animation: rainbow-shine 2s infinite linear;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 0 20px #fbbf24;
+    animation: pulse-ssr 2s infinite;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardActivate {
+    from {
+        transform: translate(-50%, -50%) translateZ(-100px) rotateY(0deg) scale(0.95);
+        opacity: 0.5;
+    }
+    to {
+        transform: translate(-50%, -50%) translateZ(100px) rotateY(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse-ssr {
+    0% {
+        box-shadow: 0 0 20px #fbbf24;
+    }
+    50% {
+        box-shadow: 0 0 35px #fde68a;
+    }
+    100% {
+        box-shadow: 0 0 20px #fbbf24;
+    }
+}
+
+/* Responsive styles for Draw Modal */
+@media (max-width: 900px) {
+    .draw-cards-container {
+        flex-direction: row;
+        gap: 1rem;
+        padding: 5rem 1rem 2rem; 
+        overflow-x: auto;
+        overflow-y: hidden;
+        width: 100%;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary-color) transparent;
+    }
+    .draw-cards-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    .draw-cards-container::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 3px;
+    }
+
+    .drawn-card-link {
+        width: 27vw;
+        flex-shrink: 0;
+        min-width: 140px;
+    }
+
+    .drawn-card-item {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 280 / 400;
+    }
+
+    .draw-result-title {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    /* No fixed height, let aspect-ratio handle it */
+    .drawn-card-text h4 {
+        font-size: 1.1rem;
+    }
+     .drawn-card-text p {
+        font-size: 0.85rem;
+    }
 } 

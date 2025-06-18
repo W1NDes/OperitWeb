@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('manual-sidebar');
     const contentContainer = document.getElementById('manual-content-container');
+    const wrapper = document.querySelector('.manual-wrapper');
     const pinButton = document.getElementById('sidebar-toggle-pin');
     const mobileToggleButton = document.getElementById('sidebar-toggle-mobile');
     const contentDiv = document.getElementById('content');
@@ -40,9 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     mobileToggleButton?.addEventListener('click', (e) => {
-        e.stopPropagation();
+            e.stopPropagation();
         isMobileOpen = !isMobileOpen;
         sidebar.classList.toggle('open', isMobileOpen);
+        wrapper?.classList.toggle('sidebar-mobile-open', isMobileOpen);
     });
 
     sidebar?.addEventListener('mouseenter', () => {
@@ -60,10 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Close mobile sidebar when clicking outside
-    document.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
         if (isMobileOpen && !sidebar.contains(e.target) && !mobileToggleButton.contains(e.target)) {
             isMobileOpen = false;
             sidebar.classList.remove('open');
+            wrapper?.classList.remove('sidebar-mobile-open');
         }
     });
     
@@ -80,62 +83,98 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadContent = () => {
         const guideContent = getGuideMarkdown();
         contentDiv.innerHTML = marked.parse(guideContent);
+        
+        // Wrap images for LightGallery
+        contentDiv.querySelectorAll('img').forEach(img => {
+            let link = img.closest('a');
+            // If there's no link, create one.
+            if (!link) {
+                link = document.createElement('a');
+                img.parentNode.insertBefore(link, img);
+                link.appendChild(img);
+            }
+            // Configure the link for the gallery.
+            link.href = img.src;
+            link.setAttribute('data-src', img.src);
+            if (img.alt && !link.hasAttribute('data-sub-html')) {
+                link.setAttribute('data-sub-html', `<h4>${img.alt}</h4>`);
+            }
+            // Remove attributes that would prevent lightgallery from working
+            link.removeAttribute('target');
+            link.removeAttribute('rel');
+        });
+
+        // Initialize lightgallery
+        if (typeof lightGallery !== 'undefined') {
+            lightGallery(contentDiv, {
+                selector: 'a[data-src]',
+                plugins: typeof lgZoom !== 'undefined' ? [lgZoom] : [],
+                speed: 500,
+                download: false,
+                licenseKey: '0000-0000-000-0000'
+            });
+        }
+
         generateTOC();
     };
 
     const generateTOC = () => {
         if (!tocList) return;
-        const headings = contentDiv.querySelectorAll('h2, h3');
+        const headings = document.querySelectorAll('#content h2, #content h3, #content h4');
         tocList.innerHTML = '';
+
+        let lastH2Li = null;
+        let lastH3Li = null;
 
         headings.forEach(heading => {
             const level = parseInt(heading.tagName.substring(1), 10);
             const id = heading.id;
-            const title = heading.textContent;
+            const rawTitle = (heading.querySelector('span')?.textContent || heading.textContent).trim();
 
-            if (id && title) {
+            if (id && rawTitle) {
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = `#${id}`;
-                
-                const icon = level === 2 ? '🔹' : '🔸';
-                a.innerHTML = `<span class="toc-icon">${icon}</span><span class="toc-text">${title}</span>`;
-                
-                li.appendChild(a);
-                if(level === 3) {
-                    li.style.paddingLeft = `20px`;
+
+                let icon = '';
+                let title = '';
+
+                const emojiRegex = /^(\p{Emoji_Presentation}|\p{Extended_Pictographic})/u;
+                const match = rawTitle.match(emojiRegex);
+
+                if (match) {
+                    icon = match[0];
+                    title = rawTitle.substring(match[0].length).trim();
+                } else {
+                    title = rawTitle;
+                    if (level === 2) icon = '🔹';
+                    else if (level === 3) icon = '🔸';
+                    else if (level === 4) icon = '▫️';
                 }
-                tocList.appendChild(li);
+                
+                a.innerHTML = `<span class="toc-icon" style="min-width: 1.5em;">${icon}</span><span class="toc-text">${title}</span>`;
+                li.appendChild(a);
+
+                if (level === 2) {
+                    tocList.appendChild(li);
+                    lastH2Li = li;
+                    lastH3Li = null;
+                } else if (level === 3) {
+                    const parentList = lastH2Li?.querySelector('ul') || lastH2Li?.appendChild(document.createElement('ul')) || tocList;
+                    parentList.appendChild(li);
+                    lastH3Li = li;
+                } else if (level === 4) {
+                    const parentList = lastH3Li?.querySelector('ul') || lastH3Li?.appendChild(document.createElement('ul')) || tocList;
+                    parentList.appendChild(li);
+                }
             }
         });
-        
-        setupScrollSpy();
+
+        setupSectionBoundaries();
     };
     
     // --- Scroll-based Active Link Highlighting ---
-    const setupScrollSpy = () => {
-        const links = tocList.querySelectorAll('a');
-        if (links.length === 0) return;
-
-        const sections = Array.from(links).map(link => document.getElementById(link.getAttribute('href').substring(1))).filter(Boolean);
-        if (sections.length === 0) return;
-
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                const id = entry.target.id;
-                if (entry.isIntersecting) {
-                    links.forEach(link => {
-                        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
-                    });
-                }
-            });
-        }, {
-            rootMargin: '0px 0px -80% 0px',
-            threshold: 0
-        });
-
-        sections.forEach(section => observer.observe(section));
-
+    const setupSmoothScrolling = (links) => {
         links.forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -154,13 +193,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(isMobileOpen) {
                         isMobileOpen = false;
                         sidebar.classList.remove('open');
+                        wrapper?.classList.remove('sidebar-mobile-open');
                     }
                 }
             });
         });
     };
 
-    // Back to top button
+    // Back to top button & Scrollspy Logic
+    let sectionBoundaries = [];
+
+    const setupSectionBoundaries = () => {
+        const links = Array.from(tocList.querySelectorAll('a'));
+        if (links.length === 0) return;
+        
+        const sections = links.map(link => {
+            const section = document.getElementById(link.getAttribute('href').substring(1));
+            return section ? { link: link, element: section } : null;
+        }).filter(Boolean);
+
+        if (sections.length > 0) {
+            sectionBoundaries = sections.map((item, index) => {
+                const startY = item.element.offsetTop;
+                const endY = (index < sections.length - 1) ? sections[index + 1].element.offsetTop : document.documentElement.scrollHeight;
+                return { link: item.link, startY: startY, endY: endY };
+            });
+            setupSmoothScrolling(links);
+        }
+    };
+    
     window.addEventListener('scroll', () => {
         if (backToTopButton) {
             if (window.pageYOffset > 300) {
@@ -169,6 +230,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 backToTopButton.style.display = 'none';
             }
         }
+
+        // Scrollspy progress update
+        const headerOffset = 72;
+        const currentScroll = window.scrollY + headerOffset;
+
+        sectionBoundaries.forEach(section => {
+            section.link.classList.remove('reading', 'completed', 'active');
+            section.link.style.setProperty('--progress', '0%');
+
+            if (currentScroll >= section.endY) {
+                section.link.classList.add('completed');
+            } else if (currentScroll >= section.startY && currentScroll < section.endY) {
+                const progress = (currentScroll - section.startY) / (section.endY - section.startY) * 100;
+                section.link.classList.add('reading');
+                section.link.style.setProperty('--progress', `${Math.min(progress, 100)}%`);
+            }
+        });
     });
 
     backToTopButton?.addEventListener('click', () => {
@@ -478,280 +556,34 @@ function getGuideMarkdown() {
   </tr>
 </table>
 
-<h2 id="section-3">🚀 拓展用法实操</h2>
-
-<p><em>(本部分将通过实际案例，向您展示如何利用拓展包、计划模式等高级功能，完成更复杂的任务。)</em></p>
-
-<h3 id="section-3-1">🧰 开箱即用</h3>
-<p><em>这部分为<strong>内置包</strong></em>
-<br>
-当你让AI写软件，软件的性能取决于AI的能力。示例中的模型为<code>Deepseel-R1</code>模型</p>
-
-<table style="width: 100%;">
-  <thead>
-    <tr>
-      <th style="width: 20%; text-align: left;">示例 (Example)</th>
-      <th style="width: 30%; text-align: left;">说明 (Description)</th>
-      <th style="width: 50%; text-align: left;">预览 (Preview)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;"><strong>写一个2D弹幕游戏</strong></td>
-      <td style="vertical-align: top;">
-        通过简单的对话，让AI为您构思并实现一个经典的2D弹幕射击游戏。Operit AI能够调用其基础代码能力，仅使用HTML和JavaScript，从零开始构建出完整的游戏逻辑与动态画面。
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/game_maker_chat.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/game_maker_chat.jpg" alt="2D弹幕游戏聊天" style="margin-bottom: 5px;">
-        </a>
-        <a href="manuals/assets/game_maker_show.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/game_maker_show.jpg" alt="2D弹幕游戏展示">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><strong>用HTML代码写一个3D游戏</strong></td>
-      <td style="vertical-align: top;">
-        无需任何拓展包，Operit AI 仅通过内置的核心工具，就可以直接用HTML和JavaScript代码，为您呈现一个动态的3D游戏场景。
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/expamle/3ddebdde4958ac152eeca436e39c0f6.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/3ddebdde4958ac152eeca436e39c0f6.jpg" alt="3D游戏示例1" style="margin-bottom: 5px;">
-        </a>
-        <a href="manuals/assets/expamle/759d86a7d74351675b32acb6464585d.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/759d86a7d74351675b32acb6464585d.jpg" alt="3D游戏示例2">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><strong>简单的视频处理</strong></td>
-      <td style="vertical-align: top;">
-        同样地，应用内置了强大的FFmpeg工具，无需额外安装，即可让AI帮您完成视频格式转换、截取、合并等多种处理任务。
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/d7580a42ae03c723121bd172e1f9e7d.jpg" alt="简单的视频处理示例">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><strong>软件打包与部署</strong></td>
-      <td style="vertical-align: top;">
-        从编写代码到最终发布，Operit AI 可以进一步调用平台工具，将完成的软件打包成适用于安卓（APK）或Windows（EXE）的可执行文件，实现端到端的自动化开发流程。
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/web_developer.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/web_developer.jpg" alt="软件打包示例1" style="margin-bottom: 5px;">
-        </a>
-        <a href="manuals/assets/game_maker_packer.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/game_maker_packer.jpg" alt="软件打包示例2">
-        </a>
-      </td>
-    </tr>
-  </tbody>
+<h4 id="section-2-5-3">MCP配置流程</h4>
+<p>在Operit AI中配置和管理MCP（模型上下文协议）插件，可以极大地扩展AI的能力。以下是详细的配置步骤：</p>
+<table style="width: 100%; border-collapse: separate; border-spacing: 0 1em;">
+    <thead>
+      <tr>
+       <th style="text-align: center; padding: 8px;">步骤一：进入MCP市场</th>
+        <th style="text-align: center; padding: 8px;">步骤二：选择并部署MCP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+       <td style="text-align: center; padding: 8px; vertical-align: top;">
+          <p>从主菜单进入"拓展中心"，然后选择"MCP市场"。</p>
+          <a href="manuals/assets/package_or_MCP/7.jpg" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/package_or_MCP/7.jpg" alt="进入MCP市场"></a>
+       </td>
+       <td style="text-align: center; padding: 8px; vertical-align: top;">
+          <p>浏览可用的MCP，选择您需要的插件，然后点击"部署"按钮开始自动配置。</p>
+          <a href="manuals/assets/package_or_MCP/8.jpg" target="_blank" rel="noopener noreferrer"><img src="manuals/assets/package_or_MCP/8.jpg" alt="部署MCP"></a>
+       </td>
+     </tr>
+   </tbody>
 </table>
 
-<h3 id="section-3-2">📦 拓展包</h3>
-
-<p>演示版本<code>1.1.6</code>（图片可点击放大）</p>
-
-<table style="width: 100%;">
-  <thead>
-    <tr>
-      <th style="width: 20%; text-align: left;">拓展包 (Package)</th>
-      <th style="width: 30%; text-align: left;">功能说明 (Description)</th>
-      <th style="width: 50%; text-align: left;">预览 (Preview)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;"><code>writer</code></td>
-      <td style="vertical-align: top;">
-        高级文件编辑和读取功能，支持分段编辑、差异编辑、行号编辑以及高级文件读取操作
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/expamle/065e5ca8a8036c51a7905d206bbb56c.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/065e5ca8a8036c51a7905d206bbb56c.jpg" alt="writer示例">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>various_search</code></td>
-      <td style="vertical-align: top;">
-        多平台搜索功能，支持从必应、百度、搜狗、夸克等平台获取搜索结果
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/90a1778510df485d788b80d4bc349f9.jpg" alt="多平台搜索示例1" style="margin-bottom: 5px;">
-        </a>
-        <a href="manuals/assets/expamle/f9b8aeba4878775d1252ad8d5d8620a.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/f9b8aeba4878775d1252ad8d5d8620a.jpg" alt="多平台搜索示例2">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>daily_life</code></td>
-      <td style="vertical-align: top;">
-        日常生活工具集合，包括日期时间查询、设备状态监测、天气搜索、提醒闹钟设置、短信电话通讯等
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/615cf7a99e421356b6d22bb0b9cc87b.jpg" alt="日常生活示例">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>super_admin</code></td>
-      <td style="vertical-align: top;">
-        超级管理员工具集，提供终端命令和Shell操作的高级功能
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/731f67e3d7494886c1c1f8639216bf2.jpg" alt="超级管理员示例1" style="margin-bottom: 5px;">
-        </a>
-        <a href="manuals/assets/expamle/6f81901ae47f5a3584167148017d132.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/6f81901ae47f5a3584167148017d132.jpg" alt="超级管理员示例2">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>code_runner</code></td>
-      <td style="vertical-align: top;" colspan="2">多语言代码执行能力，支持JavaScript、Python、Ruby、Go和Rust脚本的运行<br><em>你可以在<code>工具箱>终端自动配置</code>中完成以上环境的配置</em></td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>baidu_map</code></td>
-      <td style="vertical-align: top;">
-        百度地图相关功能
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/71fd917c5310c1cebaa1abb19882a6d.jpg" alt="百度地图示例">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>qq_intelligent</code></td>
-      <td style="vertical-align: top;" colspan="2">QQ智能助手，通过UI自动化技术实现QQ应用交互</td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>time</code></td>
-      <td style="vertical-align: top;" colspan="2">提供时间相关功能</td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>various_output</code></td>
-      <td style="vertical-align: top;">
-        提供图片输出功能
-      </td>
-      <td style="vertical-align: top; text-align: center;">
-        <a href="manuals/assets/expamle/5fff4b49db78ec01e189658de8ea997.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/expamle/5fff4b49db78ec01e189658de8ea997.jpg" alt="图片输出示例">
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<h3 id="section-3-3">🛠️ 核心工具</h3>
-
-<table style="width: 100%;">
-  <thead>
-    <tr>
-      <th style="width: 30%; text-align: left;">工具 (Tool)</th>
-      <th style="width: 70%; text-align: left;">功能说明 (Description)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td><code>sleep</code></td><td>短暂暂停执行</td></tr>
-    <tr><td><code>device_info</code></td><td>获取设备详细信息</td></tr>
-    <tr><td><code>use_package</code></td><td>激活扩展包</td></tr>
-    <tr><td><code>query_problem_library</code></td><td>查询问题库</td></tr>
-    <tr><td><code>list_files</code></td><td>列出目录中的文件</td></tr>
-    <tr><td><code>read_file</code></td><td>读取文件内容</td></tr>
-    <tr><td><code>write_file</code></td><td>写入内容到文件</td></tr>
-    <tr><td><code>delete_file</code></td><td>删除文件或目录</td></tr>
-    <tr><td><code>file_exists</code></td><td>检查文件是否存在</td></tr>
-    <tr><td><code>move_file</code></td><td>移动或重命名文件</td></tr>
-    <tr><td><code>copy_file</code></td><td>复制文件或目录</td></tr>
-    <tr><td><code>make_directory</code></td><td>创建目录</td></tr>
-    <tr><td><code>find_files</code></td><td>搜索匹配文件</td></tr>
-    <tr><td><code>zip_files/unzip_files</code></td><td>压缩/解压文件</td></tr>
-    <tr><td><code>download_file</code></td><td>从网络下载文件</td></tr>
-    <tr><td><code>http_request</code></td><td>发送HTTP请求</td></tr>
-    <tr><td><code>multipart_request</code></td><td>上传文件</td></tr>
-    <tr><td><code>manage_cookies</code></td><td>管理cookies</td></tr>
-    <tr><td><code>visit_web</code></td><td>访问并提取网页内容</td></tr>
-    <tr><td><code>get_system_setting</code></td><td>获取系统设置</td></tr>
-    <tr><td><code>modify_system_setting</code></td><td>修改系统设置</td></tr>
-    <tr><td><code>install_app/uninstall_app</code></td><td>安装/卸载应用</td></tr>
-    <tr><td><code>start_app/stop_app</code></td><td>启动/停止应用</td></tr>
-    <tr><td><code>get_notifications</code></td><td>获取设备通知</td></tr>
-    <tr><td><code>get_device_location</code></td><td>获取设备位置</td></tr>
-    <tr><td><code>get_page_info</code></td><td>获取UI屏幕信息</td></tr>
-    <tr><td><code>tap</code></td><td>模拟点击坐标</td></tr>
-    <tr><td><code>click_element</code></td><td>点击UI元素</td></tr>
-    <tr><td><code>set_input_text</code></td><td>设置输入文本</td></tr>
-    <tr><td><code>press_key</code></td><td>模拟按键</td></tr>
-    <tr><td><code>swipe</code></td><td>模拟滑动手势</td></tr>
-    <tr><td><code>find_element</code></td><td>查找UI元素</td></tr>
-    <tr><td><code>ffmpeg_execute</code></td><td>执行FFmpeg命令</td></tr>
-    <tr><td><code>ffmpeg_info</code></td><td>获取FFmpeg信息</td></tr>
-    <tr><td><code>ffmpeg_convert</code></td><td>转换视频文件</td></tr>
-  </tbody>
-</table>
-
-<h3 id="section-3-4">🛒 MCP市场</h3>
-
-> 考虑到手机环境的特殊性，要完整、稳定地配置所有MCP（Model context protocol）所需的环境是相当有挑战性的。因此，直接调用MCP可能会遇到较多困难。
-> 
-> 目前，应用内确认可用的MCP主要有 <code>12306</code>。
-> 
-> 为了提供更流畅、更可靠的体验，我们已经用更适配安卓系统的方式，将许多核心MCP的功能重制并整合到了内置工具和拓展包中。我们强烈建议您优先使用这些经过优化的功能。
-
-> 下面是一些目前社区测试可用的MCP：(等待测试人员更新)
-
-（图片可点击放大）
-
-<table style="width: 100%;">
-  <thead>
-    <tr>
-      <th style="width: 25%; text-align: left;">MCP (Package)</th>
-      <th style="width: 50%; text-align: left;">功能说明 (Description)</th>
-      <th style="width: 25%; text-align: left;">预览 (Preview)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;"><code>tavily</code></td>
-      <td style="vertical-align: top;">
-        Tavily 搜索工具，提供强大的网络搜索能力，可用于研究和信息获取。
-      </td>
-      <td style="vertical-align: top; text-align: right;">
-        <a href="manuals/assets/ee852df3c187771fba0aa92b36a57f8.jpg" target="_blank" rel="noopener noreferrer">
-          <img src="manuals/assets/ee852df3c187771fba0aa92b36a57f8.jpg" alt="Tavily搜索示例">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;"><code>12306</code></td>
-      <td style="vertical-align: top;" colspan="2">
-        用于查询12306火车票信息。
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table style="width: 100%; margin-top: 1em;">
-  <thead>
-    <tr>
-      <th colspan="2" style="text-align: left; padding: 12px;">
-        <h4 id="section-3-4-1" style="margin: 0;">
+<h4 id="section-3-4-1" style="display: flex; justify-content: space-between; align-items: center;">
           <span>MCP工作机制</span>
           <a href="#section-3-4" style="text-decoration: none; font-size: 0.8em;" title="返回上一级">⤴️</a>
         </h4>
-      </th>
-    </tr>
-  </thead>
+<table style="width: 100%; margin-top: 1em;">
   <tbody>
     <tr>
       <td style="width: 30%; padding: 12px; vertical-align: top;">
@@ -810,11 +642,11 @@ function getGuideMarkdown() {
 
 <div class="notice-box">
   <p><strong>注意:</strong> 有的包带了docker文件，但是我们是不支持docker的，请忽视它。</p>
-</div>
+  </div>
 
 <div class="notice-box">
   <p><strong>注意:</strong> 我们的环境termux是linux，有一些win才能用的包要运行.exe，比如playwright，那当然是不支持的了。</p>
-</div>
+  </div>
 
 <h3 id="section-3-5">⏳ 计划模式</h3>
 <code>1.1.6</code>及以后版本不复存在
@@ -895,25 +727,6 @@ function getGuideMarkdown() {
 
 <p>有好的想法或功能建议？您可以通过GitHub Issues提交，也可以关注我们未来的更新计划，也许您期待的功能已经在路上！</p>
 
-<h2 id="section-7">📜 朝花夕拾 (旧版本问题解答)</h2>
 
-<h3 id="1-1-5-版本"><code>1.1.5</code>版本</h3>
-
-<p><em>(相关问题)</em></p>
-
-<h3 id="1-1-3-以前"><code>1.1.3</code>以前</h3>
-
-<p><em>(相关问题)</em></p>
-
-<h4 id="gemini格式未做适配">Gemini格式未做适配</h4>
-<p>新版本已解决，支持了更多模型</p>
-
-<h4 id="termux">Termux</h4>
-
-<p>##### 类型一 Termux版本不正确<br>
-##### 类型二 MCP包不加载<br>
-软件运行时建议将Termux挂后台</p>
-
-<p>后续将通过内置Termux解决这类问题</p>
 `;
 } 
