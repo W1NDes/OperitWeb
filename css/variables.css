@@ -4,7 +4,9 @@
     --secondary-color: #6c757d;
     --accent-color: #0ea5e9;
     --background-color: #f0f4f8; /* A slightly grayish-blue background */
+    --background-color-secondary: #e8eef5; /* Slightly darker than primary background for contrast */
     --text-color: #333333;
+    --text-color-secondary: #4b5563; /* Secondary text color for descriptions */
     --card-background: #ffffff;
     --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     --card-hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
@@ -17,12 +19,26 @@
     /* Scrollbar */
     --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
     --scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.4);
+
+    --hero-button-secondary-hover-bg: #e0e0e0;
+    --hero-button-secondary-hover-text: #000;
+    --card-bg: #ffffff;
+    --card-border: #e0e0e0;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --modal-bg: rgba(0, 0, 0, 0.4);
+    --modal-content-bg: #ffffff;
+    --section-bg-odd: #f9f9f9;
+    --section-bg-even: #ffffff;
+    --tooltip-bg: #f1f1f1;
+    --tooltip-text: #333;
 }
 
 [data-theme="dark"] {
     --primary-color: #60a5fa;
     --background-color: #1a1a2e;
+    --background-color-secondary: #16162b; /* Slightly darker than primary background for contrast */
     --text-color: #e5e7eb;
+    --text-color-secondary: #9ca3af; /* Secondary text color for descriptions */
     --card-background: #374151;
     --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     --card-hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
@@ -33,4 +49,16 @@
     /* Scrollbar */
     --scrollbar-thumb-color: rgba(255, 255, 255, 0.2);
     --scrollbar-thumb-hover-color: rgba(255, 255, 255, 0.4);
+
+    --hero-button-secondary-hover-bg: #444;
+    --hero-button-secondary-hover-text: #fff;
+    --card-bg: #2c2c2e;
+    --card-border: #444;
+    --card-shadow: rgba(0, 0, 0, 0.4);
+    --modal-bg: rgba(0, 0, 0, 0.7);
+    --modal-content-bg: #1c1c1e;
+    --section-bg-odd: #1c1c1e;
+    --section-bg-even: #242426;
+    --tooltip-bg: #333;
+    --tooltip-text: #fff;
 } 

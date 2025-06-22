@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Listen for theme changes to update particle speed
     window.addEventListener('themeChanged', initParticles);
-
+    
     // Default to off on mobile, on on desktop, unless user has a preference
     const isMobile = window.innerWidth <= 768;
     let snowEnabled = localStorage.getItem('snowEnabled');

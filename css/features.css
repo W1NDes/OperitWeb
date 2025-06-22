@@ -208,3 +208,223 @@
     max-width: 600px;
     margin: 0 auto 2rem;
 } 
+
+/* Service Providers Section */
+.service-providers {
+    padding: 4rem 0;
+    background-color: var(--background-color-secondary);
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.service-providers .container {
+    margin-bottom: 2rem;
+}
+
+.service-providers .section-title {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    font-size: 2.2rem;
+}
+
+.service-providers .section-description {
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--text-color-secondary);
+    font-size: 1.1rem;
+}
+
+.providers-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.provider-logo {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    width: 160px;
+}
+
+.provider-logo img {
+    max-width: 120px;
+    height: 60px;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.provider-logo .tooltip {
+    visibility: hidden;
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.provider-logo:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.provider-logo img:hover {
+    filter: grayscale(0%);
+}
+
+.more-providers {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-color-secondary);
+    font-style: italic;
+}
+
+/* Add subtle gradient overlays to create fade effect at edges */
+.service-providers::before,
+.service-providers::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 150px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.service-providers::before {
+    left: 0;
+    background: linear-gradient(to right, var(--background-color-secondary), transparent);
+}
+
+.service-providers::after {
+    right: 0;
+    background: linear-gradient(to left, var(--background-color-secondary), transparent);
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .providers-grid {
+        gap: 3rem;
+    }
+    
+    .provider-logo {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .service-providers::before,
+    .service-providers::after {
+        width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .providers-grid {
+        gap: 2rem;
+    }
+    
+    .provider-logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .service-providers::before,
+    .service-providers::after {
+        width: 50px;
+    }
+}
+
+/* GitHub Statistics Section */
+.github-stats-section {
+    padding: 4rem 0;
+    background-color: var(--background-color);
+    text-align: center;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 6rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.stat-item::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    background-color: var(--background-color-secondary);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.stat-number {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-label {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    position: relative;
+    z-index: 1;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .stats-container {
+        gap: 3rem;
+    }
+    
+    .stat-item::before {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .stat-number {
+        font-size: 2.8rem;
+    }
+    
+    .stat-label {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+} 
