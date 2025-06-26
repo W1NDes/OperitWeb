@@ -101,4 +101,51 @@
         transform: translate(-50%, -50%) scale(5);
         opacity: 0;
     }
+}
+
+/* Metallic Text Effects */
+.special-text {
+    display: inline-block;
+    transition: transform 0.2s ease-out;
+}
+
+.rose-gold-text {
+    background: linear-gradient(135deg, #f3a6a6 0%, #f5c4a7 25%, #f7e2a9 50%, #f5c4a7 75%, #f3a6a6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.silver-text {
+    background: linear-gradient(145deg, #a9a9a9, #e0e0e0, #a9a9a9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(170, 170, 170, 0.7);
+    transition: text-shadow 0.2s ease-out;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 20%, var(--primary-color) 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .gradient-text {
+    background: linear-gradient(135deg, #B0B0B0 20%, var(--primary-color) 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .silver-text {
+    background: linear-gradient(145deg, #cccccc, #ffffff, #cccccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 } 

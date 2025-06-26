@@ -1,21 +1,26 @@
 /* Header and Navigation */
 header {
-    background-color: var(--card-background);
+    background-color: var(--header-background);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--card-shadow);
-    padding: 1rem;
+    padding: 1.5rem 2rem;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+header.header-hidden {
+    transform: translateY(-100%);
 }
 
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 .logo {
@@ -25,12 +30,12 @@ nav {
 }
 
 .logo img {
-    height: 40px;
+    height: 55px;
     width: auto;
 }
 
 .logo-text {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
     color: var(--primary-color);
 }
@@ -46,6 +51,7 @@ nav {
     text-decoration: none;
     font-weight: 500;
     transition: color var(--transition-speed);
+    font-size: 1.4rem;
 }
 
 .nav-links a:hover {
@@ -167,22 +173,37 @@ footer a:hover {
 .hero {
     position: relative;
     color: white;
-    padding: 4rem 2rem;
+    padding: 2rem;
     text-align: center;
     background-image: url('../images/hero-background.png');
     background-size: cover;
     background-position: center;
     overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #particles-js {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 1;
-    background-color: rgba(4, 23, 55, 0.3);
+    z-index: -1; /* Ensure it's behind everything */
+    background-color: var(--header-background);
+    display: none; /* Disabled by default in light mode */
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    background-position: center;
+}
+
+[data-theme="dark"] #particles-js {
+    display: flex; /* Enabled in dark mode, controlled by JS */
 }
 
 .hero-content {
@@ -192,24 +213,49 @@ footer a:hover {
     z-index: 2;
 }
 
-.hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-    font-weight: bold;
-    color: #ffffff;
+.hero-title-main {
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-color-secondary);
+    margin: 0 auto 0.5rem;
+    animation: text-fade-in 1s ease-in-out forwards;
+    display: flex;
+    justify-content: space-between;
+    text-shadow: 0 0 10px rgba(170, 170, 170, 0.5);
+    white-space: nowrap;
 }
 
-.hero p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    color: #e0e0e0;
+.hero-subtitle-main {
+    font-size: 1.5rem;
+    color: var(--text-color-secondary);
+    margin-top: 15vh;
+    margin-bottom: 2.5rem;
+    animation: text-fade-in 1s ease-in-out 0.5s forwards;
+    opacity: 0;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 8px rgba(170, 170, 170, 0.5);
+}
+
+@keyframes text-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .hero-buttons {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
     justify-content: center;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
 }
 
 [data-theme="dark"] .hero {
@@ -220,13 +266,10 @@ footer a:hover {
     background-position: center;
 }
 
-[data-theme="dark"] #particles-js {
-    background-color: rgba(2, 12, 28, 0.5);
-}
-
-[data-theme="dark"] .hero h1, 
-[data-theme="dark"] .hero p {
+[data-theme="dark"] .hero-title-main, 
+[data-theme="dark"] .hero-subtitle-main {
     color: var(--text-color);
+    text-shadow: none;
 }
 
 /* Contributors Section */
@@ -313,4 +356,10 @@ footer a:hover {
     height: 100%;
     z-index: -1; /* Place it behind all content */
     background-color: rgba(4, 23, 55, 0.3); /* Match hero section background */
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 3.5rem;
 } 

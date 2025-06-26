@@ -15,32 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const getParticleConfig = () => {
         const theme = document.documentElement.getAttribute('data-theme') || 'light';
         
-        let speed, size, hoverMode;
+        const isDarkMode = theme === 'dark';
 
-        if (theme === 'dark') {
-            speed = 2;
-            size = 3;
-            hoverMode = 'grab';
-        } else { // light theme
-            speed = 5;
-            size = 5; // Larger particles for light mode
-            hoverMode = 'repulse'; // Repulse effect for light mode
-        }
-
-        return {
+        const baseConfig = {
             "particles": {
                 "number": { "value": 80, "density": { "enable": true, "value_area": 2000 } },
                 "color": { "value": "#ffffff" },
                 "shape": { "type": "circle" },
                 "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 0.8, "opacity_min": 0.1, "sync": false } },
-                "size": { "value": size, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
+                "size": { "value": 5, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
                 "line_linked": { "enable": true, "distance": 120, "color": "#ffffff", "opacity": 0.3, "width": 1 },
-                "move": { "enable": true, "speed": speed, "direction": "top-right", "random": false, "straight": false, "out_mode": "out" }
+                "move": { "enable": true, "speed": 5, "direction": "top-right", "random": false, "straight": false, "out_mode": "out" }
             },
             "interactivity": {
                 "detect_on": "window",
                 "events": {
-                    "onhover": { "enable": true, "mode": hoverMode },
+                    "onhover": { "enable": true, "mode": "repulse" },
                     "onclick": { "enable": true, "mode": "push" },
                     "resize": true
                 },
@@ -51,6 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             "retina_detect": true
         };
+
+        if (isDarkMode) {
+            baseConfig.particles.number.value = 40; // Fewer particles in dark mode
+            baseConfig.particles.move.speed = 2;
+            baseConfig.particles.size.value = 3;
+            baseConfig.interactivity.events.onhover.mode = 'grab';
+        }
+
+        return baseConfig;
     };
 
     const initParticles = () => {

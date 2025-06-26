@@ -17,12 +17,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const setupHeaderScrollEffect = () => {
         const header = document.querySelector('header');
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
+        if (!header) return;
+
+        let lastScrollY = window.scrollY;
+        const scrollThreshold = 200; // Only hide after scrolling down this many pixels
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > lastScrollY && currentScrollY > scrollThreshold) {
+                // Scrolling down
+                header.classList.add('header-hidden');
+            } else {
+                // Scrolling up
+                header.classList.remove('header-hidden');
+            }
+
+            if (currentScrollY > 50) {
                 header.classList.add('header-scrolled');
             } else {
                 header.classList.remove('header-scrolled');
             }
+
+            lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY; // For Mobile or negative scrolling
         });
     };
 
@@ -108,8 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
             userGuide: "User Manual",
             features: "Features",
             download: "Download",
-            heroTitle: "The AI that turns your phone into a true smart assistant.",
-            heroSubtitle: "From here, you will witness the creativity of countless users. From here, you will showcase your creativity!",
+            heroTitleLine1: "The <span class='special-text silver-text'>First</span> Fully-Featured",
+            heroTitleLine2: "<span class='special-text gradient-text'>AI Assistant</span> for Mobile",
+            heroSubtitle: "Completely independent operation with powerful tool capabilities",
             newHeroTitle: "The First Fully-Featured AI Assistant for Mobile",
             newHeroSubtitle: "Completely independent operation with powerful tool capabilities",
             downloadLatest: "Download Latest Version",
@@ -163,8 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
             userGuide: "用户手册",
             features: "功能",
             download: "下载",
-            heroTitle: "将您的手机变成真正智能助手的AI。",
-            heroSubtitle: "从这里开始，你将看到无数用户的创造力。从这里开始，你将展示你的创造力！",
+            heroTitleLine1: "移动端<span class='special-text silver-text'>首个</span>功能完备的",
+            heroTitleLine2: "<span class='special-text gradient-text'>AI智能助手</span>",
+            heroSubtitle: "完全独立运行，拥有强大的工具调用能力",
             newHeroTitle: "移动端首个功能完备的AI智能助手",
             newHeroSubtitle: "完全独立运行，拥有强大的工具调用能力",
             downloadLatest: "下载最新版",
@@ -226,6 +245,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const key = el.getAttribute('data-i18n');
             if (translations[lang] && translations[lang][key]) {
                 el.innerHTML = translations[lang][key];
+
+                // Re-wire parallax effect for newly added spans
+                if (key === 'heroTitleLine1' || key === 'heroTitleLine2') {
+                    setupTextParallax();
+                }
             }
         });
     };
@@ -254,43 +278,168 @@ document.addEventListener('DOMContentLoaded', function() {
         setLanguage(savedLang);
     };
 
-    // --- Theme Switcher ---
-    const setupThemeSwitcher = () => {
-        const themeToggle = document.getElementById('theme-toggle-checkbox');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const updateParticleVisibility = () => {
+        const particlesContainer = document.getElementById('particles-js');
+        if (!particlesContainer) return;
+        
+        const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+        // localStorage stores strings, so we must compare to the string 'true'.
+        const snowEnabled = localStorage.getItem('snowEffect') === 'true';
 
-        const applyTheme = (theme) => {
+        if (isDarkMode && snowEnabled) {
+            if (particlesContainer.style.display !== 'block') {
+                particlesContainer.style.display = 'block';
+            }
+            // If particles are not yet loaded, load them.
+            if (!window.pJSDom || !window.pJSDom.length) { 
+                particlesJS.load('particles-js', 'particlesjs-config.json', function() {
+                    console.log('Particles.js loaded');
+                });
+            }
+        } else {
+            if (particlesContainer.style.display !== 'none') {
+                particlesContainer.style.display = 'none';
+            }
+            // If particles are loaded, destroy them to save resources.
+            if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
+                window.pJSDom[0].pJS.fn.vendors.destroypJS();
+                window.pJSDom = [];
+            }
+        }
+    };
+
+    const setupThemeSwitcher = () => {
+        const checkbox = document.getElementById('theme-toggle-checkbox');
+        if (!checkbox) return;
+
+        const applyTheme = (theme, fromUserInteraction = false) => {
+            if (fromUserInteraction) {
+                document.body.classList.add('theme-transition');
+            }
+
+            // On any theme switch, reset the snow effect to its default (off) state.
+            localStorage.setItem('snowEffect', 'false');
+
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
-            if (themeToggle) {
-                themeToggle.checked = theme === 'dark';
+            checkbox.checked = theme === 'dark';
+            updateParticleVisibility();
+
+            if (fromUserInteraction) {
+                document.body.addEventListener('transitionend', () => {
+                    document.body.classList.remove('theme-transition');
+                }, { once: true });
             }
-            window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: theme } }));
         };
 
         const detectAndApplyTheme = () => {
             const savedTheme = localStorage.getItem('theme');
-            applyTheme(savedTheme || (systemPrefersDark.matches ? 'dark' : 'light'));
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
         };
 
-        if(themeToggle) {
-            themeToggle.addEventListener('change', (e) => applyTheme(e.target.checked ? 'dark' : 'light'));
-        }
-        systemPrefersDark.addEventListener('change', (e) => {
-            if (!localStorage.getItem('theme')) {
-                 applyTheme(e.matches ? 'dark' : 'light');
-            }
+        checkbox.addEventListener('change', () => {
+            applyTheme(checkbox.checked ? 'dark' : 'light', true);
         });
 
         detectAndApplyTheme();
     };
     
+    const setupSnowToggle = () => {
+        const snowToggleBtn = document.getElementById('snow-toggle-btn');
+        if (!snowToggleBtn) return;
+    
+        snowToggleBtn.addEventListener('click', () => {
+            // This button is only visible in dark mode, so we just toggle the state.
+            const snowEnabled = localStorage.getItem('snowEffect') !== 'false';
+            localStorage.setItem('snowEffect', String(!snowEnabled));
+            updateParticleVisibility();
+        });
+    };
+
+    const setupTextParallax = () => {
+        const hero = document.querySelector('.hero');
+        const specialTexts = document.querySelectorAll('.special-text');
+
+        if (!hero || specialTexts.length === 0) {
+            return;
+        }
+
+        const onMouseMove = (e) => {
+            const { clientX, clientY } = e;
+            const { offsetWidth, offsetHeight } = hero;
+
+            const x = (clientX - offsetWidth / 2) / (offsetWidth / 2);
+            const y = (clientY - offsetHeight / 2) / (offsetHeight / 2);
+
+            const tiltAmount = 5; 
+
+            specialTexts.forEach(text => {
+                text.style.transform = `perspective(1000px) rotateY(${x * tiltAmount}deg) rotateX(${-y * tiltAmount}deg)`;
+            });
+        };
+
+        const onMouseLeave = () => {
+            specialTexts.forEach(text => {
+                text.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+            });
+        };
+
+        hero.removeEventListener('mousemove', onMouseMove);
+        hero.removeEventListener('mouseleave', onMouseLeave);
+
+        hero.addEventListener('mousemove', onMouseMove);
+        hero.addEventListener('mouseleave', onMouseLeave);
+    };
+
+    const setupProximityGlowEffect = () => {
+        const hero = document.querySelector('.hero');
+        const silverText = document.querySelector('.silver-text');
+
+        if (!hero || !silverText) return;
+
+        const baseGlowColor = '170, 170, 170';
+        const maxGlowOpacity = 0.7;
+        const glowRadius = '15px';
+        const maxDistance = 300;
+
+        const onMouseMove = (e) => {
+            window.requestAnimationFrame(() => {
+                const rect = silverText.getBoundingClientRect();
+                if (rect.width === 0 && rect.height === 0) return;
+                
+                const elementCenterX = rect.left + rect.width / 2;
+                const elementCenterY = rect.top + rect.height / 2;
+                
+                const distance = Math.sqrt(Math.pow(e.clientX - elementCenterX, 2) + Math.pow(e.clientY - elementCenterY, 2));
+                
+                const glowOpacity = Math.min(distance / maxDistance, 1) * maxGlowOpacity;
+                
+                silverText.style.textShadow = `0 0 ${glowRadius} rgba(${baseGlowColor}, ${glowOpacity})`;
+            });
+        };
+
+        const onMouseLeave = () => {
+            window.requestAnimationFrame(() => {
+                silverText.style.textShadow = `0 0 ${glowRadius} rgba(${baseGlowColor}, ${maxGlowOpacity})`;
+            });
+        };
+
+        hero.addEventListener('mousemove', onMouseMove);
+        hero.addEventListener('mouseleave', onMouseLeave);
+    };
+
     // --- Initializations ---
+    const initialLang = localStorage.getItem('user-lang') || 'zh';
+    setLanguage(initialLang);
+    setDaysOnline();
     setupSmoothScroll();
     setupHeaderScrollEffect();
     setupHamburgerMenu();
-    setDaysOnline();
     setupStatsAnimation();
     setupLanguageSwitcher();
     setupThemeSwitcher();
+    setupSnowToggle();
+    setupProximityGlowEffect();
+    setupTextParallax();
 });
