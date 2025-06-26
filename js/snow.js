@@ -4,6 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundParticles = document.getElementById('background-particles');
     let pJS_instance = null;
 
+    const destroyParticles = () => {
+        if (pJS_instance) {
+            try {
+                pJS_instance.pJS.fn.vendors.destroypJS();
+                pJS_instance = null;
+            } catch (e) {
+                console.error('Error destroying previous particles instance:', e);
+            }
+        }
+    };
+
     if (!backgroundParticles) {
         console.error('Background particles container not found!');
         // Create the element if it doesn't exist
@@ -53,13 +64,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const initParticles = () => {
+        const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
+        
+        destroyParticles();
+
+        if (isLightMode) {
+            return;
+        }
+
         if (pJS_instance) {
-            try {
-                pJS_instance.pJS.fn.vendors.destroypJS();
-                pJS_instance = null;
-            } catch (e) {
-                console.error('Error destroying previous particles instance:', e);
-            }
+            destroyParticles();
         }
         
         if (backgroundParticles && typeof particlesJS !== 'undefined') {
@@ -149,7 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const animateSnow = () => {
-        if (!snowEnabled) {
+        const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
+        if (!snowEnabled || isLightMode) {
             requestAnimationFrame(animateSnow);
             return;
         }
@@ -235,14 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initialize hero particles
-    const particlesElement = document.getElementById('particles-js');
-    if (particlesElement && typeof particlesJS !== 'undefined') {
-        particlesJS.load('particles-js', 'particlesjs-config.json', function() {
-            console.log('Hero particles.js config loaded successfully');
-        });
-    }
-    
     // Start animation loop
     animateSnow();
 }); 

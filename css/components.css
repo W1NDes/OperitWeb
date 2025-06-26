@@ -345,6 +345,4 @@ input:checked + .slider .moon-icon {
     animation: show-deny-cross 1s ease-in-out forwards;
 }
 
-[data-theme='light'] #snow-toggle-btn {
-    display: none;
-} 
+

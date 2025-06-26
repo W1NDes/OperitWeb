@@ -104,4 +104,9 @@ body {
 
 .snow-toggle-button.active .icon {
     top: 55px;
+}
+
+[data-theme="light"] #snow-container,
+[data-theme="light"] .snow-toggle-button {
+    display: none !important;
 } 
