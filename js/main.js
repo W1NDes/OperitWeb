@@ -1,112 +1,133 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // 平滑滚动效果
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                window.scrollTo({
-                    top: target.offsetTop - 80, // 考虑固定导航栏高度
-                    behavior: 'smooth'
-                });
+    // --- Setup Functions ---
+    const setupSmoothScroll = () => {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80, // Offset for fixed header
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    };
+
+    const setupHeaderScrollEffect = () => {
+        const header = document.querySelector('header');
+        if (!header) return;
+
+        let lastScrollY = window.scrollY;
+        const scrollThreshold = 200; // Only hide after scrolling down this many pixels
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > lastScrollY && currentScrollY > scrollThreshold) {
+                // Scrolling down
+                header.classList.add('header-hidden');
+            } else {
+                // Scrolling up
+                header.classList.remove('header-hidden');
             }
+
+            if (currentScrollY > 50) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+
+            lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY; // For Mobile or negative scrolling
         });
-    });
+    };
 
-    // 滚动时导航栏变化效果
-    const header = document.querySelector('.header');
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 100) {
-            header.classList.add('header-scrolled');
-        } else {
-            header.classList.remove('header-scrolled');
-        }
-    });
+    const setupHamburgerMenu = () => {
+        const hamburger = document.querySelector('.hamburger-menu');
+        const navLinks = document.querySelector('.nav-links');
+        if (!hamburger || !navLinks) return;
 
-    // 特性卡片动画效果
-    document.querySelectorAll('.feature-card').forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-    });
-
-    // 添加新部件的交互效果，如果有的话
-    // 例如图像放大、轮播图等
-    
-    // 自定义下载按钮事件
-    const downloadLinks = document.querySelectorAll('.download-link');
-    downloadLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // 可以在这里添加下载统计、跟踪等功能
-            console.log('Download clicked');
-        });
-    });
-
-    // 获取所有功能卡片
-    const featureCards = document.querySelectorAll('.feature-card');
-
-    // Hamburger Menu Toggle
-    const hamburger = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
-
-    if (hamburger && navLinks) {
         hamburger.addEventListener('click', (e) => {
             e.stopPropagation();
             navLinks.classList.toggle('active');
             hamburger.classList.toggle('active');
         });
 
-        // Close menu when a link is clicked inside
-        navLinks.addEventListener('click', () => {
-            if (navLinks.classList.contains('active')) {
-                navLinks.classList.remove('active');
-                hamburger.classList.remove('active');
-            }
-        });
-
-        // Close menu when clicking outside of it
         document.addEventListener('click', (e) => {
             if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
                 navLinks.classList.remove('active');
                 hamburger.classList.remove('active');
             }
         });
-    }
+    };
+    
+    // --- Stats Animation ---
+    const setupStatsAnimation = () => {
+        const animateCountUp = (element) => {
+            if (element.dataset.animated) return;
+            element.dataset.animated = 'true';
 
-    // Logo click wink effect
-    const logo = document.querySelector('.logo');
-    if (logo) {
-        logo.style.cursor = 'pointer';
-        logo.addEventListener('click', (e) => {
-            const rect = logo.getBoundingClientRect();
-            const wink = document.createElement('div');
-            wink.textContent = '😉';
-            wink.classList.add('wink-feedback');
-            document.body.appendChild(wink);
-            
-            wink.style.top = `${rect.top + rect.height / 2}px`;
-            wink.style.left = `${rect.left + rect.width / 2}px`;
+            const target = parseInt(element.dataset.target, 10);
+            if (isNaN(target)) return;
 
-            setTimeout(() => {
-                wink.classList.add('show');
-            }, 10);
+            const duration = 2000; // Animation duration in milliseconds
+            let startTime = null;
 
-            setTimeout(() => {
-                wink.style.opacity = 0;
-                wink.addEventListener('transitionend', () => wink.remove());
-            }, 600);
-        });
-    }
-});
+            const step = (currentTime) => {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                const value = Math.floor(progress * target);
+                element.textContent = value.toLocaleString('en-US');
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                }
+            };
+            requestAnimationFrame(step);
+        };
 
-document.addEventListener('DOMContentLoaded', () => {
+        const statsObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = entry.target.querySelectorAll('.stat-number');
+                    statNumbers.forEach(num => animateCountUp(num));
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const statsSection = document.querySelector('.github-stats-section');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    };
+
+    const setDaysOnline = () => {
+        const startDate = new Date('2025-05-11');
+        const today = new Date();
+        let diffDays = 0;
+
+        if (today >= startDate) {
+            const diffTime = today - startDate;
+            diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        const daysOnlineElement = document.querySelector('#days-online');
+        if (daysOnlineElement) {
+            daysOnlineElement.dataset.target = diffDays;
+        }
+    };
+
+    // --- Language Switcher ---
     const translations = {
         en: {
             home: "Home",
             userGuide: "User Manual",
             features: "Features",
             download: "Download",
-            heroTitle: "The AI that turns your phone into a true smart assistant.",
-            heroSubtitle: "From here, you will witness the creativity of countless users. From here, you will showcase your creativity!",
+            heroTitleLine1: "The <span class='special-text silver-text'>First</span> Fully-Featured",
+            heroTitleLine2: "<span class='special-text gradient-text'>AI Assistant</span> for Mobile",
+            heroSubtitle: "Completely independent operation with powerful tool capabilities",
             newHeroTitle: "The First Fully-Featured AI Assistant for Mobile",
             newHeroSubtitle: "Completely independent operation with powerful tool capabilities",
             downloadLatest: "Download Latest Version",
@@ -126,6 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
             showcase3Desc: "Use the floating window for quick access and easily share files with the AI.",
             galleryTitle: "Example Gallery",
             galleryDesc: "Experience what Operit AI can do through these interactive examples",
+            serviceProviders: "We Support AI with OpenAI/Google Interfaces",
+            serviceProvidersDesc: "Images are service providers we support (including but not limited to)",
             quickStartTitle: "Quick Start",
             requirementsTitle: "System Requirements",
             req1: "Android 8.0+ (API 26+)",
@@ -139,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadDesc: "For users in mainland China or regions with slow GitHub access.",
             downloadApk: "Download APK (v1.1.5)",
             contributorsTitle: "Contributors",
-            // Core Features section translations
             coreFeatures: "Core Features",
             aiAssistant: "AI Intelligent Assistant",
             aiAssistantDesc: "Runs completely independently on your Android device, a comprehensive assistant deeply integrated with Android permissions and various tools",
@@ -159,8 +181,9 @@ document.addEventListener('DOMContentLoaded', () => {
             userGuide: "用户手册",
             features: "功能",
             download: "下载",
-            heroTitle: "将您的手机变成真正智能助手的AI。",
-            heroSubtitle: "从这里开始，你将看到无数用户的创造力。从这里开始，你将展示你的创造力！",
+            heroTitleLine1: "移动端<span class='special-text silver-text'>首个</span>功能完备的",
+            heroTitleLine2: "<span class='special-text gradient-text'>AI智能助手</span>",
+            heroSubtitle: "完全独立运行，拥有强大的工具调用能力",
             newHeroTitle: "移动端首个功能完备的AI智能助手",
             newHeroSubtitle: "完全独立运行，拥有强大的工具调用能力",
             downloadLatest: "下载最新版",
@@ -180,6 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
             showcase3Desc: "使用悬浮窗便捷调用，附件功能轻松共享文件。",
             galleryTitle: "示例画廊",
             galleryDesc: "点击抽卡，查看Operit AI的功能示例。",
+            serviceProviders: "我们支持OpenAI/Google接口的AI",
+            serviceProvidersDesc: "图片是我们支持的服务商（包括但不限于）",
             quickStartTitle: "快速开始",
             requirementsTitle: "系统要求",
             req1: "Android 8.0+ (API 26+)",
@@ -193,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadDesc: "为中国大陆或GitHub访问速度较慢地区的用户提供。",
             downloadApk: "下载 APK (v1.1.5)",
             contributorsTitle: "贡献者",
-            // Core Features section translations
             coreFeatures: "核心特性",
             aiAssistant: "AI 智能助手",
             aiAssistantDesc: "完全独立运行于您的 Android 设备，是一个和安卓权限和各种工具深度融合的全能助手",
@@ -209,133 +233,213 @@ document.addEventListener('DOMContentLoaded', () => {
             floatingWindowDesc: "随时调用AI功能，便捷高效"
         }
     };
+    
+    const setLanguage = (lang) => {
+        document.documentElement.lang = lang;
+        localStorage.setItem('user-lang', lang);
+        const currentLangSpan = document.getElementById('current-lang');
+        if (currentLangSpan) {
+            currentLangSpan.textContent = lang === 'zh' ? '中' : 'En';
+        }
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
+                el.innerHTML = translations[lang][key];
 
-    // Click effect
-    const clickEffect = document.createElement('div');
-    clickEffect.classList.add('click-effect');
-    document.body.appendChild(clickEffect);
+                // Re-wire parallax effect for newly added spans
+                if (key === 'heroTitleLine1' || key === 'heroTitleLine2') {
+                    setupTextParallax();
+                }
+            }
+        });
+    };
 
-    document.addEventListener('mousedown', (e) => {
-        clickEffect.style.left = `${e.clientX}px`;
-        clickEffect.style.top = `${e.clientY}px`;
-        clickEffect.classList.add('active');
-    });
+    const setupLanguageSwitcher = () => {
+        const langToggleButton = document.getElementById('language-toggle-btn');
+        const langOptions = document.getElementById('language-options');
+        if (!langToggleButton || !langOptions) return;
 
-    document.addEventListener('mouseup', () => {
-        clickEffect.classList.remove('active');
-    });
-
-    // --- Language Switcher ---
-    const langToggleButton = document.getElementById('language-toggle-btn');
-    const langOptions = document.getElementById('language-options');
-    const currentLangSpan = document.getElementById('current-lang');
-
-    if (langToggleButton && langOptions && currentLangSpan) {
         langToggleButton.addEventListener('click', (e) => {
             e.stopPropagation();
             langOptions.classList.toggle('show');
         });
 
-        document.addEventListener('click', (e) => {
-            if (!langOptions.contains(e.target) && !langToggleButton.contains(e.target)) {
-                langOptions.classList.remove('show');
-            }
-        });
+        document.addEventListener('click', () => langOptions.classList.remove('show'));
 
         langOptions.addEventListener('click', (e) => {
             if (e.target.classList.contains('language-option')) {
                 e.preventDefault();
-                const selectedLang = e.target.getAttribute('data-lang');
-                setLanguage(selectedLang);
+                setLanguage(e.target.getAttribute('data-lang'));
                 langOptions.classList.remove('show');
             }
         });
-    }
-
-    function setLanguage(lang) {
-        document.documentElement.lang = lang;
-        localStorage.setItem('user-lang', lang); // Save preference
         
-        if (currentLangSpan) {
-            currentLangSpan.textContent = lang === 'zh' ? '中' : 'En';
-        }
+        const savedLang = localStorage.getItem('user-lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+        setLanguage(savedLang);
+    };
 
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (translations[lang] && translations[lang][key]) {
-                el.innerHTML = translations[lang][key];
+    const updateParticleVisibility = () => {
+        const particlesContainer = document.getElementById('particles-js');
+        if (!particlesContainer) return;
+        
+        const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+        // localStorage stores strings, so we must compare to the string 'true'.
+        const snowEnabled = localStorage.getItem('snowEffect') === 'true';
+
+        if (isDarkMode && snowEnabled) {
+            if (particlesContainer.style.display !== 'block') {
+                particlesContainer.style.display = 'block';
             }
-        });
-    }
-
-    // Set initial language
-    const savedLang = localStorage.getItem('user-lang');
-    const userLang = savedLang || (navigator.language.startsWith('zh') ? 'zh' : 'en');
-    setLanguage(userLang);
-
-    // --- Theme Switcher ---
-    const themeToggle = document.getElementById('theme-toggle-checkbox');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-    function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        if (themeToggle) {
-            themeToggle.checked = theme === 'dark';
-        }
-        // Dispatch a custom event to notify other scripts of the theme change
-        window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: theme } }));
-    }
-
-    function detectAndApplyTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            applyTheme(savedTheme);
+            // If particles are not yet loaded, load them.
+            if (!window.pJSDom || !window.pJSDom.length) { 
+                particlesJS.load('particles-js', 'particlesjs-config.json', function() {
+                    console.log('Particles.js loaded');
+                });
+            }
         } else {
-            applyTheme(systemPrefersDark.matches ? 'dark' : 'light');
+            if (particlesContainer.style.display !== 'none') {
+                particlesContainer.style.display = 'none';
+            }
+            // If particles are loaded, destroy them to save resources.
+            if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
+                window.pJSDom[0].pJS.fn.vendors.destroypJS();
+                window.pJSDom = [];
+            }
         }
-    }
+    };
 
-    themeToggle.addEventListener('change', (e) => {
-        applyTheme(e.target.checked ? 'dark' : 'light');
-    });
+    const setupThemeSwitcher = () => {
+        const checkbox = document.getElementById('theme-toggle-checkbox');
+        if (!checkbox) return;
 
-    systemPrefersDark.addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-             applyTheme(e.matches ? 'dark' : 'light');
+        const applyTheme = (theme, fromUserInteraction = false) => {
+            if (fromUserInteraction) {
+                document.body.classList.add('theme-transition');
+            }
+
+            // On any theme switch, reset the snow effect to its default (off) state.
+            localStorage.setItem('snowEffect', 'false');
+
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            checkbox.checked = theme === 'dark';
+            updateParticleVisibility();
+
+            if (fromUserInteraction) {
+                document.body.addEventListener('transitionend', () => {
+                    document.body.classList.remove('theme-transition');
+                }, { once: true });
+            }
+        };
+
+        const detectAndApplyTheme = () => {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+        };
+
+        checkbox.addEventListener('change', () => {
+            applyTheme(checkbox.checked ? 'dark' : 'light', true);
+        });
+
+        detectAndApplyTheme();
+    };
+    
+    const setupSnowToggle = () => {
+        const snowToggleBtn = document.getElementById('snow-toggle-btn');
+        if (!snowToggleBtn) return;
+    
+        snowToggleBtn.addEventListener('click', () => {
+            // This button is only visible in dark mode, so we just toggle the state.
+            const snowEnabled = localStorage.getItem('snowEffect') !== 'false';
+            localStorage.setItem('snowEffect', String(!snowEnabled));
+            updateParticleVisibility();
+        });
+    };
+
+    const setupTextParallax = () => {
+        const hero = document.querySelector('.hero');
+        const specialTexts = document.querySelectorAll('.special-text');
+
+        if (!hero || specialTexts.length === 0) {
+            return;
         }
-    });
 
-    detectAndApplyTheme();
+        const onMouseMove = (e) => {
+            const { clientX, clientY } = e;
+            const { offsetWidth, offsetHeight } = hero;
 
-    // --- Cursor Click Effect ---
-    document.addEventListener('click', (e) => {
-        const effectContainer = document.createElement('div');
-        effectContainer.className = 'click-effect';
-        effectContainer.style.left = `${e.clientX}px`;
-        effectContainer.style.top = `${e.clientY}px`;
-        document.body.appendChild(effectContainer);
+            const x = (clientX - offsetWidth / 2) / (offsetWidth / 2);
+            const y = (clientY - offsetHeight / 2) / (offsetHeight / 2);
 
-        // Create blue ring
-        const ring = document.createElement('div');
-        ring.className = 'dissolve-ring';
-        effectContainer.appendChild(ring);
+            const tiltAmount = 5; 
 
-        // Create white sparks
-        for (let i = 0; i < 8; i++) {
-            const spark = document.createElement('div');
-            spark.className = 'spark';
-            const angle = i * 45; // 360 / 8 = 45
-            const distance = 50;
-            const x = Math.cos(angle * (Math.PI / 180)) * distance;
-            const y = Math.sin(angle * (Math.PI / 180)) * distance;
-            spark.style.setProperty('--x', `${x}px`);
-            spark.style.setProperty('--y', `${y}px`);
-            effectContainer.appendChild(spark);
-        }
+            specialTexts.forEach(text => {
+                text.style.transform = `perspective(1000px) rotateY(${x * tiltAmount}deg) rotateX(${-y * tiltAmount}deg)`;
+            });
+        };
 
-        setTimeout(() => {
-            effectContainer.remove();
-        }, 700);
-    });
+        const onMouseLeave = () => {
+            specialTexts.forEach(text => {
+                text.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+            });
+        };
+
+        hero.removeEventListener('mousemove', onMouseMove);
+        hero.removeEventListener('mouseleave', onMouseLeave);
+
+        hero.addEventListener('mousemove', onMouseMove);
+        hero.addEventListener('mouseleave', onMouseLeave);
+    };
+
+    const setupProximityGlowEffect = () => {
+        const hero = document.querySelector('.hero');
+        const silverText = document.querySelector('.silver-text');
+
+        if (!hero || !silverText) return;
+
+        const baseGlowColor = '170, 170, 170';
+        const maxGlowOpacity = 0.7;
+        const glowRadius = '15px';
+        const maxDistance = 300;
+
+        const onMouseMove = (e) => {
+            window.requestAnimationFrame(() => {
+                const rect = silverText.getBoundingClientRect();
+                if (rect.width === 0 && rect.height === 0) return;
+                
+                const elementCenterX = rect.left + rect.width / 2;
+                const elementCenterY = rect.top + rect.height / 2;
+                
+                const distance = Math.sqrt(Math.pow(e.clientX - elementCenterX, 2) + Math.pow(e.clientY - elementCenterY, 2));
+                
+                const glowOpacity = Math.min(distance / maxDistance, 1) * maxGlowOpacity;
+                
+                silverText.style.textShadow = `0 0 ${glowRadius} rgba(${baseGlowColor}, ${glowOpacity})`;
+            });
+        };
+
+        const onMouseLeave = () => {
+            window.requestAnimationFrame(() => {
+                silverText.style.textShadow = `0 0 ${glowRadius} rgba(${baseGlowColor}, ${maxGlowOpacity})`;
+            });
+        };
+
+        hero.addEventListener('mousemove', onMouseMove);
+        hero.addEventListener('mouseleave', onMouseLeave);
+    };
+
+    // --- Initializations ---
+    const initialLang = localStorage.getItem('user-lang') || 'zh';
+    setLanguage(initialLang);
+    setDaysOnline();
+    setupSmoothScroll();
+    setupHeaderScrollEffect();
+    setupHamburgerMenu();
+    setupStatsAnimation();
+    setupLanguageSwitcher();
+    setupThemeSwitcher();
+    setupSnowToggle();
+    setupProximityGlowEffect();
+    setupTextParallax();
 });
