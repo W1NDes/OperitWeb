@@ -1091,8 +1091,8 @@ async function generateConfirmationCode(invitationCode, deviceId) {
  * @returns {Promise<string>} - Promise 解析为 Base64 编码的 HMAC-SHA256
  */
 async function hmacSha256(message, secret) {
-    // 将字符串转换为 ArrayBuffer
-    const encoder = new TextEncoder();
+    // 将字符串显式地使用 UTF-8 编码转换为 ArrayBuffer
+    const encoder = new TextEncoder('utf-8');
     const messageBuffer = encoder.encode(message);
     const secretBuffer = encoder.encode(secret);
     
