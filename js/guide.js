@@ -959,8 +959,8 @@ function getGuideMarkdown() {
   <p>通过此工具，您可以为被邀请用户生成有效的返回码。只需输入您的邀请码和对方的设备ID，点击生成按钮即可。</p>
   
   <div class="form-group">
-    <label for="invitationCode">邀请码：</label>
-    <input type="text" id="invitationCode" placeholder="请输入您的邀请码" class="form-control">
+    <label for="invitationCode">分享语或邀请码:</label>
+    <input type="text" id="invitationCode" placeholder="请粘贴分享语，将自动提取邀请码" class="form-control">
   </div>
   
   <div class="form-group">
@@ -1019,6 +1019,20 @@ const initReturnCodeGenerator = () => {
     // --- Event Listeners ---
     regenerateDeviceIdBtn.addEventListener('click', () => {
         deviceIdInput.value = generateRandomDeviceId();
+    });
+
+    invitationCodeInput.addEventListener('input', () => {
+        const text = invitationCodeInput.value;
+        // 正则表达式匹配分享语中的邀请码
+        const regex = /\[OperitAI邀请码:([^:]+):[^\]]+\]/;
+        const match = text.match(regex);
+        
+        if (match && match[1]) {
+            // 使用微小的延迟来确保粘贴操作完成
+            setTimeout(() => {
+                invitationCodeInput.value = match[1];
+            }, 10);
+        }
     });
 
     generateCodeBtn.addEventListener('click', async () => {
