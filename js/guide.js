@@ -960,7 +960,7 @@ function getGuideMarkdown() {
   
   <div class="form-group">
     <label for="invitationCode">分享语或邀请码:</label>
-    <input type="text" id="invitationCode" placeholder="请粘贴分享语，将自动提取邀请码" class="form-control">
+    <input type="text" id="invitationCode" placeholder="请粘贴分享语，将自动提取邀请信息" class="form-control">
   </div>
   
   <div class="form-group">
@@ -1023,8 +1023,8 @@ const initReturnCodeGenerator = () => {
 
     invitationCodeInput.addEventListener('input', () => {
         const text = invitationCodeInput.value;
-        // 正则表达式匹配分享语中的邀请码
-        const regex = /\[OperitAI邀请码:([^:]+):[^\]]+\]/;
+        // 正则表达式匹配分享语中的 "邀请码:设备哈希" 部分
+        const regex = /\[OperitAI邀请码:([^\]]+)\]/;
         const match = text.match(regex);
         
         if (match && match[1]) {
@@ -1036,11 +1036,13 @@ const initReturnCodeGenerator = () => {
     });
 
     generateCodeBtn.addEventListener('click', async () => {
-        const invitationCode = invitationCodeInput.value.trim();
+        const rawCode = invitationCodeInput.value.trim();
+        // 真正的邀请码（密钥）是冒号前的部分
+        const invitationCode = rawCode.split(':')[0];
         const deviceId = deviceIdInput.value.trim();
         
         if (!invitationCode || !deviceId) {
-            alert('请输入邀请码和设备ID');
+            alert('请输入有效的分享语或邀请码');
             return;
         }
         
