@@ -116,6 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         generateTOC();
+        
+        // 初始化返回码生成器功能
+        initReturnCodeGenerator();
     };
 
     const generateTOC = () => {
@@ -949,6 +952,145 @@ function getGuideMarkdown() {
 
 <p>有好的想法或功能建议？您可以通过GitHub Issues提交，也可以关注我们未来的更新计划，也许您期待的功能已经在路上！</p>
 
+<h2 id="section-7">🔑 返回码生成器</h2>
+
+<div class="return-code-generator">
+  <h3>邀请返回码生成工具</h3>
+  <p>通过此工具，您可以为被邀请用户生成有效的返回码。只需输入您的邀请码和对方的设备ID，点击生成按钮即可。</p>
+  
+  <div class="form-group">
+    <label for="invitationCode">邀请码：</label>
+    <input type="text" id="invitationCode" placeholder="请输入您的邀请码" class="form-control">
+  </div>
+  
+  <div class="form-group">
+    <label for="deviceId">设备ID：</label>
+    <input type="text" id="deviceId" placeholder="请输入被邀请用户的设备ID" class="form-control">
+  </div>
+  
+  <button id="generateCodeBtn" class="primary-button">生成返回码</button>
+  
+  <div class="result-container" style="display: none;">
+    <h4>返回码：</h4>
+    <div class="result-box">
+      <span id="generatedCode"></span>
+      <button id="copyCodeBtn" class="copy-button" title="复制到剪贴板">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </button>
+    </div>
+    <p class="copy-status" id="copyStatus"></p>
+  </div>
+</div>
 
 `;
+} 
+
+// --- 返回码生成器功能 ---
+const initReturnCodeGenerator = () => {
+    const generateCodeBtn = document.getElementById('generateCodeBtn');
+    const invitationCodeInput = document.getElementById('invitationCode');
+    const deviceIdInput = document.getElementById('deviceId');
+    const resultContainer = document.querySelector('.result-container');
+    const generatedCodeSpan = document.getElementById('generatedCode');
+    const copyCodeBtn = document.getElementById('copyCodeBtn');
+    const copyStatusP = document.getElementById('copyStatus');
+    
+    if (!generateCodeBtn) return;
+    
+    generateCodeBtn.addEventListener('click', async () => {
+        const invitationCode = invitationCodeInput.value.trim();
+        const deviceId = deviceIdInput.value.trim();
+        
+        if (!invitationCode || !deviceId) {
+            alert('请输入邀请码和设备ID');
+            return;
+        }
+        
+        try {
+            const confirmationCode = await generateConfirmationCode(invitationCode, deviceId);
+            generatedCodeSpan.textContent = confirmationCode;
+            resultContainer.style.display = 'block';
+            copyStatusP.textContent = '';
+        } catch (error) {
+            alert('生成返回码失败: ' + error.message);
+        }
+    });
+    
+    copyCodeBtn.addEventListener('click', () => {
+        const code = generatedCodeSpan.textContent;
+        if (!code) return;
+        
+        navigator.clipboard.writeText(code)
+            .then(() => {
+                copyStatusP.textContent = '复制成功!';
+                setTimeout(() => {
+                    copyStatusP.textContent = '';
+                }, 2000);
+            })
+            .catch(err => {
+                copyStatusP.textContent = '复制失败，请手动复制';
+            });
+    });
+};
+
+/**
+ * 生成OperitAI邀请流程的返回码
+ * @param {string} invitationCode - 邀请者的邀请码
+ * @param {string} deviceId - 被邀请者的设备ID
+ * @returns {Promise<string>} - Promise 解析为最终的返回码
+ */
+async function generateConfirmationCode(invitationCode, deviceId) {
+    // 使用 SubtleCrypto API 计算 HMAC-SHA256
+    const base64Signature = await hmacSha256(deviceId, invitationCode);
+    // 拼接最终的返回码
+    return `${deviceId}:${base64Signature}`;
+}
+
+/**
+ * 计算字符串的 HMAC-SHA256 值并返回 Base64 编码
+ * @param {string} message - 要加密的消息
+ * @param {string} secret - 密钥
+ * @returns {Promise<string>} - Promise 解析为 Base64 编码的 HMAC-SHA256
+ */
+async function hmacSha256(message, secret) {
+    // 将字符串转换为 ArrayBuffer
+    const encoder = new TextEncoder();
+    const messageBuffer = encoder.encode(message);
+    const secretBuffer = encoder.encode(secret);
+    
+    // 从密钥创建一个 CryptoKey
+    const key = await window.crypto.subtle.importKey(
+        'raw',
+        secretBuffer,
+        { name: 'HMAC', hash: 'SHA-256' },
+        false,
+        ['sign']
+    );
+    
+    // 计算签名
+    const signature = await window.crypto.subtle.sign(
+        'HMAC',
+        key,
+        messageBuffer
+    );
+    
+    // 将签名转换为 Base64
+    return arrayBufferToBase64(signature);
+}
+
+/**
+ * 将 ArrayBuffer 转换为 Base64 字符串
+ * @param {ArrayBuffer} buffer - 要转换的 ArrayBuffer
+ * @returns {string} - Base64 编码的字符串
+ */
+function arrayBufferToBase64(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
 } 
