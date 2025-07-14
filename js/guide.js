@@ -964,8 +964,13 @@ function getGuideMarkdown() {
   </div>
   
   <div class="form-group">
-    <label for="deviceId">设备ID：</label>
-    <input type="text" id="deviceId" placeholder="请输入被邀请用户的设备ID" class="form-control">
+    <label for="deviceId">设备ID (已随机生成):</label>
+    <div class="input-with-button">
+        <input type="text" id="deviceId" class="form-control" readonly>
+        <button id="regenerateDeviceIdBtn" class="secondary-button" title="重新生成随机设备ID">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+    </div>
   </div>
   
   <button id="generateCodeBtn" class="primary-button">生成返回码</button>
@@ -997,9 +1002,25 @@ const initReturnCodeGenerator = () => {
     const generatedCodeSpan = document.getElementById('generatedCode');
     const copyCodeBtn = document.getElementById('copyCodeBtn');
     const copyStatusP = document.getElementById('copyStatus');
+    const regenerateDeviceIdBtn = document.getElementById('regenerateDeviceIdBtn');
     
     if (!generateCodeBtn) return;
     
+    // --- Helper function to generate a random device ID ---
+    const generateRandomDeviceId = () => {
+        const array = new Uint8Array(8);
+        window.crypto.getRandomValues(array);
+        return Array.from(array, byte => ('0' + byte.toString(16)).slice(-2)).join('');
+    };
+
+    // --- Initial setup ---
+    deviceIdInput.value = generateRandomDeviceId();
+
+    // --- Event Listeners ---
+    regenerateDeviceIdBtn.addEventListener('click', () => {
+        deviceIdInput.value = generateRandomDeviceId();
+    });
+
     generateCodeBtn.addEventListener('click', async () => {
         const invitationCode = invitationCodeInput.value.trim();
         const deviceId = deviceIdInput.value.trim();
