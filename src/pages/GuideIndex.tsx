@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col, Typography, Badge } from 'antd';
+import { Card, Row, Col, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import {
   AppstoreOutlined,
