@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Modal } from 'antd';
 import { motion } from 'framer-motion';
 
@@ -20,7 +20,11 @@ const allCards = [
 
 let lastDrawnCards: any[] = [];
 
-const GachaGallery: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
+export interface GachaGalleryRef {
+  draw: () => void;
+}
+
+const GachaGallery: React.ForwardRefRenderFunction<GachaGalleryRef, { darkMode: boolean }> = ({ darkMode }, ref) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [drawnCards, setDrawnCards] = useState<any[]>([]);
 
@@ -70,6 +74,10 @@ const GachaGallery: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         setDrawnCards(newDrawnCards);
         setIsModalVisible(true);
     };
+
+    useImperativeHandle(ref, () => ({
+      draw: drawRandomCards,
+    }));
 
     return (
         <div style={{ textAlign: 'center', padding: '60px 24px' }}>
@@ -190,4 +198,4 @@ const GachaGallery: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
     );
 };
 
-export default GachaGallery; 
+export default forwardRef(GachaGallery); 

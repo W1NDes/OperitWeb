@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Typography,
@@ -30,6 +30,7 @@ import {
 import { translations } from '../translations.ts';
 import AnimatedSection from '../components/AnimatedSection';
 import GachaGallery from '../components/GachaGallery';
+import type { GachaGalleryRef } from '../components/GachaGallery';
 import useGitHubStats from '../hooks/useGitHubStats';
 
 // 导入所有服务商的logo
@@ -54,6 +55,8 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
     const translation = translations[language] as Record<string, string>;
     return translation[key] || key;
   };
+
+  const gachaRef = useRef<GachaGalleryRef>(null);
 
   // 使用GitHub Stats Hook
   const { stargazersCount, forksCount, contributorsCount, loading, error } = useGitHubStats('AAswordman', 'Operit');
@@ -238,6 +241,9 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
                     const gachaElement = document.getElementById('gacha-gallery');
                     if (gachaElement) {
                       gachaElement.scrollIntoView({ behavior: 'smooth' });
+                      setTimeout(() => {
+                        gachaRef.current?.draw();
+                      }, 500); // 等待滚动动画结束
                     }
                   }}
                 >
@@ -251,7 +257,7 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
       {/* 抽卡功能 */}
       <AnimatedSection className="site-section">
         <div id="gacha-gallery">
-          <GachaGallery darkMode={darkMode} />
+          <GachaGallery darkMode={darkMode} ref={gachaRef} />
         </div>
       </AnimatedSection>
 
