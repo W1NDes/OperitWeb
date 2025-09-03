@@ -91,6 +91,20 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ file }) => {
               );
             },
             img: ({ node: _node, onClick: _onClick, ...props }) => <Image {...props} />,
+            p: ({ node, children, ...props }) => {
+              const hasImage = node?.children.some(
+                (child: any) => child.type === 'element' && child.tagName === 'img'
+              );
+
+              if (hasImage) {
+                return (
+                  <div className="paragraph-with-image" {...props}>
+                    {children}
+                  </div>
+                );
+              }
+              return <p {...props}>{children}</p>;
+            },
           }}
         >
           {markdown}
