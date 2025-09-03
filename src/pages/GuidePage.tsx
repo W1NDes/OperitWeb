@@ -13,7 +13,7 @@ const { Content, Sider } = Layout;
 // 根据环境动态设置基础路径
 // 在开发环境中，我们假设 manuals 目录位于 public 文件夹下
 // 在生产环境中，基于实际部署路径调整
-const basePath = '/manuals';
+const basePath = import.meta.env.PROD ? '/OperitWeb' : '';
 
 
 interface TocItem {
@@ -69,8 +69,8 @@ const GuidePage: React.FC = () => {
 
   // 预处理Markdown内容，修正图片路径
   const processedGuideContent = guideContent
-    .replace(/src="\/manuals\/assets\//g, `src="${basePath}/assets/`)
-    .replace(/href="\/manuals\/assets\//g, `href="${basePath}/assets/`);
+    .replace(/src="\/manuals\//g, `src="${basePath}/manuals/`)
+    .replace(/href="\/manuals\//g, `href="${basePath}/manuals/`);
 
   const generateAnchorItems = () => {
     return toc.map(item => ({
