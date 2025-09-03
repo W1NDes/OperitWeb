@@ -9,7 +9,7 @@ function App() {
   const [language, setLanguage] = useState<'zh' | 'en'>('zh');
 
   return (
-    <Router>
+    <Router basename="/OperitWeb">
       <Routes>
         <Route 
           path="/" 
