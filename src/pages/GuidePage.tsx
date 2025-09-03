@@ -12,9 +12,8 @@ const { Content, Sider } = Layout;
 
 // 根据环境动态设置基础路径
 // 在开发环境中，我们假设 manuals 目录位于 public 文件夹下
-// 在生产环境中，我们使用 Vite 提供的 BASE_URL，确保路径正确
-const isProduction = import.meta.env.MODE === 'production';
-const basePath = isProduction ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/manuals` : '/manuals';
+// 在生产环境中，基于实际部署路径调整
+const basePath = '/manuals';
 
 
 interface TocItem {
