@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider, theme } from 'antd';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
@@ -31,7 +31,7 @@ const App: React.FC = () => {
         algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
     >
-      <Router basename={import.meta.env.PROD ? '/OperitWeb' : '/'}>
+      <Router>
         <Routes>
           <Route 
             path="/" 
