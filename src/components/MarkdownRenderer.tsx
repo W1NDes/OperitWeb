@@ -43,6 +43,16 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ file }) => {
     fetchMarkdown();
   }, [file]);
 
+  const urlTransform = (uri: string) => {
+    // Prepend the base URL to absolute paths to fix image loading on GitHub Pages.
+    if (uri.startsWith('/') && !uri.startsWith('//')) {
+      const baseUrl = import.meta.env.BASE_URL;
+      const cleanedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+      return `${cleanedBaseUrl}${uri}`;
+    }
+    return uri;
+  };
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -61,6 +71,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ file }) => {
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkImageGallery]}
           rehypePlugins={[rehypeRaw]}
+          urlTransform={urlTransform}
           components={{
             code({ node, inline, className, children, ...props }: CodeComponentProps & { inline?: boolean; node?: any; }) {
               const match = /language-(\w+)/.exec(className || '');
