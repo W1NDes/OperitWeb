@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import GuidePage from './pages/GuidePage';
@@ -9,7 +9,7 @@ function App() {
   const [language, setLanguage] = useState<'zh' | 'en'>('zh');
 
   return (
-    <Router basename="/OperitWeb">
+    <Router>
       <Routes>
         <Route 
           path="/" 

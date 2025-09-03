@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Typography,
   Button,
@@ -34,13 +35,13 @@ import GachaGallery from '../components/GachaGallery';
 import useGitHubStats from '../hooks/useGitHubStats';
 
 // 导入所有服务商的logo
-import openAILogo from '/images/OTHER_LOGO/openAI.png';
-import geminiLogo from '/images/OTHER_LOGO/gemini.png';
-import zhipuLogo from '/images/OTHER_LOGO/zhipu.png';
-import openRouterLogo from '/images/OTHER_LOGO/OpenRouter.png';
-import siliconFlowLogo from '/images/OTHER_LOGO/SiliconFlow.png';
-import deepseekLogo from '/images/OTHER_LOGO/DEEPSEEK.png';
-import moonshotLogo from '/images/OTHER_LOGO/yuezhianmian.png';
+import openAILogo from 'images/OTHER_LOGO/openAI.png';
+import geminiLogo from 'images/OTHER_LOGO/gemini.png';
+import zhipuLogo from 'images/OTHER_LOGO/zhipu.png';
+import openRouterLogo from 'images/OTHER_LOGO/OpenRouter.png';
+import siliconFlowLogo from 'images/OTHER_LOGO/SiliconFlow.png';
+import deepseekLogo from 'images/OTHER_LOGO/DEEPSEEK.png';
+import moonshotLogo from 'images/OTHER_LOGO/yuezhianmian.png';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -413,22 +414,23 @@ nt;
                 {t('quickStart')}
               </Title>
               <div style={{ textAlign: 'center', marginBottom: 32 }}>
-                <Button 
-                  type="primary" 
-                  size="large"
-                  icon={<BookOutlined />}
-                  href="/OperitWeb/guide"
-                  style={{
-                    height: 48,
-                    fontSize: 16,
-                    paddingLeft: 24,
-                    paddingRight: 24,
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 15px rgba(24, 144, 255, 0.2)'
-                  }}
-                >
-                  查看完整用户指南
-                </Button>
+                <Link to="/guide">
+                  <Button 
+                    type="primary" 
+                    size="large"
+                    icon={<BookOutlined />}
+                    style={{
+                      height: 48,
+                      fontSize: 16,
+                      paddingLeft: 24,
+                      paddingRight: 24,
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 15px rgba(24, 144, 255, 0.2)'
+                    }}
+                  >
+                    查看完整用户指南
+                  </Button>
+                </Link>
               </div>
               <Row gutter={[32, 32]} style={{ marginTop: 40 }}>
                 <Col xs={24} md={12}>
