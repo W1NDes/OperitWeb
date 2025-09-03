@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
-import type { Engine } from '@tsparticles/engine';
 
 interface ParticleBackgroundProps {
   darkMode: boolean;

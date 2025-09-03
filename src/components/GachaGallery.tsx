@@ -71,15 +71,6 @@ const GachaGallery: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         setIsModalVisible(true);
     };
 
-    const rarityColor = (rarity: string) => {
-        switch (rarity) {
-            case 'SSR': return '#f5222d';
-            case 'SR': return '#fa541c';
-            case 'R': return '#52c41a';
-            default: return '#a0a0a0';
-        }
-    };
-
     return (
         <div style={{ textAlign: 'center', padding: '60px 24px' }}>
             <style>

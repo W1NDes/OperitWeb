@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Input, Button, Space, message, Typography } from 'antd';
 import { CopyOutlined, ReloadOutlined } from '@ant-design/icons';
 
-const { Title, Paragraph, Text } = Typography;
+const { Paragraph, Text } = Typography;
 
 const ReturnCodeGenerator: React.FC = () => {
   const [invitationCode, setInvitationCode] = useState('');
