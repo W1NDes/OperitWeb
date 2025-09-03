@@ -25,7 +25,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ file }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/content/docs/${file}.md`);
+        const response = await fetch(`${import.meta.env.BASE_URL}content/docs/${file}.md`);
         if (response.ok) {
           const text = await response.text();
           setMarkdown(text);
