@@ -50,14 +50,14 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
   const { stargazersCount, forksCount, contributorsCount, loading, error } = useGitHubStats('AAswordman', 'Operit');
 
   const providers = [
-    { name: 'OpenAI', logo: '/images/OTHER_LOGO/openAI.png' },
-    { name: 'Google', logo: '/images/OTHER_LOGO/gemini.png' },
+    { name: 'OpenAI', logo: 'images/OTHER_LOGO/openAI.png' },
+    { name: 'Google', logo: 'images/OTHER_LOGO/gemini.png' },
     { name: 'Anthropic', logo: '🔬' },
-    { name: 'Zhipu AI', logo: '/images/OTHER_LOGO/zhipu.png' },
-    { name: 'OpenRouter', logo: '/images/OTHER_LOGO/OpenRouter.png' },
-    { name: 'SiliconFlow', logo: '/images/OTHER_LOGO/SiliconFlow.png' },
-    { name: 'DeepSeek', logo: '/images/OTHER_LOGO/DEEPSEEK.png' },
-    { name: 'Moonshot AI', logo: '/images/OTHER_LOGO/yuezhianmian.png' }
+    { name: 'Zhipu AI', logo: 'images/OTHER_LOGO/zhipu.png' },
+    { name: 'OpenRouter', logo: 'images/OTHER_LOGO/OpenRouter.png' },
+    { name: 'SiliconFlow', logo: 'images/OTHER_LOGO/SiliconFlow.png' },
+    { name: 'DeepSeek', logo: 'images/OTHER_LOGO/DEEPSEEK.png' },
+    { name: 'Moonshot AI', logo: 'images/OTHER_LOGO/yuezhianmian.png' }
   ];
 
   const features = [
