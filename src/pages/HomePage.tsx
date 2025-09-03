@@ -32,6 +32,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import GachaGallery from '../components/GachaGallery';
 import type { GachaGalleryRef } from '../components/GachaGallery';
 import useGitHubStats from '../hooks/useGitHubStats';
+import DownloadLatestButton from '../components/DownloadLatestButton';
 
 // 导入所有服务商的logo
 import openAILogo from '/images/OTHER_LOGO/openAI.png';
@@ -181,28 +182,7 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
             </Paragraph>
 
             <Space size="large" wrap style={{ justifyContent: 'center' }}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  type="primary"
-                  size="large"
-                  icon={<DownloadOutlined />}
-                  style={{
-                    height: 52,
-                    fontSize: 18,
-                    paddingLeft: 36,
-                    paddingRight: 36,
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 15px rgba(24, 144, 255, 0.2)'
-                  }}
-                  href="https://github.com/AAswordman/Operit/releases"
-                  target="_blank"
-                >
-                  {t('downloadLatest')}
-                </Button>
-              </motion.div>
+              <DownloadLatestButton downloadText={t('downloadLatest')} />
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -223,19 +203,19 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
                   </Button>
                 </Link>
               </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  size="large"
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                size="large"
                   icon={<StarOutlined />}
-                  style={{
-                    height: 52,
-                    fontSize: 18,
-                    paddingLeft: 36,
-                    paddingRight: 36,
-                    borderRadius: '8px',
+                style={{
+                  height: 52,
+                  fontSize: 18,
+                  paddingLeft: 36,
+                  paddingRight: 36,
+                  borderRadius: '8px',
                   }}
                   onClick={() => {
                     const gachaElement = document.getElementById('gacha-gallery');
@@ -248,8 +228,8 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
                   }}
                 >
                   前往抽卡
-                </Button>
-              </motion.div>
+              </Button>
+            </motion.div>
             </Space>
           </motion.div>
       </div>
@@ -260,7 +240,7 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
           <GachaGallery darkMode={darkMode} ref={gachaRef} />
         </div>
       </AnimatedSection>
-
+      
       <style>
         {`
           @keyframes gradient-animation {
