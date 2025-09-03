@@ -48,10 +48,10 @@ const App: React.FC = () => {
             <Route path="guide" element={<GuidePage darkMode={darkMode} />}>
               <Route index element={<GuideIndex />} />
               <Route path="quick-start" element={<MarkdownRenderer file="quick-start" />} />
-              <Route path="guides/:slug" element={<GuideContent />} />
               <Route path="faq" element={<MarkdownRenderer file="faq" />} />
-              <Route path="tools/return-code-generator" element={<ReturnCodeGeneratorPage />} />
+              <Route path=":category/:slug" element={<GuideContent />} />
             </Route>
+            <Route path="tools/return-code-generator" element={<ReturnCodeGeneratorPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Route>
         </Routes>

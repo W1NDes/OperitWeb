@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 
 const GuideContent: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
-  return <MarkdownRenderer file={`guides/${slug}`} />;
+  const params = useParams();
+  const filePath = params.category ? `${params.category}/${params.slug}` : params.slug;
+  return <MarkdownRenderer file={filePath || ''} />;
 };
 
 export default GuideContent; 

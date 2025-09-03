@@ -7,22 +7,53 @@ const { Sider, Content } = Layout;
 
 const menuItems = [
   { key: '/guide', label: <Link to="/guide">欢迎</Link> },
-  { key: 'quick-start', label: <Link to="/guide/quick-start">快速上手</Link> },
+  { key: 'quick-start', label: <Link to="/guide/quick-start">快速使用</Link> },
   {
-    key: 'guides',
-    label: '核心指南',
+    key: 'basic-config',
+    label: '基础配置',
     children: [
-      { key: 'packaging-apps', label: <Link to="/guide/guides/packaging-apps">打包Web应用</Link> },
-      { key: 'configuring-api', label: <Link to="/guide/guides/configuring-api">配置API</Link> },
-      { key: 'features', label: <Link to="/guide/guides/features">功能介绍</Link> },
-      { key: 'mcp-market', label: <Link to="/guide/guides/mcp-market">MCP市场</Link> },
+      { key: 'model-config', label: <Link to="/guide/basic-config/model-config">模型配置</Link> },
+      { key: 'functional-model-config', label: <Link to="/guide/basic-config/functional-model-config">功能模型配置</Link> },
+      { key: 'user-preferences', label: <Link to="/guide/basic-config/user-preferences">用户偏好配置</Link> },
+      { key: 'ai-permissions', label: <Link to="/guide/basic-config/ai-permissions">AI权限控制</Link> },
+      { key: 'software-authorization', label: <Link to="/guide/basic-config/software-authorization">授权软件</Link> },
     ],
   },
   {
-    key: 'tools',
-    label: '实用工具',
+    key: 'character-system',
+    label: '角色与对话',
     children: [
-      { key: 'return-code-generator', label: <Link to="/guide/tools/return-code-generator">邀请返回码生成器</Link> },
+      { key: 'character-cards', label: <Link to="/guide/character-system/character-cards">角色卡</Link> },
+      { key: 'tags', label: <Link to="/guide/character-system/tags">标签</Link> },
+      { key: 'voice-chat', label: <Link to="/guide/character-system/voice-chat">语音对话</Link> },
+      { key: 'desktop-pet', label: <Link to="/guide/character-system/desktop-pet">桌宠</Link> },
+    ],
+  },
+  {
+    key: 'tools-and-features',
+    label: '工具与功能',
+    children: [
+      { key: 'ai-tools', label: <Link to="/guide/tools-and-features/ai-tools">AI工具</Link> },
+      { key: 'toolkits', label: <Link to="/guide/tools-and-features/toolkits">工具包</Link> },
+      { key: 'mcp', label: <Link to="/guide/tools-and-features/mcp">MCP</Link> },
+      { key: 'knowledge-base', label: <Link to="/guide/tools-and-features/knowledge-base">知识库</Link> },
+      { key: 'toolbox', label: <Link to="/guide/tools-and-features/toolbox">工具箱</Link> },
+    ],
+  },
+  {
+    key: 'development',
+    label: '开发与部署',
+    children: [
+      { key: 'web-development', label: <Link to="/guide/development/web-development">制作Web</Link> },
+      { key: 'web-packaging', label: <Link to="/guide/development/web-packaging">打包Web为软件</Link> },
+      { key: 'mobile-development', label: <Link to="/guide/development/mobile-development">移动端开发</Link> },
+    ],
+  },
+  {
+    key: 'interface-guide',
+    label: '界面指南',
+    children: [
+      { key: 'panel-introduction', label: <Link to="/guide/interface-guide/panel-introduction">面板介绍</Link> },
     ],
   },
   { key: 'faq', label: <Link to="/guide/faq">常见问题</Link> },
@@ -47,11 +78,9 @@ const GuidePage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   };
   
   const getDefaultOpenKeys = () => {
-    if (location.pathname.includes('/guide/guides')) {
-      return ['guides'];
-    }
-    if (location.pathname.includes('/guide/tools')) {
-      return ['tools'];
+    const pathParts = location.pathname.split('/');
+    if (pathParts.length > 3 && pathParts[1] === 'guide') {
+      return [pathParts[2]];
     }
     return [];
   };

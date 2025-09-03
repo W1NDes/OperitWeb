@@ -14,9 +14,9 @@ const { Title, Paragraph } = Typography;
 
 const guideItems = [
   {
-    title: '软件能干什么？',
-    description: '探索Operit AI的强大功能，从智能助理到游戏创作。',
-    link: '/guide/guides/features',
+    title: '界面指南',
+    description: '探索Operit AI的各项功能与界面。',
+    link: '/guide/interface-guide/panel-introduction',
     icon: <AppstoreOutlined />,
   },
   {
@@ -26,29 +26,28 @@ const guideItems = [
     icon: <BookOutlined />,
   },
   {
-    title: '如何配置API？',
+    title: '模型配置',
     description: '学习如何配置AI模型API，解锁Operit AI的全部潜能。',
-    link: '/guide/guides/configuring-api',
+    link: '/guide/basic-config/model-config',
     icon: <ApiOutlined />,
   },
   {
     title: '如何打包软件？',
-    description: '将你的Web应用打包成APK或EXE，轻松分发。',
-    link: '/guide/guides/packaging-apps',
+    description: '将你的Web应用打包成桌面应用，轻松分发。',
+    link: '/guide/development/web-packaging',
     icon: <BuildOutlined />,
   },
   {
-    title: '有什么需要注意的？',
+    title: '常见问题',
     description: '查看常见问题解答，快速解决使用中的疑问。',
     link: '/guide/faq',
     icon: <QuestionCircleOutlined />,
   },
   {
-    title: '怎么导入角色？',
+    title: '角色卡',
     description: '学习如何导入和管理你的AI角色。',
-    link: '#',
+    link: '/guide/character-system/character-cards',
     icon: <UserAddOutlined />,
-    soon: true,
   },
 ];
 
@@ -64,9 +63,8 @@ const GuideIndex: React.FC = () => {
       <Row gutter={[24, 24]}>
         {guideItems.map((item, index) => (
           <Col xs={24} sm={12} md={8} key={index}>
-            <Link to={item.link} style={{ pointerEvents: item.soon ? 'none' : 'auto' }}>
-              <Card hoverable style={{ height: '100%', opacity: item.soon ? 0.6 : 1 }}>
-                {item.soon && <Badge.Ribbon text="敬请期待" />}
+            <Link to={item.link}>
+              <Card hoverable style={{ height: '100%'}}>
                 <Card.Meta
                   avatar={React.cloneElement(item.icon, { style: { fontSize: '32px', color: '#1890ff' } })}
                   title={<Title level={5}>{item.title}</Title>}
