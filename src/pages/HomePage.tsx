@@ -10,8 +10,6 @@ import {
   Avatar,
   Badge,
   Statistic,
-  List,
-  Steps,
   Carousel,
 } from 'antd';
 import { motion } from 'framer-motion';

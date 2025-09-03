@@ -1,7 +1,7 @@
  
 import React, { useState, useEffect, useRef } from 'react';
-import { Layout, Anchor, BackTop, Button, theme } from 'antd';
-import { UpOutlined, MenuOutlined, CloseOutlined } from '@ant-design/icons';
+import { Layout, Anchor, Button, theme } from 'antd';
+import { MenuOutlined, CloseOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
