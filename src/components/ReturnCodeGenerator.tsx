@@ -111,7 +111,7 @@ const ReturnCodeGenerator: React.FC = () => {
   return (
     <Card 
       title="邀请返回码生成工具" 
-      style={{ maxWidth: 600, margin: '20px auto' }}
+      style={{ width: '100%' }}
     >
       <Space direction="vertical" size="middle" style={{ width: '100%' }}>
         <div>

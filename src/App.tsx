@@ -7,6 +7,7 @@ import GuidePage from './pages/GuidePage';
 import GuideIndex from './pages/GuideIndex';
 import MarkdownRenderer from './components/MarkdownRenderer';
 import GuideContent from './pages/GuideContent';
+import ReturnCodeGeneratorPage from './pages/ReturnCodeGeneratorPage';
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -49,6 +50,7 @@ const App: React.FC = () => {
               <Route path="quick-start" element={<MarkdownRenderer file="quick-start" />} />
               <Route path="guides/:slug" element={<GuideContent />} />
               <Route path="faq" element={<MarkdownRenderer file="faq" />} />
+              <Route path="tools/return-code-generator" element={<ReturnCodeGeneratorPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Route>
