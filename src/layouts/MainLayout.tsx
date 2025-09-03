@@ -70,6 +70,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
     return translation[key] || key;
   };
 
+  const handleAnchorClick = (e: React.MouseEvent<HTMLElement>, link: { href: string }) => {
+    e.preventDefault();
+    const targetId = link.href.split('#')[1];
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const languageMenuItems: MenuProps['items'] = languages.map(lang => ({
     key: lang.key,
     label: (
@@ -131,6 +140,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
               {isHomePage ? (
                 <Anchor
                   direction="horizontal"
+                  onClick={handleAnchorClick}
                   items={[
                     { key: 'home', href: '#home', title: t('home') },
                     { key: 'features', href: '#features', title: t('features') },
