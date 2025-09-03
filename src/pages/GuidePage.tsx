@@ -56,6 +56,8 @@ const menuItems = [
       { key: 'panel-introduction', label: <Link to="/guide/interface-guide/panel-introduction">面板介绍</Link> },
     ],
   },
+  
+  { key: 'return-code-generator', label: <Link to="/guide/tools-and-features/return-code-generator">返回码生成器</Link> },
   { key: 'faq', label: <Link to="/guide/faq">常见问题</Link> },
 ];
 
