@@ -34,6 +34,7 @@ jobs:
       run: pnpm run build
 
     - name: Deploy to GitHub Pages
+      # This action handles deploying the build artifacts to the gh-pages branch
       uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/main'
       with:
