@@ -179,31 +179,84 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
               {t('heroSubtitle')}
             </Paragraph>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                type="primary"
-                size="large"
-                icon={<DownloadOutlined />}
-                style={{
-                  height: 52,
-                  fontSize: 18,
-                  paddingLeft: 36,
-                  paddingRight: 36,
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 15px rgba(24, 144, 255, 0.2)'
-                }}
-                href="https://github.com/AAswordman/Operit/releases"
-                target="_blank"
+            <Space size="large" wrap style={{ justifyContent: 'center' }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {t('downloadLatest')}
-              </Button>
-            </motion.div>
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={<DownloadOutlined />}
+                  style={{
+                    height: 52,
+                    fontSize: 18,
+                    paddingLeft: 36,
+                    paddingRight: 36,
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 15px rgba(24, 144, 255, 0.2)'
+                  }}
+                  href="https://github.com/AAswordman/Operit/releases"
+                  target="_blank"
+                >
+                  {t('downloadLatest')}
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link to="/guide">
+                  <Button
+                    size="large"
+                    icon={<BookOutlined />}
+                    style={{
+                      height: 52,
+                      fontSize: 18,
+                      paddingLeft: 36,
+                      paddingRight: 36,
+                      borderRadius: '8px',
+                    }}
+                  >
+                    查看文档
+                  </Button>
+                </Link>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  size="large"
+                  icon={<StarOutlined />}
+                  style={{
+                    height: 52,
+                    fontSize: 18,
+                    paddingLeft: 36,
+                    paddingRight: 36,
+                    borderRadius: '8px',
+                  }}
+                  onClick={() => {
+                    const gachaElement = document.getElementById('gacha-gallery');
+                    if (gachaElement) {
+                      gachaElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                >
+                  前往抽卡
+                </Button>
+              </motion.div>
+            </Space>
           </motion.div>
       </div>
       
+      {/* 抽卡功能 */}
+      <AnimatedSection className="site-section">
+        <div id="gacha-gallery">
+          <GachaGallery darkMode={darkMode} />
+        </div>
+      </AnimatedSection>
+
       <style>
         {`
           @keyframes gradient-animation {
@@ -394,106 +447,6 @@ nt;
                     </motion.div>
                   </Col>
                 ))}
-              </Row>
-            </Col>
-          </Row>
-        </div>
-      </AnimatedSection>
-      
-      {/* 抽卡功能 */}
-      <AnimatedSection className="site-section">
-        <GachaGallery darkMode={darkMode} />
-      </AnimatedSection>
-
-      {/* 快速开始 */}
-      <AnimatedSection className="site-section">
-        <div id="guide" style={{ padding: '60px 24px' }}>
-          <Row justify="center">
-            <Col xs={24} lg={16}>
-              <Title level={2} style={{ textAlign: 'center', color: darkMode ? 'white' : '#0d1a26', marginBottom: 40 }}>
-                {t('quickStart')}
-              </Title>
-              <div style={{ textAlign: 'center', marginBottom: 32 }}>
-                <Link to="/guide">
-                  <Button 
-                    type="primary" 
-                    size="large"
-                    icon={<BookOutlined />}
-                    style={{
-                      height: 48,
-                      fontSize: 16,
-                      paddingLeft: 24,
-                      paddingRight: 24,
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 15px rgba(24, 144, 255, 0.2)'
-                    }}
-                  >
-                    查看完整用户指南
-                  </Button>
-                </Link>
-              </div>
-              <Row gutter={[32, 32]} style={{ marginTop: 40 }}>
-                <Col xs={24} md={12}>
-                  <Card
-                    title={t('systemReq')}
-                    style={{
-                      height: '100%',
-                      background: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.7)',
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '12px'
-                    }}
-                    headStyle={{ color: darkMode ? 'white' : '#1890ff', borderBottom: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}` }}
-                  >
-                    <List
-                      dataSource={[
-                        'Android 8.0+ (API 26+)',
-                        '4GB+ RAM 推荐',
-                        '200MB+ 存储空间'
-                      ]}
-                      renderItem={(item) => (
-                        <List.Item style={{ border: 'none', padding: '8px 0' }}>
-                          <Text style={{ color: darkMode ? '#d1d5db' : '#666' }}>
-                            • {item}
-                          </Text>
-                        </List.Item>
-                      )}
-                    />
-                  </Card>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Card
-                    title={t('installation')}
-                    style={{
-                      height: '100%',
-                      background: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.7)',
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '12px'
-                    }}
-                    headStyle={{ color: darkMode ? 'white' : '#1890ff', borderBottom: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}` }}
-                  >
-                    <Steps
-                      direction="vertical"
-                      size="small"
-                      className={darkMode ? 'dark-mode-steps' : ''}
-                      items={[
-                        {
-                          title: '下载APK',
-                          description: '从GitHub获取最新版本'
-                        },
-                        {
-                          title: '安装应用',
-                          description: '授予必要权限'
-                        },
-                        {
-                          title: '开始使用',
-                          description: '享受AI助手服务'
-                        }
-                      ]}
-                    />
-                  </Card>
-                </Col>
               </Row>
             </Col>
           </Row>

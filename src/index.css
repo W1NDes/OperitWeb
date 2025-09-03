@@ -221,35 +221,6 @@ body {
     }
 }
 
-/* Antd customization */
-.ant-layout {
-    background: var(--background-color) !important;
-}
-
-.ant-card {
-    background: var(--card-background) !important;
-    border-color: var(--border-color) !important;
-    color: var(--text-color) !important;
-}
-
-.ant-card-head-title {
-    color: var(--text-color) !important;
-}
-
-.ant-typography {
-    color: var(--text-color) !important;
-}
-
-.ant-btn-primary {
-    background: var(--primary-color) !important;
-    border-color: var(--primary-color) !important;
-}
-
-.ant-btn-primary:hover {
-    background: color-mix(in srgb, var(--primary-color) 80%, white) !important;
-    border-color: color-mix(in srgb, var(--primary-color) 80%, white) !important;
-}
-
 /* Custom carousel dots */
 .custom-dots .ant-carousel-dots li button {
     background: var(--primary-color) !important;

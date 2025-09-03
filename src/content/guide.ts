@@ -643,4 +643,6 @@ export const guideContent = `
   - 推广！推广！推广！让更多人认识并使用Operit AI。
 
 有好的想法或功能建议？您可以通过GitHub Issues提交，也可以关注我们未来的更新计划，也许您期待的功能已经在路上！
+
+[RETURN_CODE_GENERATOR_PLACEHOLDER]
 `; 

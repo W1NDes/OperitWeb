@@ -156,9 +156,6 @@ const GachaGallery: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
                     }
                 `}
             </style>
-            <Button type="primary" size="large" onClick={drawRandomCards} style={{ marginBottom: 40 }}>
-                抽一张卡试试手气
-            </Button>
 
             <Modal
                 open={isModalVisible}

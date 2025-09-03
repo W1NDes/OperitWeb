@@ -13,6 +13,7 @@ import {
   FloatButton,
   Anchor,
   Drawer,
+  theme,
 } from 'antd';
 import type { MenuProps } from 'antd';
 import {
@@ -49,6 +50,7 @@ interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language, setLanguage }) => {
+  const { token } = theme.useToken();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
@@ -95,15 +97,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
   return (
     <Layout style={{ 
       minHeight: '100vh',
-      background: darkMode 
-        ? '#000'
-        : '#f0f2f5'
+      background: 'transparent'
     }}>
       <ParticleBackground darkMode={darkMode} />
       <Header style={{ 
-        background: darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(255, 255, 255, 0.5)', 
+        background: 'rgba(0,0,0,0)', // Let parent container control color
         backdropFilter: 'blur(10px)',
-        borderBottom: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}`,
+        borderBottom: `1px solid ${token.colorBorderSecondary}`,
         position: 'fixed',
         width: '100%',
         zIndex: 1000,
@@ -123,7 +123,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
                     level={3} 
                     style={{ 
                       margin: 0, 
-                      color: darkMode ? '#fff' : '#0d1a26',
+                      color: token.colorText,
                       fontWeight: 'bold',
                       letterSpacing: '1px'
                     }}
@@ -147,14 +147,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
                     { key: 'guide', href: '#guide', title: t('quickStart') }
                   ]}
                   style={{ backgroundColor: 'transparent' }}
-                  className={darkMode ? 'dark-mode-anchor' : ''}
                 />
               ) : (
                 <Space size="large">
                   <Link 
                     to="/" 
                     style={{ 
-                      color: darkMode ? '#e5e7eb' : '#0d1a26',
+                      color: token.colorText,
                       textDecoration: 'none'
                     }}
                   >
@@ -163,7 +162,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
                   <Link 
                     to="/guide"
                     style={{ 
-                      color: location.pathname === '/guide' ? '#1890ff' : (darkMode ? '#e5e7eb' : '#0d1a26'),
+                      color: location.pathname === '/guide' ? token.colorPrimary : token.colorText,
                       textDecoration: 'none',
                       fontWeight: location.pathname === '/guide' ? 'bold' : 'normal'
                     }}
@@ -223,18 +222,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
         open={mobileMenuOpen}
         bodyStyle={{ padding: 0 }}
         headerStyle={{ 
-          background: darkMode ? '#001529' : '#fff',
-          color: darkMode ? '#fff' : '#000'
+          background: token.colorBgElevated,
+          color: token.colorText
         }}
         style={{
-          backgroundColor: darkMode ? '#001529' : '#fff'
+          backgroundColor: token.colorBgElevated
         }}
       >
         <div style={{ padding: '20px' }}>
           <Space direction="vertical" size="large" style={{ width: '100%' }}>
             <div>
               <Space>
-                <span style={{ color: darkMode ? '#fff' : '#000' }}>主题模式:</span>
+                <span style={{ color: token.colorText }}>主题模式:</span>
                 <Switch
                   checkedChildren={<MoonOutlined />}
                   unCheckedChildren={<SunOutlined />}
@@ -246,7 +245,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
             
             <div>
               <Space>
-                <span style={{ color: darkMode ? '#fff' : '#000' }}>语言:</span>
+                <span style={{ color: token.colorText }}>语言:</span>
                 <Dropdown menu={{ items: languageMenuItems }} placement="bottomLeft">
                   <Button type="text" icon={<GlobalOutlined />}>
                     {languages.find(l => l.key === language)?.icon} {languages.find(l => l.key === language)?.label}
@@ -295,16 +294,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
                   src={logo}
                   style={{ backgroundColor: 'transparent' }}
                 />
-                <Title level={4} style={{ margin: 0, color: darkMode ? 'white' : '#0d1a26' }}>
+                <Title level={4} style={{ margin: 0, color: token.colorText }}>
                   Operit AI
                 </Title>
               </Space>
               
-              <Paragraph style={{ color: darkMode ? '#a0a0a0' : '#595959', margin: 0 }}>
+              <Paragraph style={{ color: token.colorTextSecondary, margin: 0 }}>
                 {t('contact')}: <a href="https://github.com/AAswordman/Operit" target="_blank" rel="noopener noreferrer">GitHub</a>
               </Paragraph>
               
-              <Text style={{ color: darkMode ? '#9ca3af' : '#8c8c8c', fontSize: 12 }}>
+              <Text style={{ color: token.colorTextTertiary, fontSize: 12 }}>
                 © 2024 Operit AI. All rights reserved.
               </Text>
             </Space>
