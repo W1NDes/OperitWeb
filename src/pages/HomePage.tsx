@@ -35,13 +35,13 @@ import GachaGallery from '../components/GachaGallery';
 import useGitHubStats from '../hooks/useGitHubStats';
 
 // 导入所有服务商的logo
-import openAILogo from 'images/OTHER_LOGO/openAI.png';
-import geminiLogo from 'images/OTHER_LOGO/gemini.png';
-import zhipuLogo from 'images/OTHER_LOGO/zhipu.png';
-import openRouterLogo from 'images/OTHER_LOGO/OpenRouter.png';
-import siliconFlowLogo from 'images/OTHER_LOGO/SiliconFlow.png';
-import deepseekLogo from 'images/OTHER_LOGO/DEEPSEEK.png';
-import moonshotLogo from 'images/OTHER_LOGO/yuezhianmian.png';
+import openAILogo from '/images/OTHER_LOGO/openAI.png';
+import geminiLogo from '/images/OTHER_LOGO/gemini.png';
+import zhipuLogo from '/images/OTHER_LOGO/zhipu.png';
+import openRouterLogo from '/images/OTHER_LOGO/OpenRouter.png';
+import siliconFlowLogo from '/images/OTHER_LOGO/SiliconFlow.png';
+import deepseekLogo from '/images/OTHER_LOGO/DEEPSEEK.png';
+import moonshotLogo from '/images/OTHER_LOGO/yuezhianmian.png';
 
 
 const { Title, Paragraph, Text } = Typography;

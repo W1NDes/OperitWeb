@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Layout,
   Typography,
@@ -25,6 +25,7 @@ import {
 } from '@ant-design/icons';
 import ParticleBackground from '../components/ParticleBackground';
 import { translations } from '../translations';
+import logo from '/logo.png';
 
 const { Header, Footer } = Layout;
 const { Title, Paragraph, Text } = Typography;
@@ -51,6 +52,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // 响应式处理
   React.useEffect(() => {
@@ -105,7 +107,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
                 <Space align="center">
                   <Avatar 
                     size={40} 
-                    src="/logo.png"
+                    src={logo}
                     style={{ backgroundColor: 'transparent' }}
                   />
                   <Title 
@@ -253,14 +255,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
               {t('downloadLatest')}
             </Button>
 
-            <Button 
-              type="default"
-              icon={<BookOutlined />}
-              href="/guide"
-              style={{ width: '100%' }}
-            >
-              用户指南
-            </Button>
+            <Link to="/guide" style={{ width: '100%' }}>
+              <Button 
+                type="default"
+                icon={<BookOutlined />}
+                style={{ width: '100%' }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                用户指南
+              </Button>
+            </Link>
           </Space>
         </div>
       </Drawer>
@@ -278,7 +282,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
               <Space>
                 <Avatar 
                   size={32} 
-                  src="/logo.png"
+                  src={logo}
                   style={{ backgroundColor: 'transparent' }}
                 />
                 <Title level={4} style={{ margin: 0, color: darkMode ? 'white' : '#0d1a26' }}>
@@ -302,7 +306,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
         <FloatButton 
           icon={<BookOutlined />}
           tooltip="用户手册"
-          onClick={() => window.location.href = '/guide'}
+          onClick={() => navigate('/guide')}
         />
         <FloatButton.BackTop />
       </FloatButton.Group>
