@@ -105,7 +105,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
                 <Space align="center">
                   <Avatar 
                     size={40} 
-                    src="logo.png"
+                    src="/logo.png"
                     style={{ backgroundColor: 'transparent' }}
                   />
                   <Title 
@@ -278,7 +278,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, setDarkMode, language
               <Space>
                 <Avatar 
                   size={32} 
-                  src="logo.png"
+                  src="/logo.png"
                   style={{ backgroundColor: 'transparent' }}
                 />
                 <Title level={4} style={{ margin: 0, color: darkMode ? 'white' : '#0d1a26' }}>

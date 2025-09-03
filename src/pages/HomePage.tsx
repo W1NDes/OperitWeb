@@ -33,6 +33,16 @@ import AnimatedSection from '../components/AnimatedSection';
 import GachaGallery from '../components/GachaGallery';
 import useGitHubStats from '../hooks/useGitHubStats';
 
+// 导入所有服务商的logo
+import openAILogo from '/images/OTHER_LOGO/openAI.png';
+import geminiLogo from '/images/OTHER_LOGO/gemini.png';
+import zhipuLogo from '/images/OTHER_LOGO/zhipu.png';
+import openRouterLogo from '/images/OTHER_LOGO/OpenRouter.png';
+import siliconFlowLogo from '/images/OTHER_LOGO/SiliconFlow.png';
+import deepseekLogo from '/images/OTHER_LOGO/DEEPSEEK.png';
+import moonshotLogo from '/images/OTHER_LOGO/yuezhianmian.png';
+
+
 const { Title, Paragraph, Text } = Typography;
 
 interface HomePageProps {
@@ -50,14 +60,14 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, language }) => {
   const { stargazersCount, forksCount, contributorsCount, loading, error } = useGitHubStats('AAswordman', 'Operit');
 
   const providers = [
-    { name: 'OpenAI', logo: 'images/OTHER_LOGO/openAI.png' },
-    { name: 'Google', logo: 'images/OTHER_LOGO/gemini.png' },
+    { name: 'OpenAI', logo: openAILogo },
+    { name: 'Google', logo: geminiLogo },
     { name: 'Anthropic', logo: '🔬' },
-    { name: 'Zhipu AI', logo: 'images/OTHER_LOGO/zhipu.png' },
-    { name: 'OpenRouter', logo: 'images/OTHER_LOGO/OpenRouter.png' },
-    { name: 'SiliconFlow', logo: 'images/OTHER_LOGO/SiliconFlow.png' },
-    { name: 'DeepSeek', logo: 'images/OTHER_LOGO/DEEPSEEK.png' },
-    { name: 'Moonshot AI', logo: 'images/OTHER_LOGO/yuezhianmian.png' }
+    { name: 'Zhipu AI', logo: zhipuLogo },
+    { name: 'OpenRouter', logo: openRouterLogo },
+    { name: 'SiliconFlow', logo: siliconFlowLogo },
+    { name: 'DeepSeek', logo: deepseekLogo },
+    { name: 'Moonshot AI', logo: moonshotLogo }
   ];
 
   const features = [
@@ -407,7 +417,7 @@ nt;
                   type="primary" 
                   size="large"
                   icon={<BookOutlined />}
-                  href="/guide"
+                  href="/OperitWeb/guide"
                   style={{
                     height: 48,
                     fontSize: 16,
