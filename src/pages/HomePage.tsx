@@ -21,7 +21,6 @@ import {
   GlobalOutlined,
   WindowsOutlined,
   GithubOutlined,
-  DownloadOutlined,
   StarOutlined,
   ForkOutlined,
   TeamOutlined,
